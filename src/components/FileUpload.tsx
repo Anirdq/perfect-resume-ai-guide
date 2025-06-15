@@ -2,7 +2,7 @@
 import { useState, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Upload, FileText, X, Image } from 'lucide-react';
+import { Upload, FileText, X, Image, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import * as pdfjsLib from 'pdfjs-dist';
 import { createWorker } from 'tesseract.js';
@@ -120,12 +120,12 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
   };
 
   const getFileIcon = () => {
-    if (!uploadedFile) return <FileText className="h-5 w-5 text-green-600" />;
+    if (!uploadedFile) return <FileText className="h-6 w-6 text-cyan-400" />;
     
     if (uploadedFile.type.startsWith('image/')) {
-      return <Image className="h-5 w-5 text-green-600" />;
+      return <Image className="h-6 w-6 text-cyan-400" />;
     }
-    return <FileText className="h-5 w-5 text-green-600" />;
+    return <FileText className="h-6 w-6 text-cyan-400" />;
   };
 
   const getProcessingMessage = () => {
@@ -140,29 +140,41 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
   };
 
   return (
-    <Card>
-      <CardContent className="p-6">
+    <Card className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-xl border border-cyan-500/30 shadow-2xl">
+      <CardContent className="p-8">
         {uploadedFile ? (
-          <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
-            <div className="flex items-center space-x-3">
-              {getFileIcon()}
+          <div className="flex items-center justify-between p-6 bg-gradient-to-r from-cyan-900/30 to-blue-900/30 rounded-2xl border border-cyan-500/30 backdrop-blur-sm">
+            <div className="flex items-center space-x-4">
+              <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-3 rounded-xl">
+                {isProcessing ? (
+                  <Loader2 className="h-6 w-6 text-white animate-spin" />
+                ) : (
+                  getFileIcon()
+                )}
+              </div>
               <div>
-                <p className="font-medium text-green-800">{uploadedFile.name}</p>
-                <p className="text-sm text-green-600">
+                <p className="font-semibold text-cyan-100 text-lg">{uploadedFile.name}</p>
+                <p className="text-cyan-300">
                   {isProcessing ? getProcessingMessage() : 'File processed successfully'}
                 </p>
               </div>
             </div>
-            <Button variant="ghost" size="sm" onClick={removeFile} disabled={isProcessing}>
-              <X className="h-4 w-4" />
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={removeFile} 
+              disabled={isProcessing}
+              className="text-gray-300 hover:text-white hover:bg-red-500/20 hover:border-red-500/30 transition-all duration-300"
+            >
+              <X className="h-5 w-5" />
             </Button>
           </div>
         ) : (
           <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+            className={`border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 ${
               isDragOver
-                ? 'border-blue-400 bg-blue-50'
-                : 'border-gray-300 hover:border-gray-400'
+                ? 'border-cyan-400 bg-cyan-500/10 shadow-lg shadow-cyan-500/20'
+                : 'border-gray-600 hover:border-cyan-500/50 hover:bg-cyan-500/5'
             }`}
             onDrop={handleDrop}
             onDragOver={(e) => {
@@ -171,14 +183,16 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
             }}
             onDragLeave={() => setIsDragOver(false)}
           >
-            <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+            <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-4 rounded-2xl mx-auto mb-6 w-fit shadow-lg shadow-cyan-500/25">
+              <Upload className="h-12 w-12 text-white" />
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-3">
               Upload your resume
             </h3>
-            <p className="text-gray-500 mb-4">
+            <p className="text-gray-300 mb-4 text-lg">
               Drag and drop your PDF, text file, or image here, or click to browse
             </p>
-            <p className="text-xs text-gray-400 mb-4">
+            <p className="text-sm text-gray-400 mb-6">
               Supports PDF text extraction and OCR for images
             </p>
             <input
@@ -188,7 +202,10 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
               className="hidden"
               id="file-upload"
             />
-            <Button asChild variant="outline">
+            <Button 
+              asChild 
+              className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold px-8 py-3 rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 transform hover:scale-105"
+            >
               <label htmlFor="file-upload" className="cursor-pointer">
                 Choose File
               </label>

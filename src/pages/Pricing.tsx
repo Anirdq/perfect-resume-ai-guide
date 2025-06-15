@@ -40,7 +40,7 @@ export default function Pricing() {
       <div className="pt-28 max-w-4xl mx-auto px-4">
         {/* Section heading and subheading */}
         <h1 className="text-4xl font-bold text-center mb-2 text-gray-900">Choose Your Plan</h1>
-        <p className="text-center text-lg text-gray-700 mb-10 my-[50px]">
+        <p className="text-center text-lg text-gray-700 mb-10 my-[55px]">
           Land interviews faster with smart, flexible pricing. Start for free — upgrade anytime.
         </p>
 

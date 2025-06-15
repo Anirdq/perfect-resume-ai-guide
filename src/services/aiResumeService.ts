@@ -1,4 +1,3 @@
-
 import OpenAI from 'openai';
 
 interface KeywordMatch {
@@ -58,7 +57,7 @@ export class AIResumeService {
 
     try {
       const response = await this.openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-3.5-turbo", // Changed from gpt-4 to gpt-3.5-turbo
         messages: [
           {
             role: "system",
@@ -98,7 +97,7 @@ Please provide the optimized resume:`
 
   private async extractKeywords(jobDescription: string, resume: string): Promise<KeywordMatch[]> {
     const response = await this.openai!.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo", // Changed from gpt-4 to gpt-3.5-turbo
       messages: [
         {
           role: "system",
@@ -133,7 +132,7 @@ Return a JSON array of objects with this format:
 
   private async getOptimizationSuggestions(resume: string, jobDescription: string): Promise<string[]> {
     const response = await this.openai!.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo", // Changed from gpt-4 to gpt-3.5-turbo
       messages: [
         {
           role: "system",

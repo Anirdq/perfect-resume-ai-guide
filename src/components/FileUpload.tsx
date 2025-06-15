@@ -40,7 +40,7 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
     try {
       if (file.type === 'text/plain' || file.name.toLowerCase().endsWith('.txt')) {
         const text = await file.text();
-        console.log('Text file content:', text);
+        console.log('Text file content extracted, calling onFileUpload with:', text.substring(0, 100) + '...');
         onFileUpload(text);
         toast.success('Resume uploaded successfully!');
       } else if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
@@ -96,7 +96,7 @@ PROJECTS
 • Real-time Chat Application: Developed WebSocket-based chat system with Redis pub/sub
 • Data Analytics Dashboard: Created interactive dashboard using D3.js and Python Flask`;
         
-        console.log('PDF parsed (mock):', mockResumeText.substring(0, 100) + '...');
+        console.log('PDF mock content extracted, calling onFileUpload with:', mockResumeText.substring(0, 100) + '...');
         onFileUpload(mockResumeText);
         toast.success('PDF uploaded and parsed successfully!');
       } else if (file.type.startsWith('image/')) {
@@ -157,7 +157,7 @@ NOTABLE PROJECTS
 • Brand Repositioning: Executed complete rebrand increasing market share by 15%
 • Marketing Automation: Implemented lead nurturing system improving conversion by 45%`;
 
-        console.log('Image text extracted (mock):', mockResumeFromImage.substring(0, 100) + '...');
+        console.log('Image mock content extracted, calling onFileUpload with:', mockResumeFromImage.substring(0, 100) + '...');
         onFileUpload(mockResumeFromImage);
         toast.success('Image uploaded and text extracted successfully!');
       }
@@ -170,6 +170,7 @@ NOTABLE PROJECTS
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      console.log('File selected from input:', file.name);
       handleFileUpload(file);
     }
   };

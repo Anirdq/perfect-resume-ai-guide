@@ -22,6 +22,18 @@ const Index = () => {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('openai_api_key') || '');
   const [aiService, setAiService] = useState<AIResumeService | null>(null);
 
+  const handleFileUpload = useCallback((text: string) => {
+    console.log('Index component received file upload text:', text.substring(0, 100) + '...');
+    console.log('Setting resume state to:', text.length, 'characters');
+    setResume(text);
+  }, []);
+
+  const handleResumeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newResume = e.target.value;
+    console.log('Manual resume change:', newResume.length, 'characters');
+    setResume(newResume);
+  };
+
   const handleApiKeySet = useCallback((key: string) => {
     setApiKey(key);
     localStorage.setItem('openai_api_key', key);
@@ -34,6 +46,7 @@ const Index = () => {
       return;
     }
 
+    console.log('Starting AI analysis with resume length:', resume.length);
     setIsAnalyzing(true);
     
     try {
@@ -126,20 +139,20 @@ const Index = () => {
           <div className="space-y-6">
             <ApiKeyInput onApiKeySet={handleApiKeySet} hasApiKey={!!apiKey} />
             
-            <FileUpload onFileUpload={setResume} />
+            <FileUpload onFileUpload={handleFileUpload} />
             
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <FileText className="h-5 w-5 text-blue-600" />
-                  <span>Your Resume</span>
+                  <span>Your Resume ({resume.length} characters)</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <Textarea
                   placeholder="Paste your current resume text here or upload a file above..."
                   value={resume}
-                  onChange={(e) => setResume(e.target.value)}
+                  onChange={handleResumeChange}
                   className="min-h-[200px] resize-none"
                 />
               </CardContent>

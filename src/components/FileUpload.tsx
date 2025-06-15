@@ -4,6 +4,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Upload, FileText, X, Image } from 'lucide-react';
 import { toast } from 'sonner';
+import * as pdfjsLib from 'pdfjs-dist';
+import { createWorker } from 'tesseract.js';
+
+// Set up PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
 interface FileUploadProps {
   onFileUpload: (text: string) => void;
@@ -12,6 +17,7 @@ interface FileUploadProps {
 export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -33,117 +39,68 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
     }
   }, []);
 
+  const extractTextFromPDF = async (file: File): Promise<string> => {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let fullText = '';
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items
+          .map((item: any) => item.str)
+          .join(' ');
+        fullText += pageText + '\n';
+      }
+
+      return fullText.trim();
+    } catch (error) {
+      console.error('Error extracting text from PDF:', error);
+      throw new Error('Failed to extract text from PDF');
+    }
+  };
+
+  const extractTextFromImage = async (file: File): Promise<string> => {
+    try {
+      const worker = await createWorker('eng');
+      const { data: { text } } = await worker.recognize(file);
+      await worker.terminate();
+      return text.trim();
+    } catch (error) {
+      console.error('Error extracting text from image:', error);
+      throw new Error('Failed to extract text from image');
+    }
+  };
+
   const handleFileUpload = async (file: File) => {
     console.log('File uploaded:', file.name, 'Type:', file.type);
     setUploadedFile(file);
+    setIsProcessing(true);
     
     try {
+      let extractedText = '';
+
       if (file.type === 'text/plain' || file.name.toLowerCase().endsWith('.txt')) {
-        const text = await file.text();
-        console.log('Text file content extracted, calling onFileUpload with:', text.substring(0, 100) + '...');
-        onFileUpload(text);
-        toast.success('Resume uploaded successfully!');
+        extractedText = await file.text();
+        toast.success('Text file processed successfully!');
       } else if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
-        // Note: This is mock data for PDF files
-        // In a real application, you would use a PDF parsing library like pdf-parse or PDF.js
-        toast.info('PDF uploaded - Using sample resume data (PDF parsing not implemented)');
-        
-        const sampleResumeText = `[SAMPLE RESUME DATA - Your uploaded PDF: ${file.name}]
-
-ALEX RODRIGUEZ
-Full Stack Developer
-Email: alex.rodriguez@email.com | Phone: (555) 123-4567
-LinkedIn: linkedin.com/in/alexrodriguez | Location: Austin, TX
-
-PROFESSIONAL SUMMARY
-Experienced full-stack developer with 5+ years building scalable web applications. 
-Passionate about clean code, user experience, and modern development practices.
-
-TECHNICAL SKILLS
-• Languages: JavaScript, TypeScript, Python, Java
-• Frontend: React, Next.js, Vue.js, HTML5, CSS3
-• Backend: Node.js, Express, FastAPI, Spring Boot
-• Databases: PostgreSQL, MongoDB, Redis
-• Cloud: AWS, Google Cloud, Docker, Kubernetes
-• Tools: Git, Jenkins, Jira, Figma
-
-PROFESSIONAL EXPERIENCE
-
-Senior Full Stack Developer | InnovateTech Solutions | 2021 - Present
-• Led development of customer portal serving 50K+ users
-• Implemented CI/CD pipelines reducing deployment time by 60%
-• Mentored 3 junior developers on best practices
-• Built RESTful APIs and microservices architecture
-
-Full Stack Developer | WebCraft Agency | 2019 - 2021
-• Developed responsive web applications for diverse clients
-• Integrated third-party APIs and payment systems
-• Optimized application performance and database queries
-• Collaborated with designers on UI/UX implementation
-
-EDUCATION
-Bachelor of Science in Computer Science
-University of Texas at Austin | 2015 - 2019
-
-CERTIFICATIONS
-• AWS Certified Developer Associate
-• React Developer Certification
-• Google Cloud Professional Developer`;
-        
-        console.log('PDF sample content provided, calling onFileUpload');
-        onFileUpload(sampleResumeText);
+        extractedText = await extractTextFromPDF(file);
+        toast.success('PDF text extracted successfully!');
       } else if (file.type.startsWith('image/')) {
-        // Note: This is mock data for image files
-        // In a real application, you would use OCR services like Tesseract.js or cloud OCR APIs
-        toast.info('Image uploaded - Using sample resume data (OCR not implemented)');
-        
-        const sampleImageResumeText = `[SAMPLE RESUME DATA - Your uploaded image: ${file.name}]
-
-MARIA GONZALEZ
-UX/UI Designer
-Email: maria.gonzalez@email.com | Phone: (555) 987-6543
-Portfolio: mariagonzalez.design | Location: San Francisco, CA
-
-PROFESSIONAL SUMMARY
-Creative UX/UI designer with 4+ years of experience creating user-centered digital experiences.
-Skilled in design systems, prototyping, and user research methodologies.
-
-CORE SKILLS
-• Design Tools: Figma, Sketch, Adobe Creative Suite, Principle
-• Prototyping: InVision, Framer, Axure RP
-• User Research: Usability Testing, Interviews, Surveys
-• Front-end: HTML, CSS, JavaScript basics
-• Methodologies: Design Thinking, Agile, Lean UX
-
-PROFESSIONAL EXPERIENCE
-
-Senior UX Designer | DesignForward Inc. | 2022 - Present
-• Lead UX design for B2B SaaS platform with 100K+ users
-• Conducted user research resulting in 40% increase in user satisfaction
-• Established design system reducing design-to-development time by 30%
-• Collaborated with product managers and engineers on feature development
-
-UX Designer | Creative Solutions | 2020 - 2022
-• Designed mobile and web applications for startup clients
-• Created wireframes, prototypes, and user journey maps
-• Performed A/B testing to optimize conversion rates
-• Mentored junior designers and design interns
-
-EDUCATION
-Bachelor of Fine Arts in Graphic Design
-California College of the Arts | 2016 - 2020
-
-CERTIFICATIONS
-• Google UX Design Certificate
-• Nielsen Norman Group UX Certification
-• Adobe Certified Expert`;
-
-        console.log('Image sample content provided, calling onFileUpload');
-        onFileUpload(sampleImageResumeText);
+        extractedText = await extractTextFromImage(file);
+        toast.success('Image text extracted using OCR!');
       }
+
+      console.log('Extracted text length:', extractedText.length);
+      console.log('Text preview:', extractedText.substring(0, 200) + '...');
+      onFileUpload(extractedText);
+      
     } catch (error) {
       console.error('Error processing file:', error);
-      toast.error('Failed to process file. Please try again.');
+      toast.error('Failed to extract text from file. Please try again.');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -158,7 +115,7 @@ CERTIFICATIONS
   const removeFile = () => {
     console.log('Removing file and clearing resume text');
     setUploadedFile(null);
-    onFileUpload(''); // Clear the resume text
+    onFileUpload('');
     toast.success('File removed');
   };
 
@@ -171,6 +128,17 @@ CERTIFICATIONS
     return <FileText className="h-5 w-5 text-green-600" />;
   };
 
+  const getProcessingMessage = () => {
+    if (!uploadedFile) return '';
+    
+    if (uploadedFile.type.startsWith('image/')) {
+      return 'Extracting text using OCR...';
+    } else if (uploadedFile.type === 'application/pdf') {
+      return 'Extracting text from PDF...';
+    }
+    return 'Processing file...';
+  };
+
   return (
     <Card>
       <CardContent className="p-6">
@@ -181,14 +149,11 @@ CERTIFICATIONS
               <div>
                 <p className="font-medium text-green-800">{uploadedFile.name}</p>
                 <p className="text-sm text-green-600">
-                  {uploadedFile.type === 'text/plain' || uploadedFile.name.toLowerCase().endsWith('.txt') 
-                    ? 'File uploaded and processed successfully'
-                    : 'Sample resume data loaded (actual file parsing not implemented)'
-                  }
+                  {isProcessing ? getProcessingMessage() : 'File processed successfully'}
                 </p>
               </div>
             </div>
-            <Button variant="ghost" size="sm" onClick={removeFile}>
+            <Button variant="ghost" size="sm" onClick={removeFile} disabled={isProcessing}>
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -214,7 +179,7 @@ CERTIFICATIONS
               Drag and drop your PDF, text file, or image here, or click to browse
             </p>
             <p className="text-xs text-gray-400 mb-4">
-              Note: PDF and image files will show sample data (actual parsing not implemented)
+              Supports PDF text extraction and OCR for images
             </p>
             <input
               type="file"

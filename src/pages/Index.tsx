@@ -81,93 +81,71 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden">
+    <div className="min-h-screen relative overflow-x-hidden font-poppins">
       {/* Futuristic overlays */}
-      <div className="blend-overlay-cyan"></div>
-      <div className="blend-overlay-violet"></div>
-      <div className="blend-future-lines"></div>
-
-      {/* Sticky Navigation */}
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-indigo-600/20 shadow-lg">
-        <div className="flex justify-between items-center max-w-7xl mx-auto py-4 px-4 md:px-8">
-          <div className="flex items-center">
-            <BrandLogo size={34} />
-            <span className="font-extrabold text-2xl text-glow tracking-tight select-none">ResumeAI</span>
-          </div>
-          <nav className="hidden md:flex gap-8 text-lg font-semibold text-indigo-100/95">
-            <a href="#features" className="hover:text-cyan-200 transition underline-offset-4 hover:underline">Features</a>
-            <a href="#how-it-works" className="hover:text-fuchsia-200 transition underline-offset-4 hover:underline">How It Works</a>
-            <a href="/pricing" className="hover:text-blue-300 transition underline-offset-4 hover:underline">Pricing</a>
-          </nav>
-          <Button className="ml-1 px-7 py-2 rounded-full font-bold shadow-fancy bg-gradient-to-tr from-fuchsia-500 to-cyan-400 text-white cta-glow text-lg tracking-tight">
-            Try Free
-          </Button>
-        </div>
-      </header>
+      <div className="blend-future-overlay"></div>
+      <div className="blend-cyan-vl"></div>
+      <div className="blend-violet-vl"></div>
 
       {/* HERO */}
-      <section className="py-24 md:py-32 relative z-10 text-center flex flex-col gap-2">
-        <div className="max-w-4xl mx-auto">
-          <BrandLogo size={64} />
-          <h1 className="mt-4 text-6xl md:text-8xl font-black text-glow tracking-tighter leading-tight drop-shadow-xl animate-fade-in">
+      <section className="relative text-center py-24 md:py-32 z-20 flex flex-col gap-2">
+        <div className="max-w-4xl mx-auto flex flex-col items-center">
+          <BrandLogo size={68} />
+          <h1 className="mt-5 mb-4 hero-glow drop-shadow-xl">
             AI Resume Optimization<br />
-            <span className="bg-gradient-to-r from-blue-200 via-fuchsia-300 to-cyan-400 bg-clip-text text-transparent">for Modern Job Seekers</span>
+            <span className="block">for Modern Job Seekers</span>
           </h1>
-          <p className="mt-8 text-2xl md:text-3xl max-w-2xl mx-auto text-zinc-200/90 font-extralight tracking-wide">
+          <div className="hero-subtle max-w-2xl mx-auto mb-7 mt-6">
             Transform your resume using AI, get expert-level advice, and make it through any ATS with confidence.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-6 mt-10">
-            <Badge className="bg-gradient-to-tr from-cyan-400/40 to-fuchsia-500/20 text-cyan-100 shadow-lg py-2 px-4 text-lg rounded-full border-0">ATS Proof</Badge>
-            <Badge className="bg-gradient-to-bl from-fuchsia-400/40 to-blue-500/15 text-fuchsia-100 shadow-lg py-2 px-4 text-lg rounded-full border-0">AI Powered</Badge>
-            <Badge className="bg-gradient-to-bl from-blue-300/10 to-fuchsia-300/10 text-blue-100 shadow-lg py-2 px-4 text-lg rounded-full border-0">Expert Approved</Badge>
           </div>
-          <div className="mt-12">
-            <Button className="cta-glow rounded-full px-10 py-4 text-xl font-bold tracking-tight">
-              Get Started – Free
-            </Button>
+          <div className="flex flex-wrap items-center justify-center gap-5 mb-10 animate-fade-in">
+            <Badge className="bg-blue-400/90 text-white font-bold px-7 py-2 rounded-full text-lg border-0 shadow-lg">ATS Proof</Badge>
+            <Badge className="bg-cyan-400/90 text-white font-bold px-7 py-2 rounded-full text-lg border-0 shadow-lg">AI Powered</Badge>
+            <Badge className="bg-blue-500/90 text-white font-bold px-7 py-2 rounded-full text-lg border-0 shadow-lg">Expert Approved</Badge>
+          </div>
+          <Button className="cta-glow rounded-full px-14 py-4 text-xl font-bold tracking-tight drop-shadow-lg">
+            Get Started Free
+          </Button>
+        </div>
+      </section>
+
+      {/* Blended Feature Section */}
+      <section className="section-futuristic max-w-7xl mx-auto py-16 px-4 md:px-12 my-10 shadow-xl border-none">
+        <h2 className="text-4xl md:text-5xl font-extrabold text-glow text-center pb-8 font-futuristic">Why ResumeAI?</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-7">
+          {/* --- Feature Card 1 --- */}
+          <div className="card-futuristic card-gradient-border px-8 pt-8 pb-12 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+            <div className="bg-gradient-to-br from-cyan-500 to-cyan-400 p-6 rounded-full shadow-xl mb-5">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#29e4ff"/><path d="M7 12h10M12 7v10" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>
+            </div>
+            <h3 className="text-2xl font-black text-cyan-900 mb-3 font-futuristic">ATS Optimization</h3>
+            <p className="text-blue-900/80 mb-8 px-6 font-light text-center">
+              Smart keyword matching, upfront ATS scoring, and beautiful formatting tips—stand out to both bots and humans.
+            </p>
+          </div>
+          {/* --- Feature Card 2 --- */}
+          <div className="card-futuristic card-gradient-border px-8 pt-8 pb-12 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+            <div className="bg-gradient-to-br from-violet-400 to-fuchsia-400 p-6 rounded-full shadow-xl mb-5">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#a671fd"/><path d="M9 9.5V15l6-3-6-3z" stroke="#fff" strokeWidth="2" strokeLinejoin="round"/></svg>
+            </div>
+            <h3 className="text-2xl font-black text-fuchsia-800 mb-3 font-futuristic">AI Analysis</h3>
+            <p className="text-blue-900/80 mb-8 px-6 font-light text-center">
+              GPT-powered feedback, actionable tips, and smart linguistic boosts. Visible, concise recommendations.
+            </p>
+          </div>
+          {/* --- Feature Card 3 --- */}
+          <div className="card-futuristic card-gradient-border px-8 pt-8 pb-12 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+            <div className="bg-gradient-to-br from-blue-400 to-cyan-500 p-6 rounded-full shadow-xl mb-5">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#46d9fc"/><path d="M8 16l4-8 4 8" stroke="#fff" strokeWidth="2" strokeLinejoin="round"/></svg>
+            </div>
+            <h3 className="text-2xl font-black text-blue-900 mb-3 font-futuristic">Smart Matching</h3>
+            <p className="text-blue-900/80 mb-8 px-6 font-light text-center">
+              Instantly compare your resume to any job description. Highlight your key strengths in a click.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* BLENDED FUTURISTIC FEATURE SECTION */}
-      <section className="section-future relative z-20 mb-20 py-14 px-4 md:px-12 max-w-7xl mx-auto flex flex-col gap-2">
-        <h2 className="text-4xl md:text-5xl font-extrabold text-glow text-center pb-8">Why ResumeAI?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          <Card className="card-glass card-gradient-border hover:scale-105 transition-transform duration-300">
-            <div className="flex items-center justify-center mt-8 mb-5">
-              <div className="bg-gradient-to-br from-cyan-500 to-fuchsia-400 p-5 rounded-full shadow-xl ring-4 ring-cyan-400/10">
-                <Target className="h-11 w-11 text-white" />
-              </div>
-            </div>
-            <h3 className="text-2xl font-black text-cyan-100 mb-3 text-center">ATS Optimization</h3>
-            <p className="text-indigo-100/80 mb-8 px-6 font-light text-center">
-              Intelligent keyword matching, upfront ATS scoring, and best-in-class formatting recommendations.
-            </p>
-          </Card>
-          <Card className="card-glass card-gradient-border hover:scale-105 transition-transform duration-300">
-            <div className="flex items-center justify-center mt-8 mb-5">
-              <div className="bg-gradient-to-br from-fuchsia-400 to-blue-600 p-5 rounded-full shadow-xl ring-4 ring-fuchsia-400/10">
-                <Bot className="h-11 w-11 text-white" />
-              </div>
-            </div>
-            <h3 className="text-2xl font-black text-fuchsia-100 mb-3 text-center">AI Analysis</h3>
-            <p className="text-indigo-100/80 mb-8 px-6 font-light text-center">
-              GPT-powered insights provide actionable improvement points, language upgrades, and high-level strategy.
-            </p>
-          </Card>
-          <Card className="card-glass card-gradient-border hover:scale-105 transition-transform duration-300">
-            <div className="flex items-center justify-center mt-8 mb-5">
-              <div className="bg-gradient-to-br from-blue-400 to-cyan-500 p-5 rounded-full shadow-xl ring-4 ring-blue-400/10">
-                <Sparkles className="h-11 w-11 text-white" />
-              </div>
-            </div>
-            <h3 className="text-2xl font-black text-blue-100 mb-3 text-center">Smart Matching</h3>
-            <p className="text-indigo-100/80 mb-8 px-6 font-light text-center">
-              Instantly compare your resume to job descriptions and highlight your most relevant strengths.
-            </p>
-          </Card>
-        </div>
-      </section>
       {/* Main Application Workflow */}
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-14">
         {/* Main Application Workflow */}

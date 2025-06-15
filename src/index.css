@@ -5,7 +5,7 @@
 
 @layer base {
   :root {
-    --background: 223 60% 98%;
+    --background: 222.5 68% 98%;
     --foreground: 220 48% 12%;
 
     --card: 0 0% 100%;
@@ -90,27 +90,33 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
-
-    background-image:
-      linear-gradient(135deg, #E0EAFC 0%, #CFDEF3 35%, #f7e8fc 100%),
-      url('/placeholder.svg'),
-      linear-gradient(90deg, #FBFCFF 45%, #F1F6FB 100%);
-    background-blend-mode: lighten, lighten, normal;
+    /* Apply a single, elegant light pastel gradient */
+    background: linear-gradient(125deg,
+      #e0ecfc 0%,
+      #f7f8fa 48%,
+      #ffe9f3 100%
+    );
     background-attachment: fixed;
     transition: background 0.4s;
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    min-height: 100vh;
   }
+  /* Card/Glass effect utility class */
   .card-glass {
-    @apply bg-white/70 shadow-fancy border border-blue-300/15 backdrop-blur-glass rounded-2xl;
+    @apply bg-white/75 shadow-fancy border border-blue-200/25 backdrop-blur-glass rounded-2xl;
+    /* Gentle backdrop blur for readable contrast */
+    box-shadow: 0 10px 40px 0 rgba(34, 197, 227, 0.06),
+                0 2px 8px 0 rgba(137,51,255,0.08);
+    border: 1.5px solid rgba(120, 144, 255, 0.13);
   }
   .cta-glow {
-    box-shadow: 0 2px 24px 0 #3b82f644, 0 1.5px 6px 0 #f472b633 !important;
+    box-shadow: 0 2px 24px 0 #a0e9f644, 0 1.5px 6px 0 #f6a3f633 !important;
     filter: saturate(1.06);
     transition: box-shadow 0.2s, background 0.14s;
   }
   .cta-glow:hover {
-    box-shadow: 0 2px 32px 0 #10b98166, 0 1.5px 8px 0 #9333ea44 !important;
+    box-shadow: 0 2px 32px 0 #67e8f966, 0 1.5px 8px 0 #e879f944 !important;
     filter: saturate(1.18) brightness(1.12);
-    background: linear-gradient(90deg, #38bdf8, #f472b6, #a78bfa) !important;
+    background: linear-gradient(90deg, #57e0f9, #fbb6ce, #c7d2fe) !important;
   }
 }

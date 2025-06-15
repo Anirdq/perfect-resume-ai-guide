@@ -20,11 +20,11 @@ export const SocialProof = () => (
       </div>
     </div>
     <div className="flex flex-col md:flex-row justify-center gap-4">
-      {/* Example logos, use generic placeholders or add your own */}
-      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Indeed_logo.png" className="h-7 grayscale opacity-80" alt="Indeed" />
-      <img src="https://upload.wikimedia.org/wikipedia/commons/8/85/LinkedIn_Logo.svg" className="h-7 grayscale opacity-80" alt="LinkedIn" />
-      <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Glassdoor_Logo_2014.png" className="h-7 grayscale opacity-80" alt="Glassdoor" />
-      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Monster.com_logo.svg" className="h-7 grayscale opacity-80" alt="Monster" />
+      {/* Example logos, styled to match HeroSection with no borders */}
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Indeed_logo.png" className="h-7 object-contain grayscale opacity-80 hover:opacity-100 transition-all" alt="Indeed" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/85/LinkedIn_Logo.svg" className="h-7 object-contain grayscale opacity-80 hover:opacity-100 transition-all" alt="LinkedIn" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Glassdoor_Logo_2014.png" className="h-7 object-contain grayscale opacity-80 hover:opacity-100 transition-all" alt="Glassdoor" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Monster.com_logo.svg" className="h-7 object-contain grayscale opacity-80 hover:opacity-100 transition-all" alt="Monster" />
     </div>
   </section>
 );

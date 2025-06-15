@@ -15,6 +15,7 @@ import { BrandLogo } from '@/components/BrandLogo';
 import { HeroSplit } from '@/components/HeroSplit';
 import { NeonOverlay } from '@/components/NeonOverlay';
 import { VerticalSection } from '@/components/VerticalSection';
+import { SplineHero } from "@/components/SplineHero";
 
 const Index = () => {
   const [resume, setResume] = useState('');
@@ -84,48 +85,40 @@ const Index = () => {
   };
 
   return (
-    <div className="relative min-h-screen font-orbitron bg-gradient-to-br from-blue-950 via-fuchsia-950 to-violet-900 text-white">
-      <NeonOverlay/>
-      {/* SPLIT HERO */}
-      <HeroSplit
-        title="PERFECT RESUME AI"
-        subtitle="Algorithmically optimized. Human-ready. Futuristic results."
-        visual={
-          <div className="relative flex flex-col items-center">
-            <div className="w-60 h-60 bg-gradient-to-tr from-cyan-400 via-fuchsia-400 to-blue-400 rounded-full animate-[pulse_4s_ease-in-out_infinite] shadow-2xl opacity-85"></div>
-            <div className="absolute bottom-[-25px] text-center mix-blend-lighten filter blur-[1px] font-sora text-fuchsia-100/80 text-xl rotate-[-6deg] px-2">AI-Optimized</div>
-          </div>
-        }
-      >
-        <Button className="cta-glow px-10 py-4 rounded-full text-lg shadow mt-6">Get Started Free</Button>
-      </HeroSplit>
+    <div className="relative min-h-screen font-orbitron bg-gradient-to-br from-[#151324] via-[#2a0d3c] to-[#1bc8f2] text-white">
+      {/* Spline-like Hero */}
+      <SplineHero />
 
       <VerticalSection label="Why">
-        <div className="flex flex-col md:flex-row gap-9">
+        <div className="flex flex-col md:flex-row gap-10">
           <div className="flex-1">
             <h2 className="text-3xl md:text-4xl font-extrabold text-cyan-300 font-orbitron mb-3">Why use Perfect Resume AI?</h2>
             <ul className="list-disc ml-6 text-base md:text-lg space-y-3 text-cyan-100/90 font-sora">
-              <li>Next-gen ATS optimization, not just keywords.</li>
-              <li>Unique, AI-personalized resume text for every job.</li>
-              <li>Visual editing with instant AI feedback.</li>
-              <li>Export beautiful, professional layouts.</li>
+              <li>AI-driven &amp; future-proof resume optimization.</li>
+              <li>Unique, personalized content for every position.</li>
+              <li>Instant visual feedback and editing.</li>
+              <li>Export professional, standout designs.</li>
             </ul>
           </div>
           <div className="flex-1 flex justify-center items-center">
-            <div className="rounded-xl shadow-2xl bg-gradient-to-br from-cyan-400/40 to-fuchsia-400/40 w-[290px] h-[270px] blur-[1.5px] scale-90" />
+            <div className="relative w-[290px] h-[240px] flex items-center justify-center">
+              <span className="absolute w-[170px] h-[170px] rounded-full bg-gradient-to-br from-cyan-400/40 to-fuchsia-500/10 blur-3xl animate-float-xy" />
+              <div className="rounded-3xl shadow-xl glassy-bg-1 border-cyan-200/10 border-[2.5px] w-64 h-52 flex items-center justify-center">
+                <span className="text-xl text-cyan-200 font-semibold">🚀 Stand out faster</span>
+              </div>
+            </div>
           </div>
         </div>
       </VerticalSection>
 
       <VerticalSection label="How">
-        {/* keep main workflow, just style */}
         <div className="mt-4">
           <section id="how-it-works" className="mb-20">
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-10 place-items-stretch">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 place-items-stretch">
               {/* Inputs */}
               <div className="flex flex-col gap-10">
                 <ApiKeyInput onApiKeySet={handleApiKeySet} hasApiKey={!!apiKey} />
-                <Card className="rounded-3xl bg-black/60 backdrop-blur-2xl border-0 shadow-2xl shadow-cyan-400/10 p-0 group">
+                <Card className="rounded-3xl glassy-bg-2 border-0 shadow-2xl shadow-cyan-400/10 p-0 group">
                   <CardHeader className="flex flex-row items-center px-8 pt-8 pb-4 gap-5 border-0">
                     <BrandLogo size={24} />
                     <span className="text-lg font-bold text-cyan-300 tracking-tight">1. Upload Your Resume</span>

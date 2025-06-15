@@ -54,17 +54,18 @@ export const SocialProof = () => (
         <span className="text-gray-700 font-semibold text-base">Trusted by job seekers worldwide</span>
       </div>
     </div>
-    <div className="flex flex-col md:flex-row justify-center gap-4">
+    <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8 w-full max-w-2xl">
       {socialProofLogos.map(({ src, alt }) => (
-        <img
-          key={alt}
-          src={getWikimediaFilePath(src)}
-          alt={alt}
-          className="h-7 object-contain grayscale opacity-80 hover:opacity-100 transition-all"
-          style={{ background: "transparent" }}
-          loading="lazy"
-          draggable={false}
-        />
+        <div key={alt} className="flex items-center justify-center h-8 w-24">
+          <img
+            src={getWikimediaFilePath(src)}
+            alt={alt}
+            className="max-h-7 max-w-full object-contain grayscale opacity-80 hover:opacity-100 transition-all"
+            style={{ background: "transparent" }}
+            loading="lazy"
+            draggable={false}
+          />
+        </div>
       ))}
     </div>
   </section>

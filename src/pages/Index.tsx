@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { FileUpload } from '@/components/FileUpload';
 import { EditableResume } from '@/components/EditableResume';
 import { ExportOptions } from '@/components/ExportOptions';
-import { ProviderAgnosticAIResumeService } from "@/services/providerAgnosticAIResumeService";
+import { ProviderAgnosticAIResumeService } from "@/services/providerAgnosticAIService";
 
 const Index = () => {
   const [resume, setResume] = useState('');

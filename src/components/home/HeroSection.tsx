@@ -2,17 +2,45 @@
 import { Zap, Check, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import React from "react";
+
+const companyLogos = [
+  { src: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Indeed_logo.png", alt: "Indeed" },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/8/85/LinkedIn_Logo.svg", alt: "LinkedIn" },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/7/75/Glassdoor_Logo_2014.png", alt: "Glassdoor" },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Monster.com_logo.svg", alt: "Monster" },
+];
+
+// Simple fallback component for broken images
+const LogoImage = ({ src, alt }: { src: string; alt: string }) => {
+  const [imgError, setImgError] = React.useState(false);
+
+  if (imgError) {
+    return (
+      <div
+        className="flex items-center justify-center h-9 w-[100px] bg-gray-100 text-gray-400 text-xs rounded border border-gray-300"
+        style={{ minWidth: 80 }}
+        aria-label={alt + " logo not available"}
+      >
+        Not available
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className="h-7 md:h-9 object-contain rounded bg-white transition-all grayscale opacity-80 hover:opacity-100 border border-gray-300"
+      style={{ minWidth: 80, maxWidth: 120, background: "#fff" }}
+      loading="lazy"
+      onError={() => setImgError(true)}
+    />
+  );
+};
 
 export const HeroSection = () => {
   const navigate = useNavigate();
-
-  // Company logos (improved layout & responsiveness)
-  const companyLogos = [
-    { src: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Indeed_logo.png", alt: "Indeed" },
-    { src: "https://upload.wikimedia.org/wikipedia/commons/8/85/LinkedIn_Logo.svg", alt: "LinkedIn" },
-    { src: "https://upload.wikimedia.org/wikipedia/commons/7/75/Glassdoor_Logo_2014.png", alt: "Glassdoor" },
-    { src: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Monster.com_logo.svg", alt: "Monster" },
-  ];
 
   return (
     <section className="relative flex flex-col items-center w-full px-4 pt-20 md:pt-32 pb-16 overflow-hidden bg-white/70 animate-fade-in">
@@ -33,21 +61,14 @@ export const HeroSection = () => {
       >
         Upload Resume
       </Button>
-      {/* Company logos — responsive carousel/grid */}
+      {/* Company logos — responsive row/grid */}
       <div className="w-full max-w-2xl mx-auto flex flex-col items-center mt-8 mb-3">
         <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 font-semibold mb-2">
           Trusted by job seekers from companies like
         </span>
         <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 w-full">
           {companyLogos.map(({ src, alt }) => (
-            <img
-              key={alt}
-              src={src}
-              alt={alt}
-              className="h-7 md:h-9 object-contain grayscale opacity-80 transition hover:opacity-100 bg-white rounded px-2"
-              style={{ maxWidth: 120 }}
-              loading="lazy"
-            />
+            <LogoImage key={alt} src={src} alt={alt} />
           ))}
         </div>
       </div>

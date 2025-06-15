@@ -11,7 +11,6 @@ import { FileUpload } from '@/components/FileUpload';
 import { EditableResume } from '@/components/EditableResume';
 import { ExportOptions } from '@/components/ExportOptions';
 import { ProviderAgnosticAIResumeService } from "@/services/providerAgnosticAIService";
-
 const Index = () => {
   const [resume, setResume] = useState('');
   const [jobDescription, setJobDescription] = useState('');
@@ -20,27 +19,20 @@ const Index = () => {
   const [optimizedResume, setOptimizedResume] = useState('');
   const [showComparison, setShowComparison] = useState(false);
   const [aiService] = useState(() => new ProviderAgnosticAIResumeService());
-
   const handleFileUpload = useCallback((text: string) => {
     console.log('Index component received file upload text:', text.substring(0, 100) + '...');
     console.log('Setting resume state to:', text.length, 'characters');
     setResume(text);
   }, []);
-
   const handleResumeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newResume = e.target.value;
     console.log('Manual resume change:', newResume.length, 'characters');
     setResume(newResume);
   };
-
   const analyzeWithAI = async () => {
     setIsAnalyzing(true);
-
     try {
-      const [analysisResult, optimizedResumeResult] = await Promise.all([
-        aiService.analyzeResume(resume, jobDescription),
-        aiService.optimizeResume(resume, jobDescription)
-      ]);
+      const [analysisResult, optimizedResumeResult] = await Promise.all([aiService.analyzeResume(resume, jobDescription), aiService.optimizeResume(resume, jobDescription)]);
       setAnalysis(analysisResult);
       setOptimizedResume(optimizedResumeResult);
       toast.success('AI analysis completed successfully!');
@@ -51,29 +43,16 @@ const Index = () => {
       setIsAnalyzing(false);
     }
   };
-
   const handleOptimizedResumeSave = (newResume: string) => {
     setOptimizedResume(newResume);
     toast.success('Resume changes saved!');
   };
-
-  return (
-    <div className="min-h-screen bg-gray-50">
+  return <div className="min-h-screen bg-gray-50">
       <GlassNavbar />
       <header className="bg-white border-b border-gray-200 sticky top-0 z-40 pt-24">
         {/* Navigation is now in GlassNavbar, keep header content minimal */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="bg-blue-600 p-2 rounded-lg">
-                <Brain className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">ResumeAI</h1>
-                <p className="text-xs text-gray-500">Professional Resume Optimization</p>
-              </div>
-            </div>
-          </div>
+          
         </div>
       </header>
       <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
@@ -211,12 +190,7 @@ const Index = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Textarea
-                    placeholder="Paste your current resume text here or upload a file above..."
-                    value={resume}
-                    onChange={handleResumeChange}
-                    className="min-h-[200px] resize-none"
-                  />
+                  <Textarea placeholder="Paste your current resume text here or upload a file above..." value={resume} onChange={handleResumeChange} className="min-h-[200px] resize-none" />
                 </CardContent>
               </Card>
 
@@ -230,38 +204,23 @@ const Index = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Textarea
-                    placeholder="Paste the job description you're applying for..."
-                    value={jobDescription}
-                    onChange={(e) => setJobDescription(e.target.value)}
-                    className="min-h-[200px] resize-none"
-                  />
+                  <Textarea placeholder="Paste the job description you're applying for..." value={jobDescription} onChange={e => setJobDescription(e.target.value)} className="min-h-[200px] resize-none" />
                 </CardContent>
               </Card>
 
-              <Button 
-                onClick={analyzeWithAI}
-                disabled={!resume || !jobDescription || isAnalyzing}
-                size="lg"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg font-semibold"
-              >
-                {isAnalyzing ? (
-                  <>
+              <Button onClick={analyzeWithAI} disabled={!resume || !jobDescription || isAnalyzing} size="lg" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg font-semibold">
+                {isAnalyzing ? <>
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
                     Analyzing Your Resume...
-                  </>
-                ) : (
-                  <>
+                  </> : <>
                     <Sparkles className="h-5 w-5 mr-3" />
                     Optimize My Resume
-                  </>
-                )}
+                  </>}
               </Button>
             </div>
 
             <div className="space-y-8">
-              {analysis ? (
-                <>
+              {analysis ? <>
                   <Card className="shadow-sm border-0">
                     <CardHeader>
                       <CardTitle className="flex items-center justify-between">
@@ -276,14 +235,7 @@ const Index = () => {
                             </p>
                           </div>
                         </div>
-                        <Badge 
-                          variant={analysis.atsScore >= 70 ? "default" : "destructive"} 
-                          className={`text-2xl px-4 py-2 font-bold ${
-                            analysis.atsScore >= 70 
-                              ? 'bg-green-600 hover:bg-green-700' 
-                              : 'bg-red-600 hover:bg-red-700'
-                          }`}
-                        >
+                        <Badge variant={analysis.atsScore >= 70 ? "default" : "destructive"} className={`text-2xl px-4 py-2 font-bold ${analysis.atsScore >= 70 ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}>
                           {analysis.atsScore}%
                         </Badge>
                       </CardTitle>
@@ -291,9 +243,7 @@ const Index = () => {
                     <CardContent className="space-y-4">
                       <Progress value={analysis.atsScore} className="h-3" />
                       <p className="text-gray-600">
-                        {analysis.atsScore >= 80 ? '🎉 Excellent! Your resume is well-optimized for ATS systems.' :
-                         analysis.atsScore >= 70 ? '👍 Good score! Some improvements can boost your chances further.' :
-                         '⚠️ Needs improvement. Follow the AI suggestions below to optimize.'}
+                        {analysis.atsScore >= 80 ? '🎉 Excellent! Your resume is well-optimized for ATS systems.' : analysis.atsScore >= 70 ? '👍 Good score! Some improvements can boost your chances further.' : '⚠️ Needs improvement. Follow the AI suggestions below to optimize.'}
                       </p>
                     </CardContent>
                   </Card>
@@ -309,24 +259,15 @@ const Index = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
-                        {analysis.keywordMatches.map((keyword, index) => (
-                          <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        {analysis.keywordMatches.map((keyword, index) => <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <span className="font-medium text-gray-900">{keyword.keyword}</span>
                             <div className="flex items-center space-x-3">
-                              <Badge 
-                                variant={keyword.importance === 'high' ? 'destructive' : keyword.importance === 'medium' ? 'default' : 'secondary'}
-                                className="text-xs"
-                              >
+                              <Badge variant={keyword.importance === 'high' ? 'destructive' : keyword.importance === 'medium' ? 'default' : 'secondary'} className="text-xs">
                                 {keyword.importance}
                               </Badge>
-                              {keyword.found ? (
-                                <CheckCircle className="h-5 w-5 text-green-500" />
-                              ) : (
-                                <div className="h-5 w-5 rounded-full border-2 border-red-400"></div>
-                              )}
+                              {keyword.found ? <CheckCircle className="h-5 w-5 text-green-500" /> : <div className="h-5 w-5 rounded-full border-2 border-red-400"></div>}
                             </div>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </CardContent>
                   </Card>
@@ -342,27 +283,21 @@ const Index = () => {
                     </CardHeader>
                     <CardContent>
                       <ul className="space-y-3">
-                        {analysis.suggestions.map((suggestion, index) => (
-                          <li key={index} className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+                        {analysis.suggestions.map((suggestion, index) => <li key={index} className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
                             <div className="bg-blue-600 rounded-full p-1 mt-1">
                               <div className="h-2 w-2 bg-white rounded-full"></div>
                             </div>
                             <span className="text-gray-700">{suggestion}</span>
-                          </li>
-                        ))}
+                          </li>)}
                       </ul>
                     </CardContent>
                   </Card>
 
-                  <EditableResume 
-                    initialResume={optimizedResume}
-                    onSave={handleOptimizedResumeSave}
-                  />
+                  <EditableResume initialResume={optimizedResume} onSave={handleOptimizedResumeSave} />
 
                   <ExportOptions resumeText={optimizedResume} />
 
-                  {showComparison && (
-                    <Card className="shadow-sm border-0">
+                  {showComparison && <Card className="shadow-sm border-0">
                       <CardHeader>
                         <CardTitle className="flex items-center space-x-3">
                           <div className="bg-purple-600 p-2 rounded-lg">
@@ -397,11 +332,8 @@ const Index = () => {
                           </div>
                         </div>
                       </CardContent>
-                    </Card>
-                  )}
-                </>
-              ) : (
-                <Card className="shadow-sm border-0">
+                    </Card>}
+                </> : <Card className="shadow-sm border-0">
                   <CardContent className="flex flex-col items-center justify-center py-24 text-center">
                     <div className="bg-gray-100 p-8 rounded-full mb-6">
                       <Brain className="h-12 w-12 text-gray-400" />
@@ -411,8 +343,7 @@ const Index = () => {
                       Set up your OpenAI API key, upload your resume, and add the job description to get started with AI-powered optimization.
                     </p>
                   </CardContent>
-                </Card>
-              )}
+                </Card>}
             </div>
           </div>
         </section>
@@ -436,7 +367,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
 export default Index;

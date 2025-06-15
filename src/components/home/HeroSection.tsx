@@ -4,17 +4,28 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 
-// Only include working MNC brand logos
+// Underrated MNCs with verified transparent SVG logos
 const companyLogos = [
-  // Tech giants (these SVGs should reliably load)
-  { src: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", alt: "Google" },
-  { src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg", alt: "Microsoft" },
-  { src: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", alt: "Amazon" },
-  { src: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", alt: "Apple" },
-  // Consulting & Indian MNCs
-  { src: "https://upload.wikimedia.org/wikipedia/commons/5/51/Accenture_Logo.svg", alt: "Accenture" },
-  { src: "https://upload.wikimedia.org/wikipedia/commons/2/2a/Deloitte.svg", alt: "Deloitte" },
-  { src: "https://upload.wikimedia.org/wikipedia/commons/8/8c/Infosys_logo.svg", alt: "Infosys" },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/6/68/Capgemini_201x_logo.svg",
+    alt: "Capgemini"
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Siemens_logo.svg",
+    alt: "Siemens"
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Bosch-logo.svg",
+    alt: "Bosch"
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/b/bf/Wipro_Primary_Logo_Color_RGB.svg",
+    alt: "Wipro"
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/7/77/Philips_logo.svg",
+    alt: "Philips"
+  },
 ];
 
 const LogoImage = ({ src, alt }: { src: string; alt: string }) => {
@@ -29,8 +40,8 @@ const LogoImage = ({ src, alt }: { src: string; alt: string }) => {
     <img
       src={src}
       alt={alt}
-      className="h-7 md:h-9 object-contain rounded bg-white transition-all grayscale opacity-80 hover:opacity-100 border border-gray-300"
-      style={{ minWidth: 80, maxWidth: 120, background: "#fff" }}
+      className="h-7 md:h-9 object-contain rounded transition-all grayscale opacity-80 hover:opacity-100 border border-gray-300"
+      style={{ minWidth: 80, maxWidth: 120, background: "transparent" }}
       loading="lazy"
       onError={() => setImgError(true)}
     />
@@ -79,4 +90,3 @@ export const HeroSection = () => {
     </section>
   );
 };
-

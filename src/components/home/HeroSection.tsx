@@ -1,4 +1,3 @@
-
 import { Zap, Check, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -32,17 +31,9 @@ const LogoImage = ({ src, alt }: { src: string; alt: string }) => {
   const [imgError, setImgError] = React.useState(false);
 
   if (imgError) {
-    // Log error and render a fallback
+    // Log error and render nothing if logo fails to load
     console.log("Failed to load logo:", alt, src);
-    return (
-      <div
-        className="flex items-center justify-center h-7 md:h-9 w-[80px] bg-gray-100 border border-gray-300 rounded text-gray-400 text-xs"
-        style={{ minWidth: 80, maxWidth: 120 }}
-        title={`${alt} logo unavailable`}
-      >
-        {alt}
-      </div>
-    );
+    return null;
   }
 
   return (

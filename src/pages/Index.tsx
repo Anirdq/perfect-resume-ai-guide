@@ -4,19 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { FileText, Target, CheckCircle, TrendingUp, Zap, Star, ArrowLeftRight, Brain, Sparkles, Bot, Users, Shield, Rocket, Menu, Loader2 } from 'lucide-react';
+import { FileText, Target, CheckCircle, TrendingUp, Zap, Star, ArrowLeftRight, Brain, Sparkles, Bot, Users, Shield, Rocket, Menu } from 'lucide-react';
 import { toast } from 'sonner';
 import { FileUpload } from '@/components/FileUpload';
 import { EditableResume } from '@/components/EditableResume';
 import { ExportOptions } from '@/components/ExportOptions';
 import { AIResumeService } from '@/services/aiResumeService';
 import { ApiKeyInput } from '@/components/ApiKeyInput';
-import { BrandLogo } from '@/components/BrandLogo';
-import { HeroSplit } from '@/components/HeroSplit';
-import { NeonOverlay } from '@/components/NeonOverlay';
-import { VerticalSection } from '@/components/VerticalSection';
-import { SplineHero } from "@/components/SplineHero";
-import { Navbar } from "@/components/Navbar";
 
 const Index = () => {
   const [resume, setResume] = useState('');
@@ -86,257 +80,386 @@ const Index = () => {
   };
 
   return (
-    <div className="relative min-h-screen font-orbitron bg-gradient-to-br from-[#f7fafc] via-[#f3f5fd] to-[#e1eeff] text-slate-900">
-      {/* Spline-inspired floating glassy nav */}
-      <Navbar />
-
-      {/* Updated Hero */}
-      <section className="relative flex flex-col items-center justify-center min-h-[70vh] pb-8 w-full overflow-hidden bg-transparent">
-        <div className="pointer-events-none absolute w-[680px] h-[330px] -top-32 left-1/2 -translate-x-1/2 bg-gradient-to-br from-cyan-400/20 via-fuchsia-300/35 to-blue-200/10 blur-[60px] rounded-full z-0" />
-        <div className="relative z-10 flex flex-col items-center text-center pt-32 pb-20 px-6">
-          <span className="inline-block bg-gradient-to-r from-cyan-500 via-fuchsia-400 to-blue-400 bg-clip-text text-transparent font-orbitron text-2xl mb-3 tracking-wide drop-shadow-sm">Smarter Resume SaaS</span>
-          <h1 className="text-[2.5rem] md:text-5xl lg:text-6xl font-extrabold font-orbitron mb-5 bg-gradient-to-r from-cyan-600 via-fuchsia-600 to-blue-700 bg-clip-text text-transparent drop-shadow-xl">
-            Design & Optimize Resumes <br className="hidden md:block"/>with Futuristic AI
-          </h1>
-          <p className="text-lg md:text-xl text-cyan-700/90 font-sora mb-10 max-w-2xl drop-shadow">
-            Beautiful, instant, AI-powered resumes. <span className="font-semibold text-fuchsia-700/80">Level up your job hunt with SaaS-class design and analysis.</span>
-          </p>
-          <Button className="px-9 py-4 rounded-full text-lg font-bold shadow-lg shadow-cyan-500/20 hover:scale-[1.04] bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-blue-500 text-white transition">Get Started Free</Button>
-        </div>
-        <div className="absolute left-1/2 top-3/4 w-[94vw] max-w-4xl h-44 md:h-56 bg-white/30 backdrop-blur-[16px] rounded-[2.7rem] border border-cyan-300/15 shadow-xl opacity-95 -translate-x-1/2 pointer-events-none z-0"></div>
-      </section>
-      {/* Bump spacing because of navbar */}
-      <div className="mt-[78px]" />
-
-      {/* Main content sections with "SaaS" look */}
-      <VerticalSection label="Why" className="bg-white/90 border-0 shadow-lg !my-24">
-        <div className="flex flex-col md:flex-row gap-10">
-          <div className="flex-1">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-cyan-300 font-orbitron mb-3">Why use Perfect Resume AI?</h2>
-            <ul className="list-disc ml-6 text-base md:text-lg space-y-3 text-cyan-100/90 font-sora">
-              <li>AI-driven &amp; future-proof resume optimization.</li>
-              <li>Unique, personalized content for every position.</li>
-              <li>Instant visual feedback and editing.</li>
-              <li>Export professional, standout designs.</li>
-            </ul>
-          </div>
-          <div className="flex-1 flex justify-center items-center">
-            <div className="relative w-[290px] h-[240px] flex items-center justify-center">
-              <span className="absolute w-[170px] h-[170px] rounded-full bg-gradient-to-br from-cyan-400/40 to-fuchsia-500/10 blur-3xl animate-float-xy" />
-              <div className="rounded-3xl shadow-xl glassy-bg-1 border-cyan-200/10 border-[2.5px] w-64 h-52 flex items-center justify-center">
-                <span className="text-xl text-cyan-200 font-semibold">🚀 Stand out faster</span>
+    <div className="min-h-screen bg-gray-50">
+      {/* Professional Header/Navigation */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <div className="bg-blue-600 p-2 rounded-lg">
+                <Brain className="h-6 w-6 text-white" />
               </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">ResumeAI</h1>
+                <p className="text-xs text-gray-500">Professional Resume Optimization</p>
+              </div>
+            </div>
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-gray-600 hover:text-gray-900 text-sm font-medium">Features</a>
+              <a href="#how-it-works" className="text-gray-600 hover:text-gray-900 text-sm font-medium">How it Works</a>
+              <a href="#pricing" className="text-gray-600 hover:text-gray-900 text-sm font-medium">Pricing</a>
+              {analysis && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowComparison(!showComparison)}
+                  className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                >
+                  <ArrowLeftRight className="h-4 w-4 mr-2" />
+                  {showComparison ? 'Hide' : 'Show'} Comparison
+                </Button>
+              )}
+            </nav>
+            <Button variant="ghost" size="sm" className="md:hidden">
+              <Menu className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="max-w-3xl mx-auto">
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+              Optimize Your Resume with
+              <span className="text-blue-600"> AI Technology</span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              Beat ATS systems and land your dream job with our AI-powered resume optimization platform. 
+              Get professional insights and personalized improvements in minutes.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+              <Badge className="bg-blue-100 text-blue-800 px-4 py-2 text-sm font-semibold">
+                <Shield className="h-4 w-4 mr-2" />
+                ATS Optimized
+              </Badge>
+              <Badge className="bg-green-100 text-green-800 px-4 py-2 text-sm font-semibold">
+                <Zap className="h-4 w-4 mr-2" />
+                AI Powered
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 px-4 py-2 text-sm font-semibold">
+                <Users className="h-4 w-4 mr-2" />
+                Expert Approved
+              </Badge>
             </div>
           </div>
         </div>
-      </VerticalSection>
-      <VerticalSection label="How" className="bg-white/95 border-0 shadow-lg !my-24">
-        <div className="mt-4">
-          <section id="how-it-works" className="mb-20">
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 place-items-stretch">
-              {/* Inputs */}
-              <div className="flex flex-col gap-10">
-                <ApiKeyInput onApiKeySet={handleApiKeySet} hasApiKey={!!apiKey} />
-                <Card className="rounded-3xl glassy-bg-2 border-0 shadow-2xl shadow-cyan-400/10 p-0 group">
-                  <CardHeader className="flex flex-row items-center px-8 pt-8 pb-4 gap-5 border-0">
-                    <BrandLogo size={24} />
-                    <span className="text-lg font-bold text-cyan-300 tracking-tight">1. Upload Your Resume</span>
-                  </CardHeader>
-                  <CardContent className="px-8 pb-8">
-                    <FileUpload onFileUpload={handleFileUpload}/>
-                  </CardContent>
-                </Card>
-                <Card className="rounded-2xl bg-black/50 border-0 shadow-xl shadow-fuchsia-400/10 p-0">
-                  <CardHeader className="flex flex-row items-center gap-4 px-8 pt-8 pb-4">
-                    <FileText className="h-6 w-6 text-cyan-400" />
-                    <div>
-                      <span className="font-bold text-cyan-200 text-lg">Your Resume</span>
-                      <p className="text-gray-500 text-xs font-normal mt-1">{resume.length} characters</p>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="px-8 pb-8">
-                    <Textarea
-                      placeholder="Paste your current resume text here or upload above..."
-                      value={resume}
-                      onChange={handleResumeChange}
-                      className="min-h-[180px] bg-zinc-900/40 border-cyan-800/30 text-zinc-100 rounded-xl shadow-inner"
-                    />
-                  </CardContent>
-                </Card>
-                <Card className="rounded-2xl bg-black/50 border-0 shadow-xl shadow-blue-400/10 p-0">
-                  <CardHeader className="flex flex-row items-center gap-4 px-8 pt-8 pb-4">
-                    <Target className="h-6 w-6 text-green-400" />
-                    <span className="font-bold text-green-200 text-lg">Job Description</span>
-                  </CardHeader>
-                  <CardContent className="px-8 pb-8">
-                    <Textarea
-                      placeholder="Paste the job description you're applying for..."
-                      value={jobDescription}
-                      onChange={(e) => setJobDescription(e.target.value)}
-                      className="min-h-[180px] bg-zinc-900/40 border-emerald-800/30 text-zinc-100 rounded-xl shadow-inner"
-                    />
-                  </CardContent>
-                </Card>
-                <Button
-                  onClick={analyzeWithAI}
-                  disabled={!resume || !jobDescription || isAnalyzing || !apiKey}
-                  size="lg"
-                  className="w-full bg-gradient-to-r from-cyan-500 via-fuchsia-500 to-blue-700 hover:scale-[1.04] hover:shadow-lg font-bold text-lg text-white py-5 rounded-2xl shadow-lg shadow-fuchsia-400/20 mt-3 group transition-all"
-                >
-                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gradient-to-r from-white/0 via-white/40 to-white/0 animate-pulse blur-sm opacity-30 group-hover:opacity-60 pointer-events-none"></span>
-                  {isAnalyzing ? (
-                    <>
-                      <Loader2 className="h-6 w-6 mr-3 animate-spin" />
-                      Analyzing with AI...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-6 w-6 mr-3" />
-                      Optimize My Resume!
-                    </>
-                  )}
-                </Button>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Features Section */}
+        <section id="features" className="mb-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose ResumeAI?</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Our advanced AI technology analyzes your resume against job requirements and provides actionable insights.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="p-8 hover:shadow-lg transition-shadow border-0 shadow-sm">
+              <div className="text-center">
+                <div className="bg-blue-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Target className="h-8 w-8 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">ATS Optimization</h3>
+                <p className="text-gray-600">
+                  Ensure your resume passes through Applicant Tracking Systems with intelligent keyword optimization.
+                </p>
               </div>
-              {/* Results */}
-              <div className="flex flex-col gap-10">
-                {analysis ? (
+            </Card>
+            <Card className="p-8 hover:shadow-lg transition-shadow border-0 shadow-sm">
+              <div className="text-center">
+                <div className="bg-green-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Bot className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">AI Analysis</h3>
+                <p className="text-gray-600">
+                  Get detailed insights powered by advanced AI that understands recruitment best practices.
+                </p>
+              </div>
+            </Card>
+            <Card className="p-8 hover:shadow-lg transition-shadow border-0 shadow-sm">
+              <div className="text-center">
+                <div className="bg-purple-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Sparkles className="h-8 w-8 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">Smart Matching</h3>
+                <p className="text-gray-600">
+                  Match your skills and experience with job requirements for maximum impact.
+                </p>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        {/* Main Application Section */}
+        <section id="how-it-works" className="mb-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Get Started in 3 Simple Steps</h2>
+            <p className="text-lg text-gray-600">
+              Upload your resume, add the job description, and let our AI do the magic.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
+            {/* Input Section */}
+            <div className="space-y-8">
+              <ApiKeyInput onApiKeySet={handleApiKeySet} hasApiKey={!!apiKey} />
+              
+              <Card className="shadow-sm border-0">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-3">
+                    <div className="bg-blue-600 p-2 rounded-lg">
+                      <span className="text-white font-bold text-sm">1</span>
+                    </div>
+                    <span>Upload Your Resume</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <FileUpload onFileUpload={handleFileUpload} />
+                </CardContent>
+              </Card>
+              
+              <Card className="shadow-sm border-0">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-3">
+                    <div className="bg-blue-600 p-2 rounded-lg">
+                      <FileText className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <span>Your Resume</span>
+                      <p className="text-sm text-gray-500 font-normal mt-1">
+                        {resume.length} characters
+                      </p>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Textarea
+                    placeholder="Paste your current resume text here or upload a file above..."
+                    value={resume}
+                    onChange={handleResumeChange}
+                    className="min-h-[200px] resize-none"
+                  />
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-sm border-0">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-3">
+                    <div className="bg-green-600 p-2 rounded-lg">
+                      <span className="text-white font-bold text-sm">2</span>
+                    </div>
+                    <span>Job Description</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Textarea
+                    placeholder="Paste the job description you're applying for..."
+                    value={jobDescription}
+                    onChange={(e) => setJobDescription(e.target.value)}
+                    className="min-h-[200px] resize-none"
+                  />
+                </CardContent>
+              </Card>
+
+              <Button 
+                onClick={analyzeWithAI}
+                disabled={!resume || !jobDescription || isAnalyzing || !apiKey}
+                size="lg"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg font-semibold"
+              >
+                {isAnalyzing ? (
                   <>
-                    {/* ATS Score */}
-                    <Card className="rounded-2xl bg-black/50 border-0 shadow-xl shadow-cyan-300/10">
-                      <CardHeader className="flex flex-row justify-between items-center px-8 pt-8 pb-4">
-                        <span className="flex gap-4 items-center text-white">
-                          <CheckCircle className="h-6 w-6 text-green-400" />
-                          <span className="font-bold text-green-300 text-lg">ATS Compatibility</span>
-                        </span>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                    Analyzing Your Resume...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-5 w-5 mr-3" />
+                    Optimize My Resume
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {/* Results Section */}
+            <div className="space-y-8">
+              {analysis ? (
+                <>
+                  <Card className="shadow-sm border-0">
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className="bg-green-600 p-2 rounded-lg">
+                            <CheckCircle className="h-5 w-5 text-white" />
+                          </div>
+                          <div>
+                            <span>ATS Compatibility Score</span>
+                            <p className="text-sm text-gray-500 font-normal mt-1">
+                              AI-powered analysis
+                            </p>
+                          </div>
+                        </div>
                         <Badge 
                           variant={analysis.atsScore >= 70 ? "default" : "destructive"} 
-                          className={`text-xl px-6 py-2 font-bold rounded-xl ${
-                            analysis.atsScore >= 70
-                              ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white'
-                              : 'bg-gradient-to-r from-red-500 to-pink-600 text-white'
+                          className={`text-2xl px-4 py-2 font-bold ${
+                            analysis.atsScore >= 70 
+                              ? 'bg-green-600 hover:bg-green-700' 
+                              : 'bg-red-600 hover:bg-red-700'
                           }`}
                         >
                           {analysis.atsScore}%
                         </Badge>
-                      </CardHeader>
-                      <CardContent className="space-y-2 px-8 pb-8">
-                        <Progress value={analysis.atsScore} className="h-3" />
-                        <p className="text-gray-300 mt-2">
-                          {analysis.atsScore >= 80 ? '🎉 Excellent! Your resume is well-optimized for ATS.' :
-                            analysis.atsScore >= 70 ? '👍 Good! A few tweaks can get you to the top.' :
-                            '⚠️ Needs improvement. Apply the tips below to stand out.'}
-                        </p>
-                      </CardContent>
-                    </Card>
-                    {/* Keyword Analysis */}
-                    <Card className="rounded-2xl bg-black/40 border-0 shadow shadow-green-400/10">
-                      <CardHeader className="flex flex-row items-center gap-3 px-8 pt-8 pb-4">
-                        <Star className="h-6 w-6 text-yellow-300" />
-                        <span className="font-bold text-yellow-200 text-lg">Keyword Fit</span>
-                      </CardHeader>
-                      <CardContent className="space-y-2 px-8 pb-8">
-                        <div className="space-y-2">
-                          {analysis.keywordMatches.map((keyword, idx) => (
-                            <div key={idx} className="flex justify-between items-center bg-black/40 px-4 py-2 rounded shadow-inner font-medium text-gray-200">
-                              <span>{keyword.keyword}</span>
-                              <span className="flex gap-2 items-center">
-                                <Badge variant={
-                                  keyword.importance === 'high'
-                                    ? 'destructive'
-                                    : keyword.importance === 'medium'
-                                      ? 'default'
-                                      : 'secondary'
-                                  }
-                                  className="text-xs"
-                                >
-                                  {keyword.importance}
-                                </Badge>
-                                {keyword.found
-                                  ? <CheckCircle className="w-5 h-5 text-green-400" />
-                                  : <div className="h-5 w-5 rounded-full border-2 border-red-400"></div>
-                                }
-                              </span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <Progress value={analysis.atsScore} className="h-3" />
+                      <p className="text-gray-600">
+                        {analysis.atsScore >= 80 ? '🎉 Excellent! Your resume is well-optimized for ATS systems.' :
+                         analysis.atsScore >= 70 ? '👍 Good score! Some improvements can boost your chances further.' :
+                         '⚠️ Needs improvement. Follow the AI suggestions below to optimize.'}
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="shadow-sm border-0">
+                    <CardHeader>
+                      <CardTitle className="flex items-center space-x-3">
+                        <div className="bg-yellow-500 p-2 rounded-lg">
+                          <Star className="h-5 w-5 text-white" />
+                        </div>
+                        <span>Keyword Analysis</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {analysis.keywordMatches.map((keyword, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span className="font-medium text-gray-900">{keyword.keyword}</span>
+                            <div className="flex items-center space-x-3">
+                              <Badge 
+                                variant={keyword.importance === 'high' ? 'destructive' : keyword.importance === 'medium' ? 'default' : 'secondary'}
+                                className="text-xs"
+                              >
+                                {keyword.importance}
+                              </Badge>
+                              {keyword.found ? (
+                                <CheckCircle className="h-5 w-5 text-green-500" />
+                              ) : (
+                                <div className="h-5 w-5 rounded-full border-2 border-red-400"></div>
+                              )}
                             </div>
-                          ))}
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="shadow-sm border-0">
+                    <CardHeader>
+                      <CardTitle className="flex items-center space-x-3">
+                        <div className="bg-blue-600 p-2 rounded-lg">
+                          <TrendingUp className="h-5 w-5 text-white" />
+                        </div>
+                        <span>AI Recommendations</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-3">
+                        {analysis.suggestions.map((suggestion, index) => (
+                          <li key={index} className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+                            <div className="bg-blue-600 rounded-full p-1 mt-1">
+                              <div className="h-2 w-2 bg-white rounded-full"></div>
+                            </div>
+                            <span className="text-gray-700">{suggestion}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+
+                  <EditableResume 
+                    initialResume={optimizedResume}
+                    onSave={handleOptimizedResumeSave}
+                  />
+
+                  <ExportOptions resumeText={optimizedResume} />
+
+                  {showComparison && (
+                    <Card className="shadow-sm border-0">
+                      <CardHeader>
+                        <CardTitle className="flex items-center space-x-3">
+                          <div className="bg-purple-600 p-2 rounded-lg">
+                            <ArrowLeftRight className="h-5 w-5 text-white" />
+                          </div>
+                          <span>Before & After Comparison</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <h4 className="font-semibold text-gray-700 mb-3 flex items-center space-x-2">
+                              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                              <span>Original Resume</span>
+                            </h4>
+                            <div className="bg-red-50 border border-red-200 p-4 rounded-lg max-h-60 overflow-y-auto">
+                              <pre className="whitespace-pre-wrap text-xs text-gray-700 font-mono">
+                                {resume}
+                              </pre>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-700 mb-3 flex items-center space-x-2">
+                              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                              <span>AI-Optimized Resume</span>
+                            </h4>
+                            <div className="bg-green-50 border border-green-200 p-4 rounded-lg max-h-60 overflow-y-auto">
+                              <pre className="whitespace-pre-wrap text-xs text-gray-700 font-mono">
+                                {optimizedResume}
+                              </pre>
+                            </div>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
-                    {/* Recommendations */}
-                    <Card className="rounded-2xl bg-black/40 border-0 shadow shadow-blue-400/10">
-                      <CardHeader className="flex flex-row items-center gap-3 px-8 pt-8 pb-4">
-                        <TrendingUp className="h-6 w-6 text-blue-300" />
-                        <span className="font-bold text-blue-200 text-lg">AI Recommendations</span>
-                      </CardHeader>
-                      <CardContent className="space-y-2 px-8 pb-8">
-                        <ul className="space-y-3">
-                          {analysis.suggestions.map((s, idx) => (
-                            <li key={idx} className="flex gap-3 bg-gradient-to-r from-cyan-900/30 to-transparent px-4 py-2 rounded-lg text-cyan-100/90">
-                              <div className="bg-cyan-500/20 rounded-full w-2 h-2 mt-2"></div>
-                              <span>{s}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
-                    {/* Optimized Resume Editor */}
-                    <EditableResume 
-                      initialResume={optimizedResume}
-                      onSave={handleOptimizedResumeSave}
-                    />
-                    <ExportOptions resumeText={optimizedResume} />
-                    {showComparison && (
-                      <Card className="rounded-2xl bg-black/50 border-0 shadow-blue-300/10 shadow mt-4">
-                        <CardHeader className="flex flex-row items-center gap-3 px-8 pt-8 pb-4">
-                          <ArrowLeftRight className="h-6 w-6 text-fuchsia-300" />
-                          <span className="font-bold text-fuchsia-200 text-lg">Before & After Comparison</span>
-                        </CardHeader>
-                        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 px-8 pb-8">
-                          <div>
-                            <h4 className="font-semibold text-gray-400 mb-3 flex gap-2"><div className="w-3 h-3 bg-red-500 rounded-full"></div>Original Resume</h4>
-                            <div className="bg-zinc-900/50 border border-red-300/10 p-4 rounded-lg max-h-44 overflow-y-auto shadow-md">
-                              <pre className="whitespace-pre-wrap text-xs text-gray-200 font-mono">{resume}</pre>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-gray-400 mb-3 flex gap-2"><div className="w-3 h-3 bg-green-400 rounded-full"></div>AI-Optimized Resume</h4>
-                            <div className="bg-zinc-900/50 border border-green-300/10 p-4 rounded-lg max-h-44 overflow-y-auto shadow-md">
-                              <pre className="whitespace-pre-wrap text-xs text-gray-200 font-mono">{optimizedResume}</pre>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )}
-                  </>
-                ) : (
-                  <Card className="rounded-2xl bg-gradient-to-br from-cyan-800/10 to-fuchsia-900/5 shadow-xl shadow-cyan-500/5 border-0 flex flex-col items-center justify-center py-24 text-center">
-                    <div className="bg-gradient-to-tr from-cyan-500 to-fuchsia-500 p-8 rounded-full mb-6">
-                      <Brain className="h-12 w-12 text-white" />
+                  )}
+                </>
+              ) : (
+                <Card className="shadow-sm border-0">
+                  <CardContent className="flex flex-col items-center justify-center py-24 text-center">
+                    <div className="bg-gray-100 p-8 rounded-full mb-6">
+                      <Brain className="h-12 w-12 text-gray-400" />
                     </div>
-                    <h3 className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-fuchsia-200 to-cyan-100 mb-2">
-                      Ready to Upgrade Your Resume?
-                    </h3>
-                    <p className="text-gray-300 max-w-md">
-                      Set up your OpenAI API key, upload your resume, and add the job description to get your AI-powered boost!
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Ready to Optimize?</h3>
+                    <p className="text-gray-600 max-w-md">
+                      Set up your OpenAI API key, upload your resume, and add the job description to get started with AI-powered optimization.
                     </p>
-                  </Card>
-                )}
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-3 mb-4 md:mb-0">
+              <div className="bg-blue-600 p-2 rounded-lg">
+                <Brain className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold">ResumeAI</h3>
+                <p className="text-sm text-gray-400">Professional Resume Optimization</p>
               </div>
             </div>
-          </section>
-        </div>
-      </VerticalSection>
-      {/* FOOTER */}
-      <footer className="bg-white/90 border-t border-cyan-200/10 py-10 mt-14">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-5">
-          <div className="flex items-center">
-            <BrandLogo size={28} />
-            <span className="font-bold text-lg bg-clip-text text-transparent bg-gradient-to-r from-cyan-700 via-fuchsia-400 to-blue-500 tracking-tight">ResumeAI</span>
-            <span className="text-slate-400 ml-3 font-light text-sm">
-              &copy; {new Date().getFullYear()} ResumeAI. All rights reserved.
-            </span>
-          </div>
-          <div className="text-slate-500 text-xs">
-            Powered by OpenAI &amp; 💎 SaaS-class Design
+            <p className="text-gray-400 text-sm">
+              © 2024 ResumeAI. Powered by advanced AI technology.
+            </p>
           </div>
         </div>
       </footer>

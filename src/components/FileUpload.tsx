@@ -134,16 +134,16 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
   };
 
   return (
-    <Card className="card-glass shadow-glass">
+    <Card className="shadow-sm border-0">
       <CardContent className="p-0">
         {uploadedFile ? (
-          <div className="p-7">
-            <div className="flex items-center justify-between p-7 bg-gradient-to-tr from-cyan-900/25 via-slate-700/15 to-blue-900/30 rounded-2xl border border-cyan-600/20 shadow-fancy">
-              <div className="flex items-center space-x-5">
-                <div className={`p-3 rounded-2xl shadow-md ${
+          <div className="p-6">
+            <div className="flex items-center justify-between p-6 bg-green-50 rounded-xl border border-green-200">
+              <div className="flex items-center space-x-4">
+                <div className={`p-3 rounded-xl ${
                   isProcessing 
-                    ? 'bg-blue-500 animate-pulse'
-                    : 'bg-green-500'
+                    ? 'bg-blue-600' 
+                    : 'bg-green-600'
                 }`}>
                   {isProcessing ? (
                     <Loader2 className="h-6 w-6 text-white animate-spin" />
@@ -153,8 +153,8 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
                 </div>
                 <div>
                   <div className="flex items-center space-x-3 mb-1">
-                    <h3 className="font-semibold text-gray-100 text-lg">{uploadedFile.name}</h3>
-                    <Badge className="bg-cyan-700/60 text-cyan-200 text-xs border-cyan-500/30 px-2 py-1 rounded-lg">
+                    <h3 className="font-semibold text-gray-900">{uploadedFile.name}</h3>
+                    <Badge className="bg-gray-100 text-gray-600 text-xs">
                       {formatFileSize(uploadedFile.size)}
                     </Badge>
                   </div>
@@ -162,16 +162,16 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
                     {isProcessing ? (
                       <>
                         <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                          <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                           <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                         </div>
-                        <p className="text-blue-400 font-medium text-sm">{processingStep}</p>
+                        <p className="text-blue-600 font-medium text-sm">{processingStep}</p>
                       </>
                     ) : (
                       <>
-                        <CheckCircle2 className="h-4 w-4 text-green-400" />
-                        <p className="text-green-300 font-medium text-sm">File processed successfully</p>
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <p className="text-green-600 font-medium text-sm">File processed successfully</p>
                       </>
                     )}
                   </div>
@@ -182,7 +182,7 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
                 size="sm"
                 onClick={removeFile} 
                 disabled={isProcessing}
-                className="text-zinc-400 hover:text-fuchsia-500 hover:bg-fuchsia-900/20 rounded-xl"
+                className="text-gray-400 hover:text-red-600 hover:bg-red-50"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -190,12 +190,11 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
           </div>
         ) : (
           <div
-            className={`border-2 border-dashed rounded-2xl p-14 text-center transition-all duration-300 m-6 
-              ${isDragOver
-                ? 'border-cyan-400/80 bg-gradient-to-br from-cyan-900/40 to-fuchsia-800/20 shadow-glass shadow-cyan-400/20'
-                : 'border-cyan-700/30 bg-black/35 hover:border-fuchsia-300/50 hover:bg-fuchsia-900/5 shadow-xl'
-            }
-            `}
+            className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 m-6 ${
+              isDragOver
+                ? 'border-blue-400 bg-blue-50'
+                : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'
+            }`}
             onDrop={handleDrop}
             onDragOver={(e) => {
               e.preventDefault();
@@ -203,31 +202,39 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
             }}
             onDragLeave={() => setIsDragOver(false)}
           >
-            <div className="mx-auto mb-7 w-fit">
-              <div className="bg-gradient-to-tr from-cyan-400 to-fuchsia-500 p-5 rounded-2xl shadow-xl">
-                <Upload className={`h-14 w-14 text-white ${isDragOver ? 'animate-bounce' : ''}`} />
+            <div className="mx-auto mb-6 w-fit">
+              <div className="bg-blue-600 p-4 rounded-xl shadow-lg">
+                <Upload className={`h-12 w-12 text-white ${
+                  isDragOver ? 'animate-bounce' : ''
+                }`} />
               </div>
             </div>
-            <div className="space-y-6">
+            
+            <div className="space-y-4">
               <div>
-                <h3 className={`text-3xl font-black ${isDragOver ? 'text-cyan-200' : 'text-fuchsia-200'} mb-2 transition-all duration-200`}>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   {isDragOver ? 'Drop your file here!' : 'Upload your resume'}
                 </h3>
-                <p className="text-gray-200 max-w-sm mx-auto font-light text-lg">
+                <p className="text-gray-600 max-w-sm mx-auto">
                   Drag and drop your PDF, text file, or image here, or click to browse
                 </p>
               </div>
-              <div className="flex flex-wrap justify-center gap-3">
-                <Badge className="bg-cyan-800/60 text-cyan-200 border-cyan-400/30 px-3 py-0.5 text-md">
-                  <FileText className="h-4 w-4 mr-1" /> PDF
+              
+              <div className="flex flex-wrap justify-center gap-2">
+                <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                  <FileText className="h-3 w-3 mr-1" />
+                  PDF
                 </Badge>
-                <Badge className="bg-green-800/60 text-green-200 border-green-500/30 px-3 py-0.5 text-md">
-                  <Image className="h-4 w-4 mr-1" /> Images
+                <Badge className="bg-green-100 text-green-800 border-green-200">
+                  <Image className="h-3 w-3 mr-1" />
+                  Images
                 </Badge>
-                <Badge className="bg-fuchsia-800/60 text-fuchsia-200 border-fuchsia-500/30 px-3 py-0.5 text-md">
-                  <FileText className="h-4 w-4 mr-1" /> Text Files
+                <Badge className="bg-purple-100 text-purple-800 border-purple-200">
+                  <FileText className="h-3 w-3 mr-1" />
+                  Text Files
                 </Badge>
               </div>
+              
               <input
                 type="file"
                 accept=".pdf,.txt,image/*"
@@ -237,10 +244,10 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
               />
               <Button 
                 asChild 
-                className="cta-glow bg-gradient-to-tr from-fuchsia-500 to-cyan-400 hover:bg-cyan-700 text-white px-7 py-2 rounded-full font-bold"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
               >
-                <label htmlFor="file-upload" className="cursor-pointer select-none">
-                  <Upload className="h-5 w-5 mr-2" />
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  <Upload className="h-4 w-4 mr-2" />
                   Choose File
                 </label>
               </Button>

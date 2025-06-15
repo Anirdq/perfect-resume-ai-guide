@@ -125,15 +125,6 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
     toast.success('File removed');
   };
 
-  const getFileIcon = () => {
-    if (!uploadedFile) return <FileText className="h-6 w-6 text-white" />;
-    
-    if (uploadedFile.type.startsWith('image/')) {
-      return <Image className="h-6 w-6 text-white" />;
-    }
-    return <FileText className="h-6 w-6 text-white" />;
-  };
-
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -143,34 +134,27 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-2xl border border-cyan-500/20 shadow-2xl hover:shadow-cyan-500/20 transition-all duration-300 overflow-hidden group">
+    <Card className="shadow-sm border-0">
       <CardContent className="p-0">
         {uploadedFile ? (
-          <div className="p-8">
-            <div className="flex items-center justify-between p-8 bg-gradient-to-r from-cyan-900/20 to-blue-900/20 rounded-2xl border border-cyan-500/20 backdrop-blur-sm relative overflow-hidden">
-              {/* Success/Processing Animation Background */}
-              <div className={`absolute inset-0 bg-gradient-to-r transition-all duration-1000 ${
-                isProcessing 
-                  ? 'from-blue-500/5 to-cyan-500/5' 
-                  : 'from-emerald-500/5 to-green-500/5'
-              }`}></div>
-              
-              <div className="flex items-center space-x-6 relative z-10">
-                <div className={`p-4 rounded-2xl shadow-lg transition-all duration-300 ${
+          <div className="p-6">
+            <div className="flex items-center justify-between p-6 bg-green-50 rounded-xl border border-green-200">
+              <div className="flex items-center space-x-4">
+                <div className={`p-3 rounded-xl ${
                   isProcessing 
-                    ? 'bg-gradient-to-br from-blue-500 to-cyan-600 shadow-blue-500/25' 
-                    : 'bg-gradient-to-br from-emerald-500 to-green-600 shadow-emerald-500/25'
+                    ? 'bg-blue-600' 
+                    : 'bg-green-600'
                 }`}>
                   {isProcessing ? (
-                    <Loader2 className="h-8 w-8 text-white animate-spin" />
+                    <Loader2 className="h-6 w-6 text-white animate-spin" />
                   ) : (
-                    <CheckCircle2 className="h-8 w-8 text-white" />
+                    <CheckCircle2 className="h-6 w-6 text-white" />
                   )}
                 </div>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-3">
-                    <h3 className="font-bold text-xl text-white">{uploadedFile.name}</h3>
-                    <Badge className="bg-gray-700/50 text-gray-300 text-xs px-2 py-1">
+                <div>
+                  <div className="flex items-center space-x-3 mb-1">
+                    <h3 className="font-semibold text-gray-900">{uploadedFile.name}</h3>
+                    <Badge className="bg-gray-100 text-gray-600 text-xs">
                       {formatFileSize(uploadedFile.size)}
                     </Badge>
                   </div>
@@ -178,16 +162,16 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
                     {isProcessing ? (
                       <>
                         <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                          <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                         </div>
-                        <p className="text-cyan-300 font-medium">{processingStep}</p>
+                        <p className="text-blue-600 font-medium text-sm">{processingStep}</p>
                       </>
                     ) : (
                       <>
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                        <p className="text-emerald-300 font-medium">File processed successfully</p>
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <p className="text-green-600 font-medium text-sm">File processed successfully</p>
                       </>
                     )}
                   </div>
@@ -195,21 +179,21 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
               </div>
               <Button 
                 variant="ghost" 
-                size="sm" 
+                size="sm"
                 onClick={removeFile} 
                 disabled={isProcessing}
-                className="text-gray-400 hover:text-white hover:bg-red-500/20 hover:border-red-500/30 transition-all duration-300 rounded-xl p-3 relative z-10"
+                className="text-gray-400 hover:text-red-600 hover:bg-red-50"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </Button>
             </div>
           </div>
         ) : (
           <div
-            className={`border-2 border-dashed rounded-3xl p-16 text-center transition-all duration-500 m-8 relative overflow-hidden group ${
+            className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 m-6 ${
               isDragOver
-                ? 'border-cyan-400/60 bg-cyan-500/10 shadow-2xl shadow-cyan-500/20 scale-[1.02]'
-                : 'border-gray-600/50 hover:border-cyan-500/40 hover:bg-cyan-500/5'
+                ? 'border-blue-400 bg-blue-50'
+                : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'
             }`}
             onDrop={handleDrop}
             onDragOver={(e) => {
@@ -218,67 +202,55 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
             }}
             onDragLeave={() => setIsDragOver(false)}
           >
-            {/* Animated Background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+            <div className="mx-auto mb-6 w-fit">
+              <div className="bg-blue-600 p-4 rounded-xl shadow-lg">
+                <Upload className={`h-12 w-12 text-white ${
+                  isDragOver ? 'animate-bounce' : ''
+                }`} />
+              </div>
+            </div>
             
-            <div className="relative z-10">
-              <div className={`mx-auto mb-8 w-fit transition-all duration-500 ${
-                isDragOver ? 'scale-110 rotate-12' : 'group-hover:scale-105'
-              }`}>
-                <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-6 rounded-3xl shadow-2xl shadow-cyan-500/25 relative">
-                  <Upload className={`h-16 w-16 text-white transition-transform duration-300 ${
-                    isDragOver ? 'animate-bounce' : ''
-                  }`} />
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full animate-pulse"></div>
-                </div>
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  {isDragOver ? 'Drop your file here!' : 'Upload your resume'}
+                </h3>
+                <p className="text-gray-600 max-w-sm mx-auto">
+                  Drag and drop your PDF, text file, or image here, or click to browse
+                </p>
               </div>
               
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-3xl font-bold text-white mb-3">
-                    {isDragOver ? 'Drop your file here!' : 'Upload your resume'}
-                  </h3>
-                  <p className="text-gray-300 text-xl leading-relaxed max-w-md mx-auto">
-                    Drag and drop your PDF, text file, or image here, or click to browse
-                  </p>
-                </div>
-                
-                <div className="flex flex-wrap justify-center gap-3">
-                  <Badge className="bg-blue-500/10 text-blue-300 border-blue-500/20 px-3 py-2 text-sm">
-                    <FileText className="h-3 w-3 mr-1.5" />
-                    PDF Support
-                  </Badge>
-                  <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/20 px-3 py-2 text-sm">
-                    <Image className="h-3 w-3 mr-1.5" />
-                    OCR Ready
-                  </Badge>
-                  <Badge className="bg-purple-500/10 text-purple-300 border-purple-500/20 px-3 py-2 text-sm">
-                    <AlertCircle className="h-3 w-3 mr-1.5" />
-                    Text Files
-                  </Badge>
-                </div>
-                
-                <input
-                  type="file"
-                  accept=".pdf,.txt,image/*"
-                  onChange={handleFileSelect}
-                  className="hidden"
-                  id="file-upload"
-                />
-                <Button 
-                  asChild 
-                  size="lg"
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-10 py-4 rounded-2xl shadow-2xl shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 transform hover:scale-105 text-lg relative overflow-hidden group"
-                >
-                  <label htmlFor="file-upload" className="cursor-pointer">
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                    <span className="relative z-10 flex items-center">
-                      <Upload className="h-5 w-5 mr-3" />
-                      Choose File
-                    </span>
-                  </label>
-                </Button>
+              <div className="flex flex-wrap justify-center gap-2">
+                <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                  <FileText className="h-3 w-3 mr-1" />
+                  PDF
+                </Badge>
+                <Badge className="bg-green-100 text-green-800 border-green-200">
+                  <Image className="h-3 w-3 mr-1" />
+                  Images
+                </Badge>
+                <Badge className="bg-purple-100 text-purple-800 border-purple-200">
+                  <FileText className="h-3 w-3 mr-1" />
+                  Text Files
+                </Badge>
               </div>
+              
+              <input
+                type="file"
+                accept=".pdf,.txt,image/*"
+                onChange={handleFileSelect}
+                className="hidden"
+                id="file-upload"
+              />
+              <Button 
+                asChild 
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
+              >
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  <Upload className="h-4 w-4 mr-2" />
+                  Choose File
+                </label>
+              </Button>
             </div>
           </div>
         )}

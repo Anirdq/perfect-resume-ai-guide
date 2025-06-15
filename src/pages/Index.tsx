@@ -5,12 +5,34 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { FileText, Target, CheckCircle, TrendingUp, Zap, Star, ArrowLeftRight, Brain, Sparkles, Bot, Users, Shield, Rocket, Menu } from 'lucide-react';
+import { FileText, Target, CheckCircle, TrendingUp, Zap, Star, ArrowLeftRight, Brain, Sparkles, Bot, Users, Shield, Rocket, Menu, Info } from 'lucide-react';
 import { toast } from 'sonner';
 import { FileUpload } from '@/components/FileUpload';
 import { EditableResume } from '@/components/EditableResume';
 import { ExportOptions } from '@/components/ExportOptions';
 import { ProviderAgnosticAIResumeService } from "@/services/providerAgnosticAIService";
+import { StepIndicator } from "@/components/StepIndicator";
+import { ConfirmOptimizeModal } from "@/components/ConfirmOptimizeModal";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
+const steps = [
+  {
+    title: "Upload Resume",
+    tooltip: "PDF, text, or image files accepted.",
+    description: "Drag & drop, browse, or paste your resume here.",
+  },
+  {
+    title: "Preview & Edit",
+    tooltip: "Review and tweak your resume before optimization.",
+    description: "Real-time preview. Make edits if needed.",
+  },
+  {
+    title: "Optimize",
+    tooltip: "AI will rewrite & suggest improvements tailored to your job.",
+    description: "See ATS score and instant recommendations!",
+  }
+];
+
 const Index = () => {
   const [resume, setResume] = useState('');
   const [jobDescription, setJobDescription] = useState('');
@@ -19,16 +41,36 @@ const Index = () => {
   const [optimizedResume, setOptimizedResume] = useState('');
   const [showComparison, setShowComparison] = useState(false);
   const [aiService] = useState(() => new ProviderAgnosticAIResumeService());
+  const [currentStep, setCurrentStep] = useState(0);
+  const [showConfirm, setShowConfirm] = useState(false);
+
   const handleFileUpload = useCallback((text: string) => {
     console.log('Index component received file upload text:', text.substring(0, 100) + '...');
     console.log('Setting resume state to:', text.length, 'characters');
     setResume(text);
+    setCurrentStep(1);
+    toast.success('Resume uploaded and parsed!');
   }, []);
+
   const handleResumeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newResume = e.target.value;
     console.log('Manual resume change:', newResume.length, 'characters');
     setResume(newResume);
+    if (e.target.value.length > 0 && currentStep < 1) setCurrentStep(1);
   };
+
+  const handleNext = () => {
+    if (currentStep === 0 && !resume) {
+      toast.error("Please upload your resume.");
+      return;
+    }
+    if (currentStep === 1 && (!resume || resume.length < 50)) {
+      toast.error("Resume looks too short!");
+      return;
+    }
+    setCurrentStep((s) => Math.min(s + 1, steps.length - 1));
+  };
+
   const analyzeWithAI = async () => {
     setIsAnalyzing(true);
     try {
@@ -43,183 +85,102 @@ const Index = () => {
       setIsAnalyzing(false);
     }
   };
+
   const handleOptimizedResumeSave = (newResume: string) => {
     setOptimizedResume(newResume);
     toast.success('Resume changes saved!');
   };
-  return <div className="min-h-screen bg-gray-50">
+
+  const handleStartOptimization = () => {
+    setShowConfirm(true);
+  };
+
+  const confirmOptimize = async () => {
+    setShowConfirm(false);
+    await analyzeWithAI();
+    setCurrentStep(2);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
       <GlassNavbar />
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-40 pt-24">
-        {/* Navigation is now in GlassNavbar, keep header content minimal */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+      <div className="pt-20 px-2 pb-8 max-w-4xl mx-auto flex flex-col">
+        <div className="mt-10">
+          <StepIndicator steps={steps} currentStep={currentStep} onStepClick={setCurrentStep} />
         </div>
-      </header>
-      <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-              Optimize Your Resume with
-              <span className="text-blue-600"> AI Technology</span>
-            </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Beat ATS systems and land your dream job with our AI-powered resume optimization platform. 
-              Get professional insights and personalized improvements in minutes.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
-              <Badge className="bg-blue-100 text-blue-800 px-4 py-2 text-sm font-semibold">
-                <Shield className="h-4 w-4 mr-2" />
-                ATS Optimized
-              </Badge>
-              <Badge className="bg-green-100 text-green-800 px-4 py-2 text-sm font-semibold">
-                <Zap className="h-4 w-4 mr-2" />
-                AI Powered
-              </Badge>
-              <Badge className="bg-purple-100 text-purple-800 px-4 py-2 text-sm font-semibold">
-                <Users className="h-4 w-4 mr-2" />
-                Expert Approved
-              </Badge>
-            </div>
-          </div>
-        </div>
-      </section>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <section id="features" className="mb-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose ResumeAI?</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Our advanced AI technology analyzes your resume against job requirements and provides actionable insights.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="p-8 hover:shadow-lg transition-shadow border-0 shadow-sm">
-              <div className="text-center">
-                <div className="bg-blue-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Target className="h-8 w-8 text-blue-600" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">ATS Optimization</h3>
-                <p className="text-gray-600">
-                  Ensure your resume passes through Applicant Tracking Systems with intelligent keyword optimization.
-                </p>
+        <div className="flex flex-col gap-8">
+          {/* Step 1: Upload */}
+          {currentStep === 0 && (
+            <div className="bg-white rounded-2xl py-8 px-4 shadow-md animate-fade-in">
+              <FileUpload onFileUpload={handleFileUpload} />
+              <div className="flex justify-end mt-4">
+                <Button
+                  onClick={handleNext}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 shadow hover-scale"
+                  aria-label="Next: Review Resume"
+                  disabled={!resume}
+                >
+                  Next
+                </Button>
               </div>
-            </Card>
-            <Card className="p-8 hover:shadow-lg transition-shadow border-0 shadow-sm">
-              <div className="text-center">
-                <div className="bg-green-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Bot className="h-8 w-8 text-green-600" />
+            </div>
+          )}
+          {/* Step 2: Preview/Edit */}
+          {currentStep === 1 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 animate-fade-in">
+              <div className="bg-white rounded-2xl shadow-md py-6 px-4 flex flex-col">
+                <label className="font-bold flex items-center gap-2 mb-2">
+                  <span>Your Resume</span>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span>
+                          <Info className="w-4 h-4 text-blue-400" aria-label="Help" />
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent side="right">
+                        Make edits or additions to your uploaded resume below.
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </label>
+                <Textarea
+                  aria-label="Edit your resume"
+                  placeholder="Paste your current resume text here or upload a file above..."
+                  value={resume}
+                  onChange={handleResumeChange}
+                  className="min-h-[220px] font-mono resize-none mb-2"
+                />
+                <div className="flex flex-row justify-between items-center text-sm text-gray-400 pt-1">
+                  <span>
+                    {resume.length} characters
+                  </span>
+                  {resume.length ? (
+                    <span className="text-green-600">
+                      <span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-1 animate-pulse" /> Unsaved changes
+                    </span>
+                  ) : null}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">AI Analysis</h3>
-                <p className="text-gray-600">
-                  Get detailed insights powered by advanced AI that understands recruitment best practices.
-                </p>
               </div>
-            </Card>
-            <Card className="p-8 hover:shadow-lg transition-shadow border-0 shadow-sm">
-              <div className="text-center">
-                <div className="bg-purple-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="h-8 w-8 text-purple-600" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Smart Matching</h3>
-                <p className="text-gray-600">
-                  Match your skills and experience with job requirements for maximum impact.
-                </p>
+              <div className="flex flex-col items-center justify-start bg-gray-50 rounded-2xl shadow-inner min-h-[240px] p-4">
+                <span className="font-semibold text-gray-700 mb-1">Live Preview</span>
+                <pre aria-label="Resume preview" className="w-full font-mono text-xs bg-white rounded-lg p-4 text-gray-800 overflow-auto min-h-[170px] shadow transition hover:shadow-lg">
+                  {resume ? resume : <span className="text-gray-400">Nothing to preview yet.</span>}
+                </pre>
+                <Button
+                  className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white shadow hover-scale"
+                  onClick={handleStartOptimization}
+                  disabled={!resume || !jobDescription}
+                  aria-label="Proceed to Optimization"
+                >
+                  <Sparkles className="mr-2" /> Optimize My Resume
+                </Button>
               </div>
-            </Card>
-          </div>
-        </section>
-        {/* Replace 'How it Works' with strongly convincing info */}
-        <section id="why-us" className="mb-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Your Career Success, Our Mission</h2>
-            <p className="text-lg text-gray-600">
-              Partner with ResumeAI to accelerate your journey to a better job. We combine world-class AI, proven industry expertise, and secure handling to give you the confidence—and the edge—you deserve.
-            </p>
-          </div>
-          <div className="md:flex md:justify-center gap-8 space-y-8 md:space-y-0">
-            <div className="flex-1 bg-white/70 shadow-lg rounded-2xl p-8 text-center">
-              <h3 className="text-2xl font-bold text-blue-700 mb-3">Expert-Driven</h3>
-              <p className="text-gray-700">Built in collaboration with hiring managers and recruiters to ensure your resume stands out.</p>
             </div>
-            <div className="flex-1 bg-white/70 shadow-lg rounded-2xl p-8 text-center">
-              <h3 className="text-2xl font-bold text-blue-700 mb-3">Transparent Results</h3>
-              <p className="text-gray-700">You see exactly what changes our AI recommends, giving you control at every step.</p>
-            </div>
-            <div className="flex-1 bg-white/70 shadow-lg rounded-2xl p-8 text-center">
-              <h3 className="text-2xl font-bold text-blue-700 mb-3">Support All Along</h3>
-              <p className="text-gray-700">Friendly email and live chat support to answer all your questions quickly.</p>
-            </div>
-          </div>
-        </section>
-        <section id="how-it-works" className="mb-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Get Started in 3 Simple Steps</h2>
-            <p className="text-lg text-gray-600">
-              Upload your resume, add the job description, and let our AI do the magic.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
-            <div className="space-y-8">
-              
-              <Card className="shadow-sm border-0">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-3">
-                    <div className="bg-blue-600 p-2 rounded-lg">
-                      <span className="text-white font-bold text-sm">1</span>
-                    </div>
-                    <span>Upload Your Resume</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <FileUpload onFileUpload={handleFileUpload} />
-                </CardContent>
-              </Card>
-              
-              <Card className="shadow-sm border-0">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-3">
-                    <div className="bg-blue-600 p-2 rounded-lg">
-                      <FileText className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <span>Your Resume</span>
-                      <p className="text-sm text-gray-500 font-normal mt-1">
-                        {resume.length} characters
-                      </p>
-                    </div>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Textarea placeholder="Paste your current resume text here or upload a file above..." value={resume} onChange={handleResumeChange} className="min-h-[200px] resize-none" />
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-sm border-0">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-3">
-                    <div className="bg-green-600 p-2 rounded-lg">
-                      <span className="text-white font-bold text-sm">2</span>
-                    </div>
-                    <span>Job Description</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Textarea placeholder="Paste the job description you're applying for..." value={jobDescription} onChange={e => setJobDescription(e.target.value)} className="min-h-[200px] resize-none" />
-                </CardContent>
-              </Card>
-
-              <Button onClick={analyzeWithAI} disabled={!resume || !jobDescription || isAnalyzing} size="lg" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg font-semibold">
-                {isAnalyzing ? <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                    Analyzing Your Resume...
-                  </> : <>
-                    <Sparkles className="h-5 w-5 mr-3" />
-                    Optimize My Resume
-                  </>}
-              </Button>
-            </div>
-
-            <div className="space-y-8">
+          )}
+          {/* Step 3: Optimization, same as before with feedback */}
+          {currentStep === 2 && (
+            <div className="animate-fade-in">
               {analysis ? <>
                   <Card className="shadow-sm border-0">
                     <CardHeader>
@@ -345,8 +306,15 @@ const Index = () => {
                   </CardContent>
                 </Card>}
             </div>
-          </div>
-        </section>
+          )}
+        </div>
+        {/* Confirmation Modal */}
+        <ConfirmOptimizeModal
+          open={showConfirm}
+          onCancel={() => setShowConfirm(false)}
+          onConfirm={confirmOptimize}
+          loading={isAnalyzing}
+        />
       </div>
 
       <footer className="bg-gray-900 text-white py-12">
@@ -367,6 +335,7 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>;
+    </div>
+  );
 };
 export default Index;

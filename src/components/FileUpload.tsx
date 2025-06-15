@@ -2,10 +2,11 @@ import { useState, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Upload, FileText, X, Image, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Upload, FileText, X, Image, Loader2, CheckCircle2, AlertCircle, Info } from 'lucide-react';
 import { toast } from 'sonner';
 import * as pdfjsLib from 'pdfjs-dist';
 import { createWorker } from 'tesseract.js';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Set up PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
@@ -19,10 +20,13 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingStep, setProcessingStep] = useState('');
+  // Add an additional state for ARIA and animation feedback
+  const [hasError, setHasError] = useState(false);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
+    setHasError(false);
     
     const files = Array.from(e.dataTransfer.files);
     const file = files[0];
@@ -77,6 +81,7 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
   const handleFileUpload = async (file: File) => {
     console.log('File uploaded:', file.name, 'Type:', file.type);
     setUploadedFile(file);
+    setHasError(false);
     setIsProcessing(true);
     setProcessingStep('Initializing...');
     
@@ -100,10 +105,12 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
       console.log('Extracted text length:', extractedText.length);
       console.log('Text preview:', extractedText.substring(0, 200) + '...');
       onFileUpload(extractedText);
+      setHasError(false);
       
     } catch (error) {
       console.error('Error processing file:', error);
       toast.error('Failed to extract text from file. Please try again.');
+      setHasError(true);
     } finally {
       setIsProcessing(false);
       setProcessingStep('');
@@ -134,19 +141,21 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
   };
 
   return (
-    <Card className="shadow-sm border-0">
+    <Card className="shadow-sm border-0" aria-live="polite">
       <CardContent className="p-0">
         {uploadedFile ? (
-          <div className="p-6">
-            <div className="flex items-center justify-between p-6 bg-green-50 rounded-xl border border-green-200">
+          <div className="p-6 animate-scale-in">
+            <div
+              className={`flex items-center justify-between p-6 rounded-xl border transition-all
+                ${isProcessing ? "bg-blue-50 border-blue-200" : hasError ? "bg-red-50 border-red-200" : "bg-green-50 border-green-200"}`}
+              aria-live="polite"
+            >
               <div className="flex items-center space-x-4">
-                <div className={`p-3 rounded-xl ${
-                  isProcessing 
-                    ? 'bg-blue-600' 
-                    : 'bg-green-600'
-                }`}>
+                <div className={`p-3 rounded-xl ${isProcessing ? "bg-blue-600" : hasError ? "bg-red-600" : "bg-green-600"}`}>
                   {isProcessing ? (
                     <Loader2 className="h-6 w-6 text-white animate-spin" />
+                  ) : hasError ? (
+                    <AlertCircle className="h-6 w-6 text-white animate-pulse" />
                   ) : (
                     <CheckCircle2 className="h-6 w-6 text-white" />
                   )}
@@ -190,68 +199,78 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
           </div>
         ) : (
           <div
-            className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 m-6 ${
-              isDragOver
-                ? 'border-blue-400 bg-blue-50'
-                : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'
-            }`}
+            className={`
+              border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 m-6 
+              flex flex-col gap-6 items-center group focus-within:ring-2 focus-within:ring-blue-400
+              ${isDragOver ? "border-blue-400 bg-blue-50" : hasError ? "border-red-400 bg-red-50 animate-shake" : "border-gray-300 hover:border-blue-400 hover:bg-gray-50"}
+            `}
+            tabIndex={0}
             onDrop={handleDrop}
             onDragOver={(e) => {
               e.preventDefault();
               setIsDragOver(true);
             }}
             onDragLeave={() => setIsDragOver(false)}
+            aria-label="Upload your resume"
           >
             <div className="mx-auto mb-6 w-fit">
-              <div className="bg-blue-600 p-4 rounded-xl shadow-lg">
-                <Upload className={`h-12 w-12 text-white ${
-                  isDragOver ? 'animate-bounce' : ''
-                }`} />
+              <div className="bg-blue-600 p-4 rounded-xl shadow-lg group-hover:scale-105 transition-transform">
+                <Upload className={`h-12 w-12 text-white ${isDragOver ? "animate-bounce" : ""}`} />
               </div>
             </div>
             
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {isDragOver ? 'Drop your file here!' : 'Upload your resume'}
-                </h3>
-                <p className="text-gray-600 max-w-sm mx-auto">
-                  Drag and drop your PDF, text file, or image here, or click to browse
-                </p>
+            <div className="space-y-2">
+              <div className="flex flex-row items-center justify-center gap-1 text-lg font-semibold text-gray-900">
+                <span>{isDragOver ? "Drop your file here!" : "Upload your resume"}</span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span tabIndex={0}>
+                        <Info className="w-4 h-4 text-blue-400" aria-label="Help" />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      We support PDF, image, and TXT files. Choose what fits best!
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
-              
-              <div className="flex flex-wrap justify-center gap-2">
-                <Badge className="bg-blue-100 text-blue-800 border-blue-200">
-                  <FileText className="h-3 w-3 mr-1" />
-                  PDF
-                </Badge>
-                <Badge className="bg-green-100 text-green-800 border-green-200">
-                  <Image className="h-3 w-3 mr-1" />
-                  Images
-                </Badge>
-                <Badge className="bg-purple-100 text-purple-800 border-purple-200">
-                  <FileText className="h-3 w-3 mr-1" />
-                  Text Files
-                </Badge>
-              </div>
-              
-              <input
-                type="file"
-                accept=".pdf,.txt,image/*"
-                onChange={handleFileSelect}
-                className="hidden"
-                id="file-upload"
-              />
-              <Button 
-                asChild 
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
-              >
-                <label htmlFor="file-upload" className="cursor-pointer">
-                  <Upload className="h-4 w-4 mr-2" />
-                  Choose File
-                </label>
-              </Button>
+              <p className="text-gray-600 max-w-sm mx-auto">
+                Drag and drop your PDF, text file, or image here, or click to browse
+              </p>
             </div>
+            
+            <div className="flex flex-wrap justify-center gap-2">
+              <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                <FileText className="h-3 w-3 mr-1" />
+                PDF
+              </Badge>
+              <Badge className="bg-green-100 text-green-800 border-green-200">
+                <Image className="h-3 w-3 mr-1" />
+                Images
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200">
+                <FileText className="h-3 w-3 mr-1" />
+                Text Files
+              </Badge>
+            </div>
+            
+            <input
+              type="file"
+              accept=".pdf,.txt,image/*"
+              onChange={handleFileSelect}
+              className="hidden"
+              id="file-upload"
+            />
+            <Button 
+              asChild 
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
+            >
+              <label htmlFor="file-upload" className="cursor-pointer">
+                <Upload className="h-4 w-4 mr-2" />
+                Choose File
+              </label>
+            </Button>
           </div>
         )}
       </CardContent>

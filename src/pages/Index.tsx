@@ -1,18 +1,22 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { FileText, Target, CheckCircle, TrendingUp, Zap, Star } from 'lucide-react';
+import { FileText, Target, CheckCircle, TrendingUp, Zap, Star, ArrowLeftRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { FileUpload } from '@/components/FileUpload';
+import { EditableResume } from '@/components/EditableResume';
+import { ExportOptions } from '@/components/ExportOptions';
 
 const Index = () => {
   const [resume, setResume] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const [analysis, setAnalysis] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [optimizedResume, setOptimizedResume] = useState('');
+  const [showComparison, setShowComparison] = useState(false);
 
   const mockAnalyze = async () => {
     setIsAnalyzing(true);
@@ -33,8 +37,10 @@ const Index = () => {
         'Include "API Development" in your technical skills',
         'Quantify your achievements with specific metrics',
         'Use more action verbs like "developed", "implemented", "optimized"'
-      ],
-      optimizedResume: `JOHN DOE
+      ]
+    };
+
+    const mockOptimizedResume = `JOHN DOE
 Senior Frontend Developer
 
 EXPERIENCE
@@ -47,12 +53,17 @@ SKILLS
 • JavaScript, React, TypeScript, Node.js
 • API Development, REST APIs
 • HTML5, CSS3, Responsive Design
-• Git, Agile Methodologies`
-    };
+• Git, Agile Methodologies`;
     
     setAnalysis(mockAnalysis);
+    setOptimizedResume(mockOptimizedResume);
     setIsAnalyzing(false);
     toast.success('Resume analysis completed!');
+  };
+
+  const handleOptimizedResumeSave = (newResume: string) => {
+    setOptimizedResume(newResume);
+    toast.success('Resume changes saved!');
   };
 
   return (
@@ -60,14 +71,26 @@ SKILLS
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center space-x-3">
-            <div className="bg-blue-600 p-2 rounded-lg">
-              <FileText className="h-6 w-6 text-white" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="bg-blue-600 p-2 rounded-lg">
+                <FileText className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">AI Resume Optimizer</h1>
+                <p className="text-gray-600">Tailor your resume for any job with AI-powered optimization</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">AI Resume Optimizer</h1>
-              <p className="text-gray-600">Tailor your resume for any job with AI-powered optimization</p>
-            </div>
+            {analysis && (
+              <Button
+                variant="outline"
+                onClick={() => setShowComparison(!showComparison)}
+                className="flex items-center space-x-2"
+              >
+                <ArrowLeftRight className="h-4 w-4" />
+                <span>{showComparison ? 'Hide' : 'Show'} Comparison</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -101,6 +124,8 @@ SKILLS
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Input Section */}
           <div className="space-y-6">
+            <FileUpload onFileUpload={setResume} />
+            
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
@@ -110,7 +135,7 @@ SKILLS
               </CardHeader>
               <CardContent>
                 <Textarea
-                  placeholder="Paste your current resume text here..."
+                  placeholder="Paste your current resume text here or upload a file above..."
                   value={resume}
                   onChange={(e) => setResume(e.target.value)}
                   className="min-h-[200px] resize-none"
@@ -233,30 +258,46 @@ SKILLS
                   </CardContent>
                 </Card>
 
-                {/* Optimized Resume Preview */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <FileText className="h-5 w-5 text-purple-600" />
-                      <span>Optimized Resume</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono">
-                        {analysis.optimizedResume}
-                      </pre>
-                    </div>
-                    <div className="flex space-x-2 mt-4">
-                      <Button variant="outline" size="sm">
-                        Copy Text
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        Download PDF
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                {/* Optimized Resume with Real-time Editing */}
+                <EditableResume 
+                  initialResume={optimizedResume}
+                  onSave={handleOptimizedResumeSave}
+                />
+
+                {/* Export Options */}
+                <ExportOptions resumeText={optimizedResume} />
+
+                {/* Side-by-side Comparison */}
+                {showComparison && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center space-x-2">
+                        <ArrowLeftRight className="h-5 w-5 text-purple-600" />
+                        <span>Before & After Comparison</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <h4 className="font-semibold text-sm text-gray-600 mb-2">Original Resume</h4>
+                          <div className="bg-red-50 p-3 rounded border border-red-200 max-h-60 overflow-y-auto">
+                            <pre className="whitespace-pre-wrap text-xs text-gray-700 font-mono">
+                              {resume}
+                            </pre>
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-sm text-gray-600 mb-2">Optimized Resume</h4>
+                          <div className="bg-green-50 p-3 rounded border border-green-200 max-h-60 overflow-y-auto">
+                            <pre className="whitespace-pre-wrap text-xs text-gray-700 font-mono">
+                              {optimizedResume}
+                            </pre>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </>
             ) : (
               <Card className="border-dashed border-2 border-gray-300">
@@ -264,7 +305,7 @@ SKILLS
                   <FileText className="h-12 w-12 text-gray-400 mb-4" />
                   <h3 className="text-lg font-semibold text-gray-600 mb-2">Ready to Optimize?</h3>
                   <p className="text-gray-500 text-center">
-                    Enter your resume and job description to get AI-powered optimization suggestions.
+                    Upload or paste your resume and job description to get AI-powered optimization suggestions.
                   </p>
                 </CardContent>
               </Card>

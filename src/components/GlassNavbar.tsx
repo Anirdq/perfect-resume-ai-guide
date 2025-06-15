@@ -8,7 +8,7 @@ const navLinks = [
   { name: "Home", path: "/" },
   { name: "Resume Optimization", path: "/resume" },
   { name: "Features", path: "/features" },
-  { name: "Service Provider", path: "/service-provider" },
+  { name: "Why Choose Us", path: "/service-provider" },
   { name: "Pricing", path: "/pricing" },
 ];
 
@@ -29,17 +29,18 @@ export const GlassNavbar = () => {
         </span>
         <span className="text-lg font-bold text-gray-900">ResumeAI</span>
       </div>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 overflow-x-auto scrollbar-hide">
         {navLinks.map(({ name, path }) => (
           <Link
             key={name}
             to={path}
             className={clsx(
-              "px-3 py-1.5 rounded-lg text-gray-800 font-medium text-base transition-all duration-200 hover:bg-white/40 hover:text-blue-700",
+              "px-3 py-1.5 rounded-lg text-gray-800 font-medium text-base transition-all duration-200 hover:bg-white/40 hover:text-blue-700 focus:outline-none focus:bg-white/50",
               location.pathname === path
                 ? "bg-white/60 shadow-md text-blue-700 font-semibold"
                 : "bg-transparent"
             )}
+            tabIndex={0}
           >
             {name}
           </Link>

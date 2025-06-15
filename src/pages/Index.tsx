@@ -1,3 +1,4 @@
+import GlassNavbar from "@/components/GlassNavbar";
 import { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -58,7 +59,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <GlassNavbar />
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-40 pt-24">
+        {/* Navigation is now in GlassNavbar, keep header content minimal */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
@@ -70,29 +73,9 @@ const Index = () => {
                 <p className="text-xs text-gray-500">Professional Resume Optimization</p>
               </div>
             </div>
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-gray-900 text-sm font-medium">Features</a>
-              <a href="#how-it-works" className="text-gray-600 hover:text-gray-900 text-sm font-medium">How it Works</a>
-              <a href="#pricing" className="text-gray-600 hover:text-gray-900 text-sm font-medium">Pricing</a>
-              {analysis && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowComparison(!showComparison)}
-                  className="text-blue-600 border-blue-200 hover:bg-blue-50"
-                >
-                  <ArrowLeftRight className="h-4 w-4 mr-2" />
-                  {showComparison ? 'Hide' : 'Show'} Comparison
-                </Button>
-              )}
-            </nav>
-            <Button variant="ghost" size="sm" className="md:hidden">
-              <Menu className="h-5 w-5" />
-            </Button>
           </div>
         </div>
       </header>
-
       <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-3xl mx-auto">
@@ -121,7 +104,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <section id="features" className="mb-20">
           <div className="text-center mb-12">
@@ -166,7 +148,29 @@ const Index = () => {
             </Card>
           </div>
         </section>
-
+        {/* Replace 'How it Works' with strongly convincing info */}
+        <section id="why-us" className="mb-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Your Career Success, Our Mission</h2>
+            <p className="text-lg text-gray-600">
+              Partner with ResumeAI to accelerate your journey to a better job. We combine world-class AI, proven industry expertise, and secure handling to give you the confidence—and the edge—you deserve.
+            </p>
+          </div>
+          <div className="md:flex md:justify-center gap-8 space-y-8 md:space-y-0">
+            <div className="flex-1 bg-white/70 shadow-lg rounded-2xl p-8 text-center">
+              <h3 className="text-2xl font-bold text-blue-700 mb-3">Expert-Driven</h3>
+              <p className="text-gray-700">Built in collaboration with hiring managers and recruiters to ensure your resume stands out.</p>
+            </div>
+            <div className="flex-1 bg-white/70 shadow-lg rounded-2xl p-8 text-center">
+              <h3 className="text-2xl font-bold text-blue-700 mb-3">Transparent Results</h3>
+              <p className="text-gray-700">You see exactly what changes our AI recommends, giving you control at every step.</p>
+            </div>
+            <div className="flex-1 bg-white/70 shadow-lg rounded-2xl p-8 text-center">
+              <h3 className="text-2xl font-bold text-blue-700 mb-3">Support All Along</h3>
+              <p className="text-gray-700">Friendly email and live chat support to answer all your questions quickly.</p>
+            </div>
+          </div>
+        </section>
         <section id="how-it-works" className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Get Started in 3 Simple Steps</h2>
@@ -435,5 +439,4 @@ const Index = () => {
     </div>
   );
 };
-
 export default Index;

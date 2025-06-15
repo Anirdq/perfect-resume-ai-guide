@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, FileText, Copy, Clipboard } from 'lucide-react';
 import { toast } from 'sonner';
-import jsPDF from 'jspdf';
 
 interface ExportOptionsProps {
   resumeText: string;
@@ -20,21 +19,40 @@ export const ExportOptions = ({ resumeText }: ExportOptionsProps) => {
   };
 
   const exportAsPDF = () => {
-    const doc = new jsPDF();
-    const lines = resumeText.split('\n');
-    let yPosition = 20;
-    
-    lines.forEach((line) => {
-      if (yPosition > 280) {
-        doc.addPage();
-        yPosition = 20;
-      }
-      doc.text(line, 20, yPosition);
-      yPosition += 7;
-    });
-    
-    doc.save('optimized-resume.pdf');
-    toast.success('Resume exported as PDF!');
+    // Simple PDF export using print functionality
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Resume</title>
+          <style>
+            body { 
+              font-family: Arial, sans-serif; 
+              line-height: 1.6; 
+              margin: 40px; 
+              color: #333;
+            }
+            pre { 
+              white-space: pre-wrap; 
+              font-family: Arial, sans-serif; 
+              font-size: 12px;
+            }
+            @media print {
+              body { margin: 20px; }
+            }
+          </style>
+        </head>
+        <body>
+          <pre>${resumeText}</pre>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+      toast.success('Resume ready for PDF export! Use your browser\'s print function to save as PDF.');
+    }
   };
 
   const exportAsText = () => {
@@ -107,7 +125,7 @@ export const ExportOptions = ({ resumeText }: ExportOptionsProps) => {
             className="flex items-center space-x-2"
           >
             <FileText className="h-4 w-4" />
-            <span>Export PDF</span>
+            <span>Print/PDF</span>
           </Button>
           <Button
             variant="outline"

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,6 +9,8 @@ import { toast } from 'sonner';
 import { FileUpload } from '@/components/FileUpload';
 import { EditableResume } from '@/components/EditableResume';
 import { ExportOptions } from '@/components/ExportOptions';
+import { AIResumeService } from '@/services/aiResumeService';
+import { ApiKeyInput } from '@/components/ApiKeyInput';
 
 const Index = () => {
   const [resume, setResume] = useState('');
@@ -17,49 +19,47 @@ const Index = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [optimizedResume, setOptimizedResume] = useState('');
   const [showComparison, setShowComparison] = useState(false);
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('openai_api_key') || '');
+  const [aiService, setAiService] = useState<AIResumeService | null>(null);
 
-  const mockAnalyze = async () => {
+  const handleApiKeySet = useCallback((key: string) => {
+    setApiKey(key);
+    localStorage.setItem('openai_api_key', key);
+    setAiService(new AIResumeService(key));
+  }, []);
+
+  const analyzeWithAI = async () => {
+    if (!aiService) {
+      toast.error('Please set up your OpenAI API key first');
+      return;
+    }
+
     setIsAnalyzing(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
     
-    const mockAnalysis = {
-      atsScore: 78,
-      keywordMatches: [
-        { keyword: 'JavaScript', found: true, importance: 'high' },
-        { keyword: 'React', found: true, importance: 'high' },
-        { keyword: 'Node.js', found: false, importance: 'medium' },
-        { keyword: 'TypeScript', found: true, importance: 'medium' },
-        { keyword: 'API Development', found: false, importance: 'high' },
-        { keyword: 'Agile', found: true, importance: 'low' },
-      ],
-      suggestions: [
-        'Add "Node.js" experience to match job requirements',
-        'Include "API Development" in your technical skills',
-        'Quantify your achievements with specific metrics',
-        'Use more action verbs like "developed", "implemented", "optimized"'
-      ]
-    };
+    try {
+      // Run analysis and optimization in parallel
+      const [analysisResult, optimizedResumeResult] = await Promise.all([
+        aiService.analyzeResume(resume, jobDescription),
+        aiService.optimizeResume(resume, jobDescription)
+      ]);
 
-    const mockOptimizedResume = `JOHN DOE
-Senior Frontend Developer
-
-EXPERIENCE
-• Developed and maintained React applications serving 10,000+ users
-• Implemented responsive web designs using JavaScript and TypeScript
-• Collaborated with cross-functional teams in Agile environment
-• Built RESTful API integrations to enhance user experience
-
-SKILLS
-• JavaScript, React, TypeScript, Node.js
-• API Development, REST APIs
-• HTML5, CSS3, Responsive Design
-• Git, Agile Methodologies`;
-    
-    setAnalysis(mockAnalysis);
-    setOptimizedResume(mockOptimizedResume);
-    setIsAnalyzing(false);
-    toast.success('Resume analysis completed!');
+      setAnalysis(analysisResult);
+      setOptimizedResume(optimizedResumeResult);
+      toast.success('AI analysis completed successfully!');
+    } catch (error) {
+      console.error('AI analysis failed:', error);
+      toast.error('AI analysis failed. Please check your API key and try again.');
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
+
+  // Initialize AI service if API key exists
+  useState(() => {
+    if (apiKey) {
+      setAiService(new AIResumeService(apiKey));
+    }
+  });
 
   const handleOptimizedResumeSave = (newResume: string) => {
     setOptimizedResume(newResume);
@@ -108,15 +108,15 @@ SKILLS
           <div className="bg-white p-4 rounded-lg shadow-sm border flex items-center space-x-3">
             <Zap className="h-8 w-8 text-green-600" />
             <div>
-              <h3 className="font-semibold text-gray-900">AI Powered</h3>
-              <p className="text-sm text-gray-600">Smart keyword matching</p>
+              <h3 className="font-semibold text-gray-900">Real AI Powered</h3>
+              <p className="text-sm text-gray-600">GPT-4 powered optimization</p>
             </div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow-sm border flex items-center space-x-3">
             <TrendingUp className="h-8 w-8 text-purple-600" />
             <div>
-              <h3 className="font-semibold text-gray-900">Instant Results</h3>
-              <p className="text-sm text-gray-600">Get optimized resume in seconds</p>
+              <h3 className="font-semibold text-gray-900">Smart Analysis</h3>
+              <p className="text-sm text-gray-600">Advanced keyword matching</p>
             </div>
           </div>
         </div>
@@ -124,6 +124,8 @@ SKILLS
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Input Section */}
           <div className="space-y-6">
+            <ApiKeyInput onApiKeySet={handleApiKeySet} hasApiKey={!!apiKey} />
+            
             <FileUpload onFileUpload={setResume} />
             
             <Card>
@@ -161,20 +163,20 @@ SKILLS
             </Card>
 
             <Button 
-              onClick={mockAnalyze}
-              disabled={!resume || !jobDescription || isAnalyzing}
+              onClick={analyzeWithAI}
+              disabled={!resume || !jobDescription || isAnalyzing || !apiKey}
               size="lg"
               className="w-full bg-blue-600 hover:bg-blue-700"
             >
               {isAnalyzing ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Analyzing Resume...
+                  Analyzing with AI...
                 </>
               ) : (
                 <>
                   <Zap className="h-4 w-4 mr-2" />
-                  Optimize My Resume
+                  Optimize My Resume with AI
                 </>
               )}
             </Button>
@@ -190,7 +192,7 @@ SKILLS
                     <CardTitle className="flex items-center justify-between">
                       <span className="flex items-center space-x-2">
                         <CheckCircle className="h-5 w-5 text-green-600" />
-                        <span>ATS Compatibility Score</span>
+                        <span>AI-Powered ATS Score</span>
                       </span>
                       <Badge variant={analysis.atsScore >= 70 ? "default" : "destructive"} className="text-lg px-3 py-1">
                         {analysis.atsScore}%
@@ -202,7 +204,7 @@ SKILLS
                     <p className="text-sm text-gray-600 mt-2">
                       {analysis.atsScore >= 80 ? 'Excellent! Your resume is well-optimized for ATS.' :
                        analysis.atsScore >= 70 ? 'Good score! Some improvements can boost your chances.' :
-                       'Needs improvement. Follow the suggestions below.'}
+                       'Needs improvement. Follow the AI suggestions below.'}
                     </p>
                   </CardContent>
                 </Card>
@@ -212,7 +214,7 @@ SKILLS
                   <CardHeader>
                     <CardTitle className="flex items-center space-x-2">
                       <Star className="h-5 w-5 text-yellow-600" />
-                      <span>Keyword Analysis</span>
+                      <span>AI Keyword Analysis</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -236,12 +238,12 @@ SKILLS
                   </CardContent>
                 </Card>
 
-                {/* Suggestions */}
+                {/* AI Suggestions */}
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center space-x-2">
                       <TrendingUp className="h-5 w-5 text-blue-600" />
-                      <span>Optimization Suggestions</span>
+                      <span>AI Optimization Suggestions</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -258,7 +260,7 @@ SKILLS
                   </CardContent>
                 </Card>
 
-                {/* Optimized Resume with Real-time Editing */}
+                {/* AI-Optimized Resume with Real-time Editing */}
                 <EditableResume 
                   initialResume={optimizedResume}
                   onSave={handleOptimizedResumeSave}
@@ -273,7 +275,7 @@ SKILLS
                     <CardHeader>
                       <CardTitle className="flex items-center space-x-2">
                         <ArrowLeftRight className="h-5 w-5 text-purple-600" />
-                        <span>Before & After Comparison</span>
+                        <span>AI Before & After Comparison</span>
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -287,7 +289,7 @@ SKILLS
                           </div>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-sm text-gray-600 mb-2">Optimized Resume</h4>
+                          <h4 className="font-semibold text-sm text-gray-600 mb-2">AI-Optimized Resume</h4>
                           <div className="bg-green-50 p-3 rounded border border-green-200 max-h-60 overflow-y-auto">
                             <pre className="whitespace-pre-wrap text-xs text-gray-700 font-mono">
                               {optimizedResume}
@@ -303,9 +305,9 @@ SKILLS
               <Card className="border-dashed border-2 border-gray-300">
                 <CardContent className="flex flex-col items-center justify-center py-12">
                   <FileText className="h-12 w-12 text-gray-400 mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-600 mb-2">Ready to Optimize?</h3>
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">Ready for AI Analysis?</h3>
                   <p className="text-gray-500 text-center">
-                    Upload or paste your resume and job description to get AI-powered optimization suggestions.
+                    Set up your OpenAI API key, then upload your resume and job description for AI-powered optimization.
                   </p>
                 </CardContent>
               </Card>

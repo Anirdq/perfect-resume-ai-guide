@@ -81,14 +81,8 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-saas-gradient relative overflow-x-hidden">
-      {/* SaaS Hero Background Effects */}
-      <div className="pointer-events-none absolute -z-10 top-0 left-0 w-full h-[120vh]">
-        <div className="absolute left-1/2 -translate-x-1/2 top-[-8rem] w-[900px] h-[550px] bg-gradient-to-tr from-cyan-400/30 via-fuchsia-500/10 to-indigo-800/30 blur-[124px] rounded-full opacity-60 animate-fade-in"></div>
-        <div className="absolute left-0 -top-48 w-2/5 h-96 bg-gradient-to-br from-fuchsia-700/30 to-cyan-500/10 blur-3xl rounded-full"></div>
-        <div className="absolute right-0 top-1/4 w-1/3 h-72 bg-gradient-to-tl from-fuchsia-500/20 to-cyan-800/5 blur-3xl rounded-full"></div>
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=60 height=60 viewBox=0 0 60 60 xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'none\\' fill-rule=\\'evenodd\\'%3E%3Cg fill=\\'%23ffffff\\' fill-opacity=\\'0.022\\'%3E%3Ccircle cx=\\'30\\' cy=\\'30\\' r=\\'2\\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
-      </div>
+    <div className="min-h-screen relative overflow-x-hidden">
+      {/* Removed SaaS Hero Background Effects for a cleaner gradient */}
       
       {/* Sticky Navigation */}
       <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-indigo-600/20 shadow-lg">

@@ -27,23 +27,41 @@ const companyLogos = [
   },
 ];
 
-const LogoImage = ({ src, alt }: { src: string; alt: string }) => {
-  const [imgError, setImgError] = React.useState(false);
+// Utility to wrap logos through CORS proxy
+function getProxiedUrl(url: string): string {
+  // Remove the protocol to avoid double-https
+  const urlNoProtocol = url.replace(/^https?:\/\//, "");
+  return `https://images.weserv.nl/?url=${encodeURIComponent(urlNoProtocol)}`;
+}
 
-  if (imgError) {
-    // Log error and render nothing if logo fails to load
-    console.log("Failed to load logo:", alt, src);
-    return null;
-  }
+const LogoImage = ({ src, alt }: { src: string; alt: string }) => {
+  const [imgSrc, setImgSrc] = React.useState(getProxiedUrl(src));
+  const [attemptedFallback, setAttemptedFallback] = React.useState(false);
+
+  const handleError = () => {
+    if (!attemptedFallback) {
+      // Try switching to the direct source as a backup if the proxy fails
+      setImgSrc(src);
+      setAttemptedFallback(true);
+    } else {
+      // If both proxy and direct fail, hide
+      console.log("Failed to load logo:", alt, src);
+      setImgSrc(""); // causes React to hide the image
+    }
+  };
+
+  // Hide if can't load at all
+  if (!imgSrc) return null;
 
   return (
     <img
-      src={src}
+      src={imgSrc}
       alt={alt}
       className="h-7 md:h-9 object-contain rounded transition-all grayscale opacity-80 hover:opacity-100 border border-gray-300"
       style={{ minWidth: 80, maxWidth: 120, background: "transparent" }}
       loading="lazy"
-      onError={() => setImgError(true)}
+      onError={handleError}
+      draggable={false}
     />
   );
 };

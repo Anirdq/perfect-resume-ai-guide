@@ -81,28 +81,28 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#04182E] via-[#110941] to-[#00080F] relative overflow-x-hidden">
+    <div className="min-h-screen bg-saas-gradient relative overflow-x-hidden">
       {/* SaaS Hero Background Effects */}
-      <div className="pointer-events-none absolute -z-10 top-0 left-0 w-full h-[110vh]">
-        <div className="absolute left-1/2 -translate-x-1/2 top-[-8rem] w-[800px] h-[500px] bg-gradient-to-br from-cyan-500/20 via-blue-500/10 to-fuchsia-500/20 blur-[100px] rounded-full opacity-70 animate-fade-in"></div>
-        <div className="absolute left-0 -top-60 w-1/2 h-80 bg-cyan-500/10 blur-2xl rounded-full"></div>
-        <div className="absolute right-0 top-1/3 w-1/3 h-72 bg-fuchsia-500/10 blur-3xl rounded-full"></div>
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=60 height=60 viewBox=0 0 60 60 xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'none\\' fill-rule=\\'evenodd\\'%3E%3Cg fill=\\'%23ffffff\\' fill-opacity=\\'0.017\\'%3E%3Ccircle cx=\\'30\\' cy=\\'30\\' r=\\'2\\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
+      <div className="pointer-events-none absolute -z-10 top-0 left-0 w-full h-[120vh]">
+        <div className="absolute left-1/2 -translate-x-1/2 top-[-8rem] w-[900px] h-[550px] bg-gradient-to-tr from-cyan-400/30 via-fuchsia-500/10 to-indigo-800/30 blur-[124px] rounded-full opacity-60 animate-fade-in"></div>
+        <div className="absolute left-0 -top-48 w-2/5 h-96 bg-gradient-to-br from-fuchsia-700/30 to-cyan-500/10 blur-3xl rounded-full"></div>
+        <div className="absolute right-0 top-1/4 w-1/3 h-72 bg-gradient-to-tl from-fuchsia-500/20 to-cyan-800/5 blur-3xl rounded-full"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=60 height=60 viewBox=0 0 60 60 xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'none\\' fill-rule=\\'evenodd\\'%3E%3Cg fill=\\'%23ffffff\\' fill-opacity=\\'0.022\\'%3E%3Ccircle cx=\\'30\\' cy=\\'30\\' r=\\'2\\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
       </div>
       
       {/* Sticky Navigation */}
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10 shadow-md">
-        <div className="flex justify-between items-center max-w-7xl mx-auto py-3 px-4 md:px-8">
+      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-indigo-600/20 shadow-lg">
+        <div className="flex justify-between items-center max-w-7xl mx-auto py-4 px-4 md:px-8">
           <div className="flex items-center">
-            <BrandLogo size={32} />
-            <span className="font-bold text-lg md:text-2xl bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-white to-fuchsia-400 tracking-tighter select-none">ResumeAI</span>
+            <BrandLogo size={34} />
+            <span className="font-extrabold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-cyan-200 via-fuchsia-300 to-blue-400 tracking-tight select-none">ResumeAI</span>
           </div>
-          <nav className="hidden md:flex gap-7 text-sm font-semibold text-zinc-200">
-            <a href="#features" className="hover:text-cyan-300 transition">Features</a>
-            <a href="#how-it-works" className="hover:text-cyan-300 transition">How It Works</a>
-            <a href="#pricing" className="hover:text-cyan-300 transition">Pricing</a>
+          <nav className="hidden md:flex gap-8 text-lg font-semibold text-indigo-100/95">
+            <a href="#features" className="hover:text-cyan-200 transition underline-offset-4 hover:underline">Features</a>
+            <a href="#how-it-works" className="hover:text-fuchsia-200 transition underline-offset-4 hover:underline">How It Works</a>
+            <a href="#pricing" className="hover:text-blue-300 transition underline-offset-4 hover:underline">Pricing</a>
           </nav>
-          <Button className="ml-1 bg-gradient-to-tr from-fuchsia-600 to-cyan-500 text-white rounded-xl font-bold shadow-xl shadow-fuchsia-400/10 px-6 py-2 hover:scale-105 hover:brightness-110 transition-transform duration-200">
+          <Button className="ml-1 px-7 py-2 rounded-full font-bold shadow-fancy bg-gradient-to-tr from-fuchsia-500 to-cyan-400 text-white cta-glow text-lg tracking-tight">
             Try Free
           </Button>
         </div>
@@ -111,21 +111,21 @@ const Index = () => {
       {/* HERO */}
       <section className="py-20 relative z-10 text-center">
         <div className="max-w-4xl mx-auto">
-          <BrandLogo size={54} />
-          <h1 className="mt-4 text-5xl md:text-7xl font-black bg-gradient-to-r from-cyan-300 via-fuchsia-400 to-blue-400 bg-clip-text text-transparent tracking-tight leading-tight drop-shadow-xl animate-fade-in">
+          <BrandLogo size={64} />
+          <h1 className="mt-4 text-6xl md:text-8xl font-black bg-gradient-to-r from-cyan-200 via-fuchsia-300 to-blue-400 bg-clip-text text-transparent tracking-tighter leading-tight drop-shadow-xl animate-fade-in">
             AI Resume Optimization<br />
             for Modern Job Seekers
           </h1>
-          <p className="mt-8 text-lg md:text-2xl max-w-2xl mx-auto text-gray-200/90 font-light">
+          <p className="mt-8 text-2xl md:text-3xl max-w-2xl mx-auto text-zinc-200/90 font-extralight tracking-wide">
             Transform your resume using AI, get expert-level advice, and make it through any ATS with confidence.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
-            <Badge className="bg-gradient-to-tr from-cyan-500/30 to-fuchsia-500/10 text-cyan-200 shadow">ATS Proof</Badge>
-            <Badge className="bg-gradient-to-bl from-fuchsia-400/30 to-cyan-600/10 text-fuchsia-200 shadow">AI Powered</Badge>
-            <Badge className="bg-gradient-to-bl from-blue-300/10 to-fuchsia-500/5 text-blue-200 shadow">Expert Approved</Badge>
+          <div className="flex flex-wrap items-center justify-center gap-6 mt-10">
+            <Badge className="bg-gradient-to-tr from-cyan-400/40 to-fuchsia-500/20 text-cyan-100 shadow-lg py-2 px-4 text-lg rounded-full border-0">ATS Proof</Badge>
+            <Badge className="bg-gradient-to-bl from-fuchsia-400/40 to-blue-500/15 text-fuchsia-100 shadow-lg py-2 px-4 text-lg rounded-full border-0">AI Powered</Badge>
+            <Badge className="bg-gradient-to-bl from-blue-300/10 to-fuchsia-300/10 text-blue-100 shadow-lg py-2 px-4 text-lg rounded-full border-0">Expert Approved</Badge>
           </div>
-          <div className="mt-10">
-            <Button className="bg-gradient-to-r from-cyan-500 via-fuchsia-400 to-blue-600 text-white py-4 px-10 rounded-2xl text-lg font-bold shadow-lg shadow-fuchsia-400/10 hover:scale-105 transition-transform duration-200">
+          <div className="mt-12">
+            <Button className="cta-glow rounded-full px-10 py-4 text-xl font-bold tracking-tight">
               Get Started – Free
             </Button>
           </div>
@@ -135,43 +135,42 @@ const Index = () => {
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-14">
         {/* Features */}
         <section id="features" className="mb-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <Card className="rounded-2xl shadow-xl border-0 bg-gradient-to-br from-cyan-900/40 to-slate-800/20 backdrop-blur-lg hover:shadow-cyan-600/30 hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center justify-center mt-6 mb-4">
-                <div className="bg-gradient-to-br from-cyan-500 to-fuchsia-400 p-4 rounded-full shadow-lg">
-                  <Target className="h-8 w-8 text-white" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+            <Card className="card-glass hover:scale-105 transition-transform duration-300">
+              <div className="flex items-center justify-center mt-8 mb-5">
+                <div className="bg-gradient-to-br from-cyan-500 to-fuchsia-400 p-5 rounded-full shadow-xl ring-4 ring-cyan-400/10">
+                  <Target className="h-11 w-11 text-white" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-cyan-200 mb-2">ATS Optimization</h3>
-              <p className="text-gray-300 mb-7 px-4">
+              <h3 className="text-2xl font-black text-cyan-100 mb-3">ATS Optimization</h3>
+              <p className="text-indigo-100/80 mb-8 px-6 font-light">
                 Intelligent keyword matching, upfront ATS scoring, and best-in-class formatting recommendations.
               </p>
             </Card>
-            <Card className="rounded-2xl shadow-xl border-0 bg-gradient-to-br from-fuchsia-800/20 to-cyan-700/20 backdrop-blur-lg hover:shadow-fuchsia-400/30 hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center justify-center mt-6 mb-4">
-                <div className="bg-gradient-to-br from-fuchsia-400 to-blue-600 p-4 rounded-full shadow-lg">
-                  <Bot className="h-8 w-8 text-white" />
+            <Card className="card-glass hover:scale-105 transition-transform duration-300">
+              <div className="flex items-center justify-center mt-8 mb-5">
+                <div className="bg-gradient-to-br from-fuchsia-400 to-blue-600 p-5 rounded-full shadow-xl ring-4 ring-fuchsia-400/10">
+                  <Bot className="h-11 w-11 text-white" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-fuchsia-200 mb-2">AI Analysis</h3>
-              <p className="text-gray-300 mb-7 px-4">
+              <h3 className="text-2xl font-black text-fuchsia-100 mb-3">AI Analysis</h3>
+              <p className="text-indigo-100/80 mb-8 px-6 font-light">
                 GPT-powered insights provide actionable improvement points, language upgrades, and high-level strategy.
               </p>
             </Card>
-            <Card className="rounded-2xl shadow-xl border-0 bg-gradient-to-br from-slate-900/30 to-blue-950/10 backdrop-blur-lg hover:shadow-blue-400/30 hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center justify-center mt-6 mb-4">
-                <div className="bg-gradient-to-br from-blue-400 to-cyan-500 p-4 rounded-full shadow-lg">
-                  <Sparkles className="h-8 w-8 text-white" />
+            <Card className="card-glass hover:scale-105 transition-transform duration-300">
+              <div className="flex items-center justify-center mt-8 mb-5">
+                <div className="bg-gradient-to-br from-blue-400 to-cyan-500 p-5 rounded-full shadow-xl ring-4 ring-blue-400/10">
+                  <Sparkles className="h-11 w-11 text-white" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-blue-200 mb-2">Smart Matching</h3>
-              <p className="text-gray-300 mb-7 px-4">
+              <h3 className="text-2xl font-black text-blue-100 mb-3">Smart Matching</h3>
+              <p className="text-indigo-100/80 mb-8 px-6 font-light">
                 Instantly compare your resume to job descriptions and highlight your most relevant strengths.
               </p>
             </Card>
           </div>
         </section>
-
         {/* Main Application Workflow */}
         <section id="how-it-works" className="mb-20">
           <div className="mx-auto text-center">

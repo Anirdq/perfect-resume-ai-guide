@@ -20,6 +20,8 @@ export default {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         poppins: ['Poppins', 'Space Grotesk', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         futuristic: ['Space Grotesk', 'Poppins', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        orbitron: ['Orbitron', 'Poppins', 'Space Grotesk', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sora: ['Sora', 'Inter', 'Poppins', 'Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
 				border: 'hsl(var(--border))',

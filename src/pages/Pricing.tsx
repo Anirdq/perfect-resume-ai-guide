@@ -1,56 +1,46 @@
-
 import GlassNavbar from "@/components/GlassNavbar";
 import { Check, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Features to compare
-const FEATURES = [
-  {
-    label: "Resume Analyses",
-    basic: "1",
-    pro: "Unlimited",
-    icon: "📝",
-  },
-  {
-    label: "AI Optimization",
-    basic: "Essential",
-    pro: "Advanced AI & ATS",
-    icon: "🤖",
-  },
-  {
-    label: "Keyword Matching",
-    basic: "No",
-    pro: "Yes",
-    icon: "🔍",
-  },
-  {
-    label: "Priority Support",
-    basic: "Email Only",
-    pro: "Email & Chat",
-    icon: "⚡",
-  },
-  {
-    label: "Secure Upload/Download",
-    basic: "Yes",
-    pro: "Yes",
-    icon: "🔒",
-  },
-  {
-    label: "New Features & Updates",
-    basic: "—",
-    pro: "Included",
-    icon: "🚀",
-  },
-];
-
+const FEATURES = [{
+  label: "Resume Analyses",
+  basic: "1",
+  pro: "Unlimited",
+  icon: "📝"
+}, {
+  label: "AI Optimization",
+  basic: "Essential",
+  pro: "Advanced AI & ATS",
+  icon: "🤖"
+}, {
+  label: "Keyword Matching",
+  basic: "No",
+  pro: "Yes",
+  icon: "🔍"
+}, {
+  label: "Priority Support",
+  basic: "Email Only",
+  pro: "Email & Chat",
+  icon: "⚡"
+}, {
+  label: "Secure Upload/Download",
+  basic: "Yes",
+  pro: "Yes",
+  icon: "🔒"
+}, {
+  label: "New Features & Updates",
+  basic: "—",
+  pro: "Included",
+  icon: "🚀"
+}];
 export default function Pricing() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pb-10">
+  return <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pb-10">
       <GlassNavbar />
       <div className="pt-28 max-w-4xl mx-auto px-4">
         {/* Section heading and subheading */}
         <h1 className="text-4xl font-bold text-center mb-2 text-gray-900">Choose Your Plan</h1>
-        <p className="text-center text-lg text-gray-700 mb-10">
+        <p className="text-center text-lg text-gray-700 mb-10 my-[50px]">
           Land interviews faster with smart, flexible pricing. Start for free — upgrade anytime.
         </p>
 
@@ -118,15 +108,13 @@ export default function Pricing() {
               </tr>
             </thead>
             <tbody>
-              {FEATURES.map((f) => (
-                <tr key={f.label} className="bg-white/60 hover:bg-indigo-50 rounded-lg">
+              {FEATURES.map(f => <tr key={f.label} className="bg-white/60 hover:bg-indigo-50 rounded-lg">
                   <td className="py-2 px-1 font-medium flex items-center gap-2 text-gray-900 text-base">
                     <span className="text-lg">{f.icon}</span> {f.label}
                   </td>
                   <td className="text-center text-gray-700 font-normal">{f.basic || <span className="opacity-40">—</span>}</td>
                   <td className="text-center text-gray-900 font-semibold">{f.pro || <span className="opacity-40">—</span>}</td>
-                </tr>
-              ))}
+                </tr>)}
             </tbody>
           </table>
         </div>
@@ -138,6 +126,5 @@ export default function Pricing() {
           </span>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }

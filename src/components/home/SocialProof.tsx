@@ -1,3 +1,4 @@
+
 import { Star, Users, Check } from "lucide-react";
 
 // Utility function for Wikimedia FilePath; keep code in SocialProof for now because it's used only here
@@ -16,10 +17,10 @@ function getWikimediaFilePath(url: string): string {
   return url;
 }
 
-// Social proof company logos: these match the companies used before
+// Social proof company logos: updated with better sources
 const socialProofLogos = [
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Indeed_logo.png",
+    src: "https://upload.wikimedia.org/wikipedia/commons/f/fc/Indeed_logo.svg",
     alt: "Indeed",
   },
   {
@@ -27,11 +28,11 @@ const socialProofLogos = [
     alt: "LinkedIn",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/7/75/Glassdoor_Logo_2014.png",
+    src: "https://upload.wikimedia.org/wikipedia/commons/8/8b/Glassdoor_logo.svg",
     alt: "Glassdoor",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Monster.com_logo.svg",
+    src: "https://upload.wikimedia.org/wikipedia/commons/f/f4/Monster_logo.svg",
     alt: "Monster",
   },
 ];

@@ -9,8 +9,7 @@ import { toast } from 'sonner';
 import { FileUpload } from '@/components/FileUpload';
 import { EditableResume } from '@/components/EditableResume';
 import { ExportOptions } from '@/components/ExportOptions';
-import { AIResumeService } from '@/services/aiResumeService';
-import { ApiKeyInput } from '@/components/ApiKeyInput';
+import { ProviderAgnosticAIResumeService } from "@/services/providerAgnosticAIResumeService";
 
 const Index = () => {
   const [resume, setResume] = useState('');
@@ -19,8 +18,7 @@ const Index = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [optimizedResume, setOptimizedResume] = useState('');
   const [showComparison, setShowComparison] = useState(false);
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('openai_api_key') || '');
-  const [aiService, setAiService] = useState<AIResumeService | null>(null);
+  const [aiService] = useState(() => new ProviderAgnosticAIResumeService());
 
   const handleFileUpload = useCallback((text: string) => {
     console.log('Index component received file upload text:', text.substring(0, 100) + '...');
@@ -34,45 +32,24 @@ const Index = () => {
     setResume(newResume);
   };
 
-  const handleApiKeySet = useCallback((key: string) => {
-    setApiKey(key);
-    localStorage.setItem('openai_api_key', key);
-    setAiService(new AIResumeService(key));
-  }, []);
-
   const analyzeWithAI = async () => {
-    if (!aiService) {
-      toast.error('Please set up your OpenAI API key first');
-      return;
-    }
-
-    console.log('Starting AI analysis with resume length:', resume.length);
     setIsAnalyzing(true);
-    
+
     try {
-      // Run analysis and optimization in parallel
       const [analysisResult, optimizedResumeResult] = await Promise.all([
         aiService.analyzeResume(resume, jobDescription),
         aiService.optimizeResume(resume, jobDescription)
       ]);
-
       setAnalysis(analysisResult);
       setOptimizedResume(optimizedResumeResult);
       toast.success('AI analysis completed successfully!');
     } catch (error) {
       console.error('AI analysis failed:', error);
-      toast.error('AI analysis failed. Please check your API key and try again.');
+      toast.error("AI analysis failed. Please try again later or contact support.");
     } finally {
       setIsAnalyzing(false);
     }
   };
-
-  // Initialize AI service if API key exists
-  useState(() => {
-    if (apiKey) {
-      setAiService(new AIResumeService(apiKey));
-    }
-  });
 
   const handleOptimizedResumeSave = (newResume: string) => {
     setOptimizedResume(newResume);
@@ -81,7 +58,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Professional Header/Navigation */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -117,7 +93,6 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-3xl mx-auto">
@@ -148,7 +123,6 @@ const Index = () => {
       </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Features Section */}
         <section id="features" className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose ResumeAI?</h2>
@@ -193,7 +167,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Main Application Section */}
         <section id="how-it-works" className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Get Started in 3 Simple Steps</h2>
@@ -203,9 +176,7 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
-            {/* Input Section */}
             <div className="space-y-8">
-              <ApiKeyInput onApiKeySet={handleApiKeySet} hasApiKey={!!apiKey} />
               
               <Card className="shadow-sm border-0">
                 <CardHeader>
@@ -266,7 +237,7 @@ const Index = () => {
 
               <Button 
                 onClick={analyzeWithAI}
-                disabled={!resume || !jobDescription || isAnalyzing || !apiKey}
+                disabled={!resume || !jobDescription || isAnalyzing}
                 size="lg"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg font-semibold"
               >
@@ -284,7 +255,6 @@ const Index = () => {
               </Button>
             </div>
 
-            {/* Results Section */}
             <div className="space-y-8">
               {analysis ? (
                 <>
@@ -444,7 +414,6 @@ const Index = () => {
         </section>
       </div>
 
-      {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">

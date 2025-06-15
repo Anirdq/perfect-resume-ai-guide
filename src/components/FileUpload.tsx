@@ -44,122 +44,102 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
         onFileUpload(text);
         toast.success('Resume uploaded successfully!');
       } else if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
-        // Enhanced mock resume for PDF - in real implementation, you'd use a PDF parsing library
-        const mockResumeText = `JOHN SMITH
-Senior Software Engineer
-Email: john.smith@email.com | Phone: (555) 123-4567
-LinkedIn: linkedin.com/in/johnsmith | Location: San Francisco, CA
+        // Note: This is mock data for PDF files
+        // In a real application, you would use a PDF parsing library like pdf-parse or PDF.js
+        toast.info('PDF uploaded - Using sample resume data (PDF parsing not implemented)');
+        
+        const sampleResumeText = `[SAMPLE RESUME DATA - Your uploaded PDF: ${file.name}]
+
+ALEX RODRIGUEZ
+Full Stack Developer
+Email: alex.rodriguez@email.com | Phone: (555) 123-4567
+LinkedIn: linkedin.com/in/alexrodriguez | Location: Austin, TX
 
 PROFESSIONAL SUMMARY
-Experienced software engineer with 8+ years developing scalable web applications using modern technologies. 
-Proven track record of leading cross-functional teams and delivering high-quality software solutions.
+Experienced full-stack developer with 5+ years building scalable web applications. 
+Passionate about clean code, user experience, and modern development practices.
 
 TECHNICAL SKILLS
-• Programming Languages: JavaScript, TypeScript, Python, Java
-• Frontend: React, Vue.js, Angular, HTML5, CSS3, Tailwind CSS
-• Backend: Node.js, Express, Django, Spring Boot
-• Databases: PostgreSQL, MongoDB, Redis, MySQL
-• Cloud & DevOps: AWS, Docker, Kubernetes, CI/CD, Jenkins
-• Tools: Git, Jira, Figma, Postman
+• Languages: JavaScript, TypeScript, Python, Java
+• Frontend: React, Next.js, Vue.js, HTML5, CSS3
+• Backend: Node.js, Express, FastAPI, Spring Boot
+• Databases: PostgreSQL, MongoDB, Redis
+• Cloud: AWS, Google Cloud, Docker, Kubernetes
+• Tools: Git, Jenkins, Jira, Figma
 
 PROFESSIONAL EXPERIENCE
 
-Senior Software Engineer | Tech Solutions Inc. | 2020 - Present
-• Led development of microservices architecture serving 100K+ daily active users
-• Implemented automated testing strategies, reducing bugs by 40%
-• Mentored 5 junior developers and conducted code reviews
-• Collaborated with product managers to define technical requirements
-• Optimized database queries, improving application performance by 35%
+Senior Full Stack Developer | InnovateTech Solutions | 2021 - Present
+• Led development of customer portal serving 50K+ users
+• Implemented CI/CD pipelines reducing deployment time by 60%
+• Mentored 3 junior developers on best practices
+• Built RESTful APIs and microservices architecture
 
-Software Engineer | Digital Innovations LLC | 2018 - 2020
-• Built responsive web applications using React and TypeScript
-• Developed RESTful APIs and integrated third-party services
-• Participated in Agile development processes and sprint planning
-• Created comprehensive technical documentation
-
-Junior Developer | StartupCo | 2016 - 2018
-• Contributed to full-stack web development projects
-• Assisted in database design and optimization
-• Supported legacy system maintenance and updates
+Full Stack Developer | WebCraft Agency | 2019 - 2021
+• Developed responsive web applications for diverse clients
+• Integrated third-party APIs and payment systems
+• Optimized application performance and database queries
+• Collaborated with designers on UI/UX implementation
 
 EDUCATION
 Bachelor of Science in Computer Science
-University of California, Berkeley | 2012 - 2016
+University of Texas at Austin | 2015 - 2019
 
 CERTIFICATIONS
-• AWS Certified Solutions Architect
-• Google Cloud Professional Developer
-• Scrum Master Certification
-
-PROJECTS
-• E-commerce Platform: Built scalable online shopping platform using React, Node.js, and PostgreSQL
-• Real-time Chat Application: Developed WebSocket-based chat system with Redis pub/sub
-• Data Analytics Dashboard: Created interactive dashboard using D3.js and Python Flask`;
+• AWS Certified Developer Associate
+• React Developer Certification
+• Google Cloud Professional Developer`;
         
-        console.log('PDF mock content extracted, calling onFileUpload with:', mockResumeText.substring(0, 100) + '...');
-        onFileUpload(mockResumeText);
-        toast.success('PDF uploaded and parsed successfully!');
+        console.log('PDF sample content provided, calling onFileUpload');
+        onFileUpload(sampleResumeText);
       } else if (file.type.startsWith('image/')) {
-        const mockResumeFromImage = `SARAH JOHNSON
-Marketing Manager & Digital Strategy Expert
-Email: sarah.johnson@email.com | Phone: (555) 987-6543
-Portfolio: sarahjohnson.com | Location: New York, NY
+        // Note: This is mock data for image files
+        // In a real application, you would use OCR services like Tesseract.js or cloud OCR APIs
+        toast.info('Image uploaded - Using sample resume data (OCR not implemented)');
+        
+        const sampleImageResumeText = `[SAMPLE RESUME DATA - Your uploaded image: ${file.name}]
+
+MARIA GONZALEZ
+UX/UI Designer
+Email: maria.gonzalez@email.com | Phone: (555) 987-6543
+Portfolio: mariagonzalez.design | Location: San Francisco, CA
 
 PROFESSIONAL SUMMARY
-Results-driven marketing professional with 6+ years of experience in digital marketing, brand management,
-and campaign optimization. Expertise in data-driven marketing strategies and cross-channel campaign execution.
+Creative UX/UI designer with 4+ years of experience creating user-centered digital experiences.
+Skilled in design systems, prototyping, and user research methodologies.
 
-CORE COMPETENCIES
-• Digital Marketing: SEO/SEM, Social Media Marketing, Email Marketing
-• Analytics: Google Analytics, Facebook Ads Manager, HubSpot, Salesforce
-• Content Strategy: Content Creation, Copywriting, Brand Messaging
-• Project Management: Agile, Scrum, Team Leadership, Budget Management
-• Design Tools: Adobe Creative Suite, Canva, Figma
+CORE SKILLS
+• Design Tools: Figma, Sketch, Adobe Creative Suite, Principle
+• Prototyping: InVision, Framer, Axure RP
+• User Research: Usability Testing, Interviews, Surveys
+• Front-end: HTML, CSS, JavaScript basics
+• Methodologies: Design Thinking, Agile, Lean UX
 
 PROFESSIONAL EXPERIENCE
 
-Senior Marketing Manager | GrowthTech Solutions | 2021 - Present
-• Managed $500K annual marketing budget across multiple channels
-• Increased lead generation by 65% through optimized digital campaigns
-• Led rebranding initiative resulting in 40% increase in brand recognition
-• Developed and executed go-to-market strategies for 3 product launches
-• Built and managed team of 4 marketing specialists
+Senior UX Designer | DesignForward Inc. | 2022 - Present
+• Lead UX design for B2B SaaS platform with 100K+ users
+• Conducted user research resulting in 40% increase in user satisfaction
+• Established design system reducing design-to-development time by 30%
+• Collaborated with product managers and engineers on feature development
 
-Digital Marketing Specialist | Innovation Marketing Agency | 2019 - 2021
-• Executed integrated marketing campaigns for B2B and B2C clients
-• Achieved average 25% improvement in client ROI through campaign optimization
-• Managed social media accounts with combined following of 50K+
-• Created compelling content resulting in 30% increase in engagement rates
-• Collaborated with creative team on video and graphic content production
-
-Marketing Coordinator | TechStart Inc. | 2018 - 2019
-• Supported marketing operations and campaign execution
-• Conducted market research and competitive analysis
-• Assisted in event planning and trade show coordination
-• Maintained CRM database and lead scoring processes
+UX Designer | Creative Solutions | 2020 - 2022
+• Designed mobile and web applications for startup clients
+• Created wireframes, prototypes, and user journey maps
+• Performed A/B testing to optimize conversion rates
+• Mentored junior designers and design interns
 
 EDUCATION
-Master of Business Administration (MBA) - Marketing Focus
-New York University Stern School of Business | 2016 - 2018
+Bachelor of Fine Arts in Graphic Design
+California College of the Arts | 2016 - 2020
 
-Bachelor of Arts in Communications
-Columbia University | 2012 - 2016
+CERTIFICATIONS
+• Google UX Design Certificate
+• Nielsen Norman Group UX Certification
+• Adobe Certified Expert`;
 
-CERTIFICATIONS & ACHIEVEMENTS
-• Google Ads Certified Professional
-• HubSpot Inbound Marketing Certification
-• Facebook Blueprint Certified
-• Hootsuite Social Media Marketing Certified
-• Marketing Campaign of the Year Award (2022)
-
-NOTABLE PROJECTS
-• Product Launch Campaign: Led 360-degree campaign generating $2M in first quarter sales
-• Brand Repositioning: Executed complete rebrand increasing market share by 15%
-• Marketing Automation: Implemented lead nurturing system improving conversion by 45%`;
-
-        console.log('Image mock content extracted, calling onFileUpload with:', mockResumeFromImage.substring(0, 100) + '...');
-        onFileUpload(mockResumeFromImage);
-        toast.success('Image uploaded and text extracted successfully!');
+        console.log('Image sample content provided, calling onFileUpload');
+        onFileUpload(sampleImageResumeText);
       }
     } catch (error) {
       console.error('Error processing file:', error);
@@ -200,7 +180,12 @@ NOTABLE PROJECTS
               {getFileIcon()}
               <div>
                 <p className="font-medium text-green-800">{uploadedFile.name}</p>
-                <p className="text-sm text-green-600">File uploaded and processed successfully</p>
+                <p className="text-sm text-green-600">
+                  {uploadedFile.type === 'text/plain' || uploadedFile.name.toLowerCase().endsWith('.txt') 
+                    ? 'File uploaded and processed successfully'
+                    : 'Sample resume data loaded (actual file parsing not implemented)'
+                  }
+                </p>
               </div>
             </div>
             <Button variant="ghost" size="sm" onClick={removeFile}>
@@ -227,6 +212,9 @@ NOTABLE PROJECTS
             </h3>
             <p className="text-gray-500 mb-4">
               Drag and drop your PDF, text file, or image here, or click to browse
+            </p>
+            <p className="text-xs text-gray-400 mb-4">
+              Note: PDF and image files will show sample data (actual parsing not implemented)
             </p>
             <input
               type="file"

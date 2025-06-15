@@ -1,25 +1,19 @@
-
 import React from "react";
 import { Zap, FileText, Star } from "lucide-react";
 import { useState } from "react";
-
-const DEMO_STEPS = [
-  {
-    icon: <FileText className="h-7 w-7 text-blue-500" />,
-    title: "Upload",
-    text: "Drag & drop your resume or paste it in seconds.",
-  },
-  {
-    icon: <Star className="h-7 w-7 text-yellow-500" />,
-    title: "AI Analysis",
-    text: "Smart algorithms pinpoint improvements & boost your score.",
-  },
-  {
-    icon: <Zap className="h-7 w-7 text-blue-700" />,
-    title: "Optimize",
-    text: "Instantly rewrite & download your enhanced resume.",
-  },
-];
+const DEMO_STEPS = [{
+  icon: <FileText className="h-7 w-7 text-blue-500" />,
+  title: "Upload",
+  text: "Drag & drop your resume or paste it in seconds."
+}, {
+  icon: <Star className="h-7 w-7 text-yellow-500" />,
+  title: "AI Analysis",
+  text: "Smart algorithms pinpoint improvements & boost your score."
+}, {
+  icon: <Zap className="h-7 w-7 text-blue-700" />,
+  title: "Optimize",
+  text: "Instantly rewrite & download your enhanced resume."
+}];
 
 // Simple fake animation
 export const DemoAnimation = () => {
@@ -27,12 +21,10 @@ export const DemoAnimation = () => {
 
   // Auto-cycle through demo steps
   React.useEffect(() => {
-    const t = setInterval(() => setStep((s) => (s + 1) % DEMO_STEPS.length), 2000);
+    const t = setInterval(() => setStep(s => (s + 1) % DEMO_STEPS.length), 2000);
     return () => clearInterval(t);
   }, []);
-
-  return (
-    <section className="px-4 py-10 flex flex-col items-center animate-fade-in">
+  return <section className="px-4 flex flex-col items-center animate-fade-in py-0">
       <div className="text-center mb-3">
         <span className="uppercase tracking-widest text-blue-500 font-bold text-xs">See ResumeAI in Action</span>
       </div>
@@ -46,16 +38,8 @@ export const DemoAnimation = () => {
         <div className="text-gray-700 text-lg">{DEMO_STEPS[step].text}</div>
         {/* Progress dots */}
         <div className="flex justify-center mt-6 gap-2">
-          {DEMO_STEPS.map((_, i) => (
-            <div
-              key={i}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                i === step ? "bg-blue-600 scale-125" : "bg-gray-300"
-              }`}
-            />
-          ))}
+          {DEMO_STEPS.map((_, i) => <div key={i} className={`w-3 h-3 rounded-full transition-all duration-300 ${i === step ? "bg-blue-600 scale-125" : "bg-gray-300"}`} />)}
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };

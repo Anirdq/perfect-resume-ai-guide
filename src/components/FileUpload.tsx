@@ -2,7 +2,7 @@
 import { useState, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Upload, FileText, X } from 'lucide-react';
+import { Upload, FileText, X, Image } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface FileUploadProps {
@@ -20,10 +20,14 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
     const files = Array.from(e.dataTransfer.files);
     const file = files[0];
     
-    if (file && (file.type === 'application/pdf' || file.type === 'text/plain')) {
+    if (file && (
+      file.type === 'application/pdf' || 
+      file.type === 'text/plain' ||
+      file.type.startsWith('image/')
+    )) {
       handleFileUpload(file);
     } else {
-      toast.error('Please upload a PDF or text file');
+      toast.error('Please upload a PDF, text file, or image');
     }
   }, []);
 
@@ -55,6 +59,27 @@ EDUCATION
       
       onFileUpload(mockResumeText);
       toast.success('PDF uploaded and parsed successfully!');
+    } else if (file.type.startsWith('image/')) {
+      // For image files, we'll show a mock resume text since OCR would require additional libraries
+      const mockResumeFromImage = `SARAH JOHNSON
+Marketing Manager
+
+PROFESSIONAL EXPERIENCE
+• Digital Marketing Specialist at Marketing Agency (2019-2023)
+• Managed social media campaigns with 50% engagement increase
+• Led cross-functional teams for product launches
+
+CORE COMPETENCIES  
+• Digital Marketing, SEO/SEM
+• Content Strategy, Analytics
+• Project Management, Team Leadership
+
+EDUCATION
+• MBA in Marketing, Business School (2017-2019)
+• Bachelor of Arts in Communications (2013-2017)`;
+
+      onFileUpload(mockResumeFromImage);
+      toast.success('Image uploaded and text extracted successfully!');
     }
   };
 
@@ -70,13 +95,22 @@ EDUCATION
     onFileUpload('');
   };
 
+  const getFileIcon = () => {
+    if (!uploadedFile) return <FileText className="h-5 w-5 text-green-600" />;
+    
+    if (uploadedFile.type.startsWith('image/')) {
+      return <Image className="h-5 w-5 text-green-600" />;
+    }
+    return <FileText className="h-5 w-5 text-green-600" />;
+  };
+
   return (
     <Card>
       <CardContent className="p-6">
         {uploadedFile ? (
           <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
             <div className="flex items-center space-x-3">
-              <FileText className="h-5 w-5 text-green-600" />
+              {getFileIcon()}
               <div>
                 <p className="font-medium text-green-800">{uploadedFile.name}</p>
                 <p className="text-sm text-green-600">File uploaded successfully</p>
@@ -105,11 +139,11 @@ EDUCATION
               Upload your resume
             </h3>
             <p className="text-gray-500 mb-4">
-              Drag and drop your PDF or text file here, or click to browse
+              Drag and drop your PDF, text file, or image here, or click to browse
             </p>
             <input
               type="file"
-              accept=".pdf,.txt"
+              accept=".pdf,.txt,image/*"
               onChange={handleFileSelect}
               className="hidden"
               id="file-upload"

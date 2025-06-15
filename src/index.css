@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -82,41 +81,125 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-}
 
-@layer base {
-  * {
-    @apply border-border;
-  }
+  /* Base Styles */
   body {
-    @apply bg-background text-foreground font-sans;
-    /* Apply a single, elegant light pastel gradient */
-    background: linear-gradient(125deg,
-      #e0ecfc 0%,
-      #f7f8fa 48%,
-      #ffe9f3 100%
-    );
-    background-attachment: fixed;
-    transition: background 0.4s;
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
     min-height: 100vh;
+    background:
+      radial-gradient(ellipse 60% 60% at 60% 20%, #c3defc99 38%, #ffeeff66 100%),
+      radial-gradient(circle 75vw at 98vw 60vh, #5fd5ff2d 0%, #f4e6ff00 83%), 
+      linear-gradient(125deg, #181c30 0%, #4975d942 45%, #8643ff15 85%, #dedaf54c 100%);
+    background-color: #f6fafb; /* Fallback */
+    background-blend-mode: lighten, lighten, screen;
+    transition: background 0.5s;
+
+    /* Add font smoothing for blending */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #15182c;
   }
-  /* Card/Glass effect utility class */
+  /* Cards: glassmorphism with layered glow */
   .card-glass {
-    @apply bg-white/75 shadow-fancy border border-blue-200/25 backdrop-blur-glass rounded-2xl;
-    /* Gentle backdrop blur for readable contrast */
+    @apply bg-white/65 shadow-fancy border border-blue-200/25 backdrop-blur-glass rounded-2xl;
     box-shadow: 0 10px 40px 0 rgba(34, 197, 227, 0.06),
-                0 2px 8px 0 rgba(137,51,255,0.08);
-    border: 1.5px solid rgba(120, 144, 255, 0.13);
+                0 2px 8px 0 rgba(137,51,255,0.10),
+                0 1.5px 18px 0 #00e0ffa2,
+                0 0px 32px 0 #e879f940;
+    border: 1.5px solid rgba(120, 144, 255, 0.14);
+    /* Subtle noise */
+    background-image:
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000' fill-opacity='0.011'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/svg%3E");
+    background-blend-mode: overlay;
+  }
+  /* Section Overlays */
+  .blend-overlay-cyan {
+    pointer-events: none;
+    z-index: 1;
+    position: absolute;
+    top: 8%;
+    left: 12vw;
+    width: 360px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #67e8f9bb 0, #67e8f900 78%);
+    filter: blur(55px); opacity: 0.46;
+    mix-blend-mode: lighten;
+  }
+  .blend-overlay-violet {
+    pointer-events: none;
+    z-index: 1;
+    position: absolute;
+    top: 28%;
+    right: 14vw;
+    width: 400px;
+    height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #f472d0bc 0, #f472d000 82%);
+    filter: blur(60px); opacity: 0.41;
+    mix-blend-mode: lighten;
+  }
+  .blend-future-lines {
+    pointer-events: none;
+    z-index: 2;
+    position: absolute;
+    top: 10%;
+    left: 8%;
+    width: 84vw;
+    height: 140px;
+    background-image: linear-gradient(
+      110deg,
+      #fff7 5%, #ac90ff33 30%, #67e8f910 80%
+    );
+    opacity: 0.14;
+    border-radius: 80px;
+    filter: blur(12px);
+  }
+  /* Futuristic section background */
+  .section-future {
+    background: linear-gradient(115deg, #e0f7fa 0 60%, #f3e8ff 100%);
+    @apply rounded-3xl shadow-xl border-0 bg-opacity-90;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Futuristic text-shadow headline */
+  .text-glow {
+    text-shadow: 0 2px 22px #ab7dfb77, 0 1px 1px #4fd1c5dd;
+    color: #87d7f7;
+  }
+  /* Animated gradient border for cards */
+  .card-gradient-border {
+    border: 2px solid;
+    border-image: linear-gradient(90deg,#86eef9 0,#f6a3f6 51%,#a3a8fd 100%) 1;
+    animation: border-move 2.6s linear infinite alternate;
+  }
+  @keyframes border-move {
+    0% { border-image-source: linear-gradient(97deg,#86eef9 0,#f6a3f6 51%,#a3a8fd 100%); }
+    100% { border-image-source: linear-gradient(270deg,#a3a8fd 0,#86eef9 28%,#f6a3f6 100%); }
   }
   .cta-glow {
     box-shadow: 0 2px 24px 0 #a0e9f644, 0 1.5px 6px 0 #f6a3f633 !important;
-    filter: saturate(1.06);
+    filter: saturate(1.08) brightness(1.09);
     transition: box-shadow 0.2s, background 0.14s;
+    background: linear-gradient(90deg, #44e5f7, #f9b2f0 51%, #c7d2fe);
   }
   .cta-glow:hover {
-    box-shadow: 0 2px 32px 0 #67e8f966, 0 1.5px 8px 0 #e879f944 !important;
-    filter: saturate(1.18) brightness(1.12);
-    background: linear-gradient(90deg, #57e0f9, #fbb6ce, #c7d2fe) !important;
+    box-shadow: 0 2px 36px 0 #67e8f977, 0 1.5px 10px 0 #e879f999 !important;
+    filter: saturate(1.25) brightness(1.12);
+    background-position: 1.7vw 0vw;
+    background: linear-gradient(93deg, #57e0f9, #fbb6ce, #a3a8fd) !important;
   }
+
+  /* Responsive fine-tuning for overlays */
+  @media (max-width: 900px) {
+    .blend-overlay-cyan, .blend-overlay-violet { width: 180px; height: 110px; }
+    .blend-future-lines { height: 64px; top: 8%; left: 0%; width: 98vw;}
+  }
+}
+/* For pricing table highlight */
+.pricing-pop {
+  box-shadow: 0 0 30px 0 #68d2ffa9, 0 0 1.5px 0 #f7b2efa2;
+  border-radius: 2.2rem !important;
+  border: 2px solid #a9eeff;
+  background-color: #ebf6faee;
 }

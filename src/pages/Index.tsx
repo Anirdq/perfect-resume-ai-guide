@@ -82,19 +82,22 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
-      {/* Removed SaaS Hero Background Effects for a cleaner gradient */}
-      
+      {/* Futuristic overlays */}
+      <div className="blend-overlay-cyan"></div>
+      <div className="blend-overlay-violet"></div>
+      <div className="blend-future-lines"></div>
+
       {/* Sticky Navigation */}
       <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-indigo-600/20 shadow-lg">
         <div className="flex justify-between items-center max-w-7xl mx-auto py-4 px-4 md:px-8">
           <div className="flex items-center">
             <BrandLogo size={34} />
-            <span className="font-extrabold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-cyan-200 via-fuchsia-300 to-blue-400 tracking-tight select-none">ResumeAI</span>
+            <span className="font-extrabold text-2xl text-glow tracking-tight select-none">ResumeAI</span>
           </div>
           <nav className="hidden md:flex gap-8 text-lg font-semibold text-indigo-100/95">
             <a href="#features" className="hover:text-cyan-200 transition underline-offset-4 hover:underline">Features</a>
             <a href="#how-it-works" className="hover:text-fuchsia-200 transition underline-offset-4 hover:underline">How It Works</a>
-            <a href="#pricing" className="hover:text-blue-300 transition underline-offset-4 hover:underline">Pricing</a>
+            <a href="/pricing" className="hover:text-blue-300 transition underline-offset-4 hover:underline">Pricing</a>
           </nav>
           <Button className="ml-1 px-7 py-2 rounded-full font-bold shadow-fancy bg-gradient-to-tr from-fuchsia-500 to-cyan-400 text-white cta-glow text-lg tracking-tight">
             Try Free
@@ -103,12 +106,12 @@ const Index = () => {
       </header>
 
       {/* HERO */}
-      <section className="py-20 relative z-10 text-center">
+      <section className="py-24 md:py-32 relative z-10 text-center flex flex-col gap-2">
         <div className="max-w-4xl mx-auto">
           <BrandLogo size={64} />
-          <h1 className="mt-4 text-6xl md:text-8xl font-black bg-gradient-to-r from-cyan-200 via-fuchsia-300 to-blue-400 bg-clip-text text-transparent tracking-tighter leading-tight drop-shadow-xl animate-fade-in">
+          <h1 className="mt-4 text-6xl md:text-8xl font-black text-glow tracking-tighter leading-tight drop-shadow-xl animate-fade-in">
             AI Resume Optimization<br />
-            for Modern Job Seekers
+            <span className="bg-gradient-to-r from-blue-200 via-fuchsia-300 to-cyan-400 bg-clip-text text-transparent">for Modern Job Seekers</span>
           </h1>
           <p className="mt-8 text-2xl md:text-3xl max-w-2xl mx-auto text-zinc-200/90 font-extralight tracking-wide">
             Transform your resume using AI, get expert-level advice, and make it through any ATS with confidence.
@@ -126,45 +129,47 @@ const Index = () => {
         </div>
       </section>
 
+      {/* BLENDED FUTURISTIC FEATURE SECTION */}
+      <section className="section-future relative z-20 mb-20 py-14 px-4 md:px-12 max-w-7xl mx-auto flex flex-col gap-2">
+        <h2 className="text-4xl md:text-5xl font-extrabold text-glow text-center pb-8">Why ResumeAI?</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <Card className="card-glass card-gradient-border hover:scale-105 transition-transform duration-300">
+            <div className="flex items-center justify-center mt-8 mb-5">
+              <div className="bg-gradient-to-br from-cyan-500 to-fuchsia-400 p-5 rounded-full shadow-xl ring-4 ring-cyan-400/10">
+                <Target className="h-11 w-11 text-white" />
+              </div>
+            </div>
+            <h3 className="text-2xl font-black text-cyan-100 mb-3 text-center">ATS Optimization</h3>
+            <p className="text-indigo-100/80 mb-8 px-6 font-light text-center">
+              Intelligent keyword matching, upfront ATS scoring, and best-in-class formatting recommendations.
+            </p>
+          </Card>
+          <Card className="card-glass card-gradient-border hover:scale-105 transition-transform duration-300">
+            <div className="flex items-center justify-center mt-8 mb-5">
+              <div className="bg-gradient-to-br from-fuchsia-400 to-blue-600 p-5 rounded-full shadow-xl ring-4 ring-fuchsia-400/10">
+                <Bot className="h-11 w-11 text-white" />
+              </div>
+            </div>
+            <h3 className="text-2xl font-black text-fuchsia-100 mb-3 text-center">AI Analysis</h3>
+            <p className="text-indigo-100/80 mb-8 px-6 font-light text-center">
+              GPT-powered insights provide actionable improvement points, language upgrades, and high-level strategy.
+            </p>
+          </Card>
+          <Card className="card-glass card-gradient-border hover:scale-105 transition-transform duration-300">
+            <div className="flex items-center justify-center mt-8 mb-5">
+              <div className="bg-gradient-to-br from-blue-400 to-cyan-500 p-5 rounded-full shadow-xl ring-4 ring-blue-400/10">
+                <Sparkles className="h-11 w-11 text-white" />
+              </div>
+            </div>
+            <h3 className="text-2xl font-black text-blue-100 mb-3 text-center">Smart Matching</h3>
+            <p className="text-indigo-100/80 mb-8 px-6 font-light text-center">
+              Instantly compare your resume to job descriptions and highlight your most relevant strengths.
+            </p>
+          </Card>
+        </div>
+      </section>
+      {/* Main Application Workflow */}
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-14">
-        {/* Features */}
-        <section id="features" className="mb-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
-            <Card className="card-glass hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center justify-center mt-8 mb-5">
-                <div className="bg-gradient-to-br from-cyan-500 to-fuchsia-400 p-5 rounded-full shadow-xl ring-4 ring-cyan-400/10">
-                  <Target className="h-11 w-11 text-white" />
-                </div>
-              </div>
-              <h3 className="text-2xl font-black text-cyan-100 mb-3">ATS Optimization</h3>
-              <p className="text-indigo-100/80 mb-8 px-6 font-light">
-                Intelligent keyword matching, upfront ATS scoring, and best-in-class formatting recommendations.
-              </p>
-            </Card>
-            <Card className="card-glass hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center justify-center mt-8 mb-5">
-                <div className="bg-gradient-to-br from-fuchsia-400 to-blue-600 p-5 rounded-full shadow-xl ring-4 ring-fuchsia-400/10">
-                  <Bot className="h-11 w-11 text-white" />
-                </div>
-              </div>
-              <h3 className="text-2xl font-black text-fuchsia-100 mb-3">AI Analysis</h3>
-              <p className="text-indigo-100/80 mb-8 px-6 font-light">
-                GPT-powered insights provide actionable improvement points, language upgrades, and high-level strategy.
-              </p>
-            </Card>
-            <Card className="card-glass hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center justify-center mt-8 mb-5">
-                <div className="bg-gradient-to-br from-blue-400 to-cyan-500 p-5 rounded-full shadow-xl ring-4 ring-blue-400/10">
-                  <Sparkles className="h-11 w-11 text-white" />
-                </div>
-              </div>
-              <h3 className="text-2xl font-black text-blue-100 mb-3">Smart Matching</h3>
-              <p className="text-indigo-100/80 mb-8 px-6 font-light">
-                Instantly compare your resume to job descriptions and highlight your most relevant strengths.
-              </p>
-            </Card>
-          </div>
-        </section>
         {/* Main Application Workflow */}
         <section id="how-it-works" className="mb-20">
           <div className="mx-auto text-center">

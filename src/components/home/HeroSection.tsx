@@ -1,3 +1,4 @@
+
 import { Zap, Check, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -27,41 +28,64 @@ const companyLogos = [
   },
 ];
 
-// Utility to wrap logos through CORS proxy
+// Utility: use Wikimedia's "Special:FilePath" for SVGs from Wikimedia/Wikipedia, else original URL
+function getWikimediaFilePath(url: string): string | null {
+  // Only handle Wikimedia SVGs here
+  try {
+    const u = new URL(url);
+    if (
+      (u.hostname.includes("wikimedia.org") || u.hostname.includes("wikipedia.org")) &&
+      u.pathname.endsWith(".svg")
+    ) {
+      // Wikimedia images: extract the filename from path, use in the FilePath API
+      // e.g. /wikipedia/commons/7/77/Philips_logo.svg -> Philips_logo.svg
+      const parts = u.pathname.split("/");
+      const fileName = parts[parts.length - 1];
+      return `https://commons.wikimedia.org/wiki/Special:FilePath/${fileName}`;
+    }
+  } catch (e) {
+    return null;
+  }
+  return null;
+}
 function getProxiedUrl(url: string): string {
-  // Remove the protocol to avoid double-https
-  const urlNoProtocol = url.replace(/^https?:\/\//, "");
-  return `https://images.weserv.nl/?url=${encodeURIComponent(urlNoProtocol)}`;
+  // Try filepath first, else fallback to original url
+  return getWikimediaFilePath(url) ?? url;
 }
 
 const LogoImage = ({ src, alt }: { src: string; alt: string }) => {
   const [imgSrc, setImgSrc] = React.useState(getProxiedUrl(src));
   const [attemptedFallback, setAttemptedFallback] = React.useState(false);
 
+  React.useEffect(() => {
+    // Log current image loading path for diagnostics
+    console.log(`[LogoImage] loading:`, imgSrc, "(original:", src, ")");
+  }, [imgSrc, src]);
+
   const handleError = () => {
     if (!attemptedFallback) {
-      // Try switching to the direct source as a backup if the proxy fails
+      // Try switching to original src as a backup if proxy/special path fails
       setImgSrc(src);
       setAttemptedFallback(true);
     } else {
-      // If both proxy and direct fail, hide
-      console.log("Failed to load logo:", alt, src);
+      // If both fail, log and hide
+      console.log("[LogoImage] Failed to load logo:", alt, src);
       setImgSrc(""); // causes React to hide the image
     }
   };
 
-  // Hide if can't load at all
   if (!imgSrc) return null;
 
   return (
     <img
       src={imgSrc}
-      alt={alt}
+      alt=""
       className="h-7 md:h-9 object-contain rounded transition-all grayscale opacity-80 hover:opacity-100 border border-gray-300"
       style={{ minWidth: 80, maxWidth: 120, background: "transparent" }}
       loading="lazy"
       onError={handleError}
       draggable={false}
+      aria-hidden
     />
   );
 };

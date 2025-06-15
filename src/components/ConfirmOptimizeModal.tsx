@@ -31,8 +31,15 @@ export const ConfirmOptimizeModal = ({
         <Button variant="ghost" onClick={onCancel} disabled={loading}>
           Cancel
         </Button>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={onConfirm} loading={loading}>
-          Yes, Optimize!
+        <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center" onClick={onConfirm} disabled={loading}>
+          {loading ? (
+            <span>
+              <span className="inline-block animate-spin mr-2 align-middle border-2 border-white border-t-blue-600 rounded-full w-4 h-4" />
+              Optimizing...
+            </span>
+          ) : (
+            "Yes, Optimize!"
+          )}
         </Button>
       </DialogFooter>
     </DialogContent>

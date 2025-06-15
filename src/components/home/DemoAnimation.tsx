@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Zap, FileText, Star } from "lucide-react";
 import { useState } from "react";
 

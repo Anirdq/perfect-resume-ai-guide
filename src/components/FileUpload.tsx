@@ -134,15 +134,15 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
   };
 
   return (
-    <Card className="shadow-sm border-0">
+    <Card className="shadow-xl border-0 rounded-2xl bg-black/60 backdrop-blur-lg">
       <CardContent className="p-0">
         {uploadedFile ? (
           <div className="p-6">
-            <div className="flex items-center justify-between p-6 bg-green-50 rounded-xl border border-green-200">
+            <div className="flex items-center justify-between p-6 bg-gradient-to-tr from-cyan-900/30 via-slate-700/20 to-blue-900/30 rounded-xl border border-cyan-600/20 shadow-xl">
               <div className="flex items-center space-x-4">
-                <div className={`p-3 rounded-xl ${
+                <div className={`p-3 rounded-xl shadow-md ${
                   isProcessing 
-                    ? 'bg-blue-600' 
+                    ? 'bg-blue-600 animate-pulse'
                     : 'bg-green-600'
                 }`}>
                   {isProcessing ? (
@@ -153,8 +153,8 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
                 </div>
                 <div>
                   <div className="flex items-center space-x-3 mb-1">
-                    <h3 className="font-semibold text-gray-900">{uploadedFile.name}</h3>
-                    <Badge className="bg-gray-100 text-gray-600 text-xs">
+                    <h3 className="font-semibold text-gray-100">{uploadedFile.name}</h3>
+                    <Badge className="bg-cyan-800/60 text-cyan-200 text-xs border-cyan-500/30">
                       {formatFileSize(uploadedFile.size)}
                     </Badge>
                   </div>
@@ -162,16 +162,16 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
                     {isProcessing ? (
                       <>
                         <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                          <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                           <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                         </div>
-                        <p className="text-blue-600 font-medium text-sm">{processingStep}</p>
+                        <p className="text-blue-400 font-medium text-sm">{processingStep}</p>
                       </>
                     ) : (
                       <>
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        <p className="text-green-600 font-medium text-sm">File processed successfully</p>
+                        <CheckCircle2 className="h-4 w-4 text-green-400" />
+                        <p className="text-green-300 font-medium text-sm">File processed successfully</p>
                       </>
                     )}
                   </div>
@@ -182,7 +182,7 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
                 size="sm"
                 onClick={removeFile} 
                 disabled={isProcessing}
-                className="text-gray-400 hover:text-red-600 hover:bg-red-50"
+                className="text-zinc-400 hover:text-fuchsia-500 hover:bg-fuchsia-900/20 rounded-xl"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -190,10 +190,10 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
           </div>
         ) : (
           <div
-            className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 m-6 ${
+            className={`border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 m-6 ${
               isDragOver
-                ? 'border-blue-400 bg-blue-50'
-                : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'
+                ? 'border-cyan-400 bg-cyan-900/10'
+                : 'border-cyan-700/30 bg-black/40 hover:border-cyan-400 hover:bg-cyan-900/5'
             }`}
             onDrop={handleDrop}
             onDragOver={(e) => {
@@ -203,7 +203,7 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
             onDragLeave={() => setIsDragOver(false)}
           >
             <div className="mx-auto mb-6 w-fit">
-              <div className="bg-blue-600 p-4 rounded-xl shadow-lg">
+              <div className="bg-gradient-to-tr from-cyan-600 to-fuchsia-400 p-4 rounded-xl shadow-lg">
                 <Upload className={`h-12 w-12 text-white ${
                   isDragOver ? 'animate-bounce' : ''
                 }`} />
@@ -212,24 +212,24 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
             
             <div className="space-y-4">
               <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-2xl font-bold text-white mb-2">
                   {isDragOver ? 'Drop your file here!' : 'Upload your resume'}
                 </h3>
-                <p className="text-gray-600 max-w-sm mx-auto">
+                <p className="text-gray-300 max-w-sm mx-auto">
                   Drag and drop your PDF, text file, or image here, or click to browse
                 </p>
               </div>
               
               <div className="flex flex-wrap justify-center gap-2">
-                <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                <Badge className="bg-cyan-800/60 text-cyan-200 border-cyan-500/30">
                   <FileText className="h-3 w-3 mr-1" />
                   PDF
                 </Badge>
-                <Badge className="bg-green-100 text-green-800 border-green-200">
+                <Badge className="bg-green-800/60 text-green-200 border-green-500/30">
                   <Image className="h-3 w-3 mr-1" />
                   Images
                 </Badge>
-                <Badge className="bg-purple-100 text-purple-800 border-purple-200">
+                <Badge className="bg-fuchsia-800/60 text-fuchsia-200 border-fuchsia-500/30">
                   <FileText className="h-3 w-3 mr-1" />
                   Text Files
                 </Badge>
@@ -244,7 +244,7 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
               />
               <Button 
                 asChild 
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
+                className="bg-gradient-to-tr from-fuchsia-500 to-cyan-500 hover:bg-cyan-700 text-white px-6 py-2 rounded-xl"
               >
                 <label htmlFor="file-upload" className="cursor-pointer">
                   <Upload className="h-4 w-4 mr-2" />

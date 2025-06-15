@@ -9,6 +9,7 @@ import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
 import Resume from "./pages/Resume";
 import WhyChooseUs from "./pages/WhyChooseUs";
+import Home from "./pages/Home";
 
 const queryClient = new QueryClient();
 
@@ -19,7 +20,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<Home />} />
           <Route path="/features" element={<Features />} />
           <Route path="/resume" element={<Resume />} />
           <Route path="/service-provider" element={<WhyChooseUs />} />

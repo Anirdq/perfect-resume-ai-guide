@@ -5,6 +5,16 @@ import { useNavigate } from "react-router-dom";
 import React from "react";
 
 const companyLogos = [
+  // Tech giants
+  { src: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", alt: "Google" },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg", alt: "Microsoft" },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", alt: "Amazon" },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", alt: "Apple" },
+  // Consulting and finance
+  { src: "https://upload.wikimedia.org/wikipedia/commons/5/51/Accenture_Logo.svg", alt: "Accenture" },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/2/2a/Deloitte.svg", alt: "Deloitte" },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/8/8c/Infosys_logo.svg", alt: "Infosys" },
+  // Previous logos for context
   { src: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Indeed_logo.png", alt: "Indeed" },
   { src: "https://upload.wikimedia.org/wikipedia/commons/8/85/LinkedIn_Logo.svg", alt: "LinkedIn" },
   { src: "https://upload.wikimedia.org/wikipedia/commons/7/75/Glassdoor_Logo_2014.png", alt: "Glassdoor" },
@@ -55,14 +65,13 @@ export const HeroSection = () => {
       </p>
       <Button
         size="lg"
-        className="text-lg md:text-xl font-semibold px-8 md:px-10 py-4 md:py-6 bg-blue-700 hover:bg-blue-800 shadow-2xl animate-pulse transition-all duration-300 mb-5"
+        className="text-lg md:text-xl font-semibold px-8 md:px-10 py-4 md:py-6 bg-blue-700 hover:bg-blue-800 shadow-2xl transition-all duration-300 mb-5"
         onClick={() => navigate("/resume")}
         aria-label="Upload Resume"
       >
         Upload Resume
       </Button>
-      {/* Company logos — responsive row/grid */}
-      <div className="w-full max-w-2xl mx-auto flex flex-col items-center mt-8 mb-3">
+      <div className="w-full max-w-3xl mx-auto flex flex-col items-center mt-8 mb-3">
         <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 font-semibold mb-2">
           Trusted by job seekers from companies like
         </span>
@@ -76,7 +85,6 @@ export const HeroSection = () => {
         <Check className="h-5 w-5 text-green-600 animate-bounce" aria-label="Checkmark" />
         <span>Fast. Secure. Free to start.</span>
       </div>
-      {/* Down arrow for scroll cue */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 hidden sm:block">
         <ArrowDown className="h-7 w-7 text-blue-400 animate-bounce" />
       </div>

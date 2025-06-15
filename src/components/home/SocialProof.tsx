@@ -1,5 +1,40 @@
-
 import { Star, Users, Check } from "lucide-react";
+
+// Utility function for Wikimedia FilePath; keep code in SocialProof for now because it's used only here
+function getWikimediaFilePath(url: string): string {
+  try {
+    const u = new URL(url);
+    if (
+      (u.hostname.includes("wikimedia.org") || u.hostname.includes("wikipedia.org")) &&
+      u.pathname.match(/\.(svg|png)$/)
+    ) {
+      const parts = u.pathname.split("/");
+      const fileName = parts[parts.length - 1];
+      return `https://commons.wikimedia.org/wiki/Special:FilePath/${fileName}`;
+    }
+  } catch {}
+  return url;
+}
+
+// Social proof company logos: these match the companies used before
+const socialProofLogos = [
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Indeed_logo.png",
+    alt: "Indeed",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/8/85/LinkedIn_Logo.svg",
+    alt: "LinkedIn",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/7/75/Glassdoor_Logo_2014.png",
+    alt: "Glassdoor",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Monster.com_logo.svg",
+    alt: "Monster",
+  },
+];
 
 export const SocialProof = () => (
   <section className="w-full flex flex-col items-center py-8 px-2 gap-6 bg-white/50 rounded-xl shadow mt-2">
@@ -20,11 +55,17 @@ export const SocialProof = () => (
       </div>
     </div>
     <div className="flex flex-col md:flex-row justify-center gap-4">
-      {/* Example logos, styled to match HeroSection with no borders */}
-      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Indeed_logo.png" className="h-7 object-contain grayscale opacity-80 hover:opacity-100 transition-all" alt="Indeed" />
-      <img src="https://upload.wikimedia.org/wikipedia/commons/8/85/LinkedIn_Logo.svg" className="h-7 object-contain grayscale opacity-80 hover:opacity-100 transition-all" alt="LinkedIn" />
-      <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Glassdoor_Logo_2014.png" className="h-7 object-contain grayscale opacity-80 hover:opacity-100 transition-all" alt="Glassdoor" />
-      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Monster.com_logo.svg" className="h-7 object-contain grayscale opacity-80 hover:opacity-100 transition-all" alt="Monster" />
+      {socialProofLogos.map(({ src, alt }) => (
+        <img
+          key={alt}
+          src={getWikimediaFilePath(src)}
+          alt={alt}
+          className="h-7 object-contain grayscale opacity-80 hover:opacity-100 transition-all"
+          style={{ background: "transparent" }}
+          loading="lazy"
+          draggable={false}
+        />
+      ))}
     </div>
   </section>
 );

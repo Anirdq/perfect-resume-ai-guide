@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { FileText, Target, CheckCircle, TrendingUp, Zap, Star, ArrowLeftRight, Brain, Sparkles, Bot } from 'lucide-react';
+import { FileText, Target, CheckCircle, TrendingUp, Zap, Star, ArrowLeftRight, Brain, Sparkles, Bot, Users, Shield, Rocket } from 'lucide-react';
 import { toast } from 'sonner';
 import { FileUpload } from '@/components/FileUpload';
 import { EditableResume } from '@/components/EditableResume';
@@ -81,90 +81,126 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
-      {/* Futuristic Header */}
-      <div className="bg-black/50 backdrop-blur-xl border-b border-cyan-500/20 shadow-2xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="bg-gradient-to-br from-cyan-400 to-blue-600 p-3 rounded-xl shadow-lg shadow-cyan-500/25">
-                <Brain className="h-8 w-8 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-black relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.02"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl"></div>
+
+      {/* Enhanced Header */}
+      <div className="bg-black/30 backdrop-blur-2xl border-b border-cyan-500/10 shadow-2xl relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-6 text-center lg:text-left">
+              <div className="relative">
+                <div className="bg-gradient-to-br from-cyan-400 to-blue-600 p-4 rounded-2xl shadow-2xl shadow-cyan-500/25 relative">
+                  <Brain className="h-12 w-12 text-white" />
+                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full animate-pulse"></div>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+              <div className="space-y-3">
+                <h1 className="text-4xl lg:text-5xl font-black bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-500 bg-clip-text text-transparent leading-tight">
                   AI Resume Optimizer
                 </h1>
-                <p className="text-gray-300 text-lg">Next-generation resume optimization powered by AI</p>
+                <p className="text-gray-300 text-xl lg:text-2xl font-light max-w-2xl leading-relaxed">
+                  Transform your resume with cutting-edge AI technology. Get past ATS systems and land your dream job.
+                </p>
+                <div className="flex flex-wrap justify-center lg:justify-start gap-3 pt-2">
+                  <Badge className="bg-gradient-to-r from-emerald-500/20 to-green-500/20 text-emerald-300 border-emerald-500/30 px-3 py-1.5 text-sm font-medium">
+                    <Shield className="h-3 w-3 mr-1.5" />
+                    ATS Optimized
+                  </Badge>
+                  <Badge className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-500/30 px-3 py-1.5 text-sm font-medium">
+                    <Rocket className="h-3 w-3 mr-1.5" />
+                    AI Powered
+                  </Badge>
+                  <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-500/30 px-3 py-1.5 text-sm font-medium">
+                    <Users className="h-3 w-3 mr-1.5" />
+                    Expert Approved
+                  </Badge>
+                </div>
               </div>
             </div>
             {analysis && (
               <Button
                 variant="outline"
                 onClick={() => setShowComparison(!showComparison)}
-                className="flex items-center space-x-2 bg-gray-800/50 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400 transition-all duration-300"
+                className="flex items-center space-x-3 bg-gray-800/30 border-cyan-500/20 text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400/40 hover:text-cyan-200 transition-all duration-300 px-6 py-3 rounded-xl backdrop-blur-sm"
               >
-                <ArrowLeftRight className="h-4 w-4" />
-                <span>{showComparison ? 'Hide' : 'Show'} Comparison</span>
+                <ArrowLeftRight className="h-5 w-5" />
+                <span className="font-medium">{showComparison ? 'Hide' : 'Show'} Comparison</span>
               </Button>
             )}
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Features Banner */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-xl p-6 rounded-2xl border border-cyan-500/20 shadow-xl hover:shadow-cyan-500/10 transition-all duration-300 group">
-            <div className="flex items-center space-x-4">
-              <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
+        {/* Enhanced Features Banner */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="group bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-2xl p-8 rounded-3xl border border-cyan-500/10 shadow-2xl hover:shadow-cyan-500/20 transition-all duration-500 hover:scale-105 hover:border-cyan-500/30">
+            <div className="flex items-start space-x-5">
+              <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-cyan-500/25">
                 <Target className="h-8 w-8 text-white" />
               </div>
-              <div>
-                <h3 className="font-bold text-xl text-white mb-1">ATS Optimized</h3>
-                <p className="text-gray-300">Beat applicant tracking systems</p>
+              <div className="space-y-2">
+                <h3 className="font-bold text-2xl text-white group-hover:text-cyan-300 transition-colors">ATS Optimized</h3>
+                <p className="text-gray-300 leading-relaxed">Beat applicant tracking systems with intelligent keyword optimization and formatting.</p>
               </div>
             </div>
           </div>
-          <div className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-xl p-6 rounded-2xl border border-emerald-500/20 shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 group">
-            <div className="flex items-center space-x-4">
-              <div className="bg-gradient-to-br from-emerald-500 to-green-600 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+          <div className="group bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-2xl p-8 rounded-3xl border border-emerald-500/10 shadow-2xl hover:shadow-emerald-500/20 transition-all duration-500 hover:scale-105 hover:border-emerald-500/30">
+            <div className="flex items-start space-x-5">
+              <div className="bg-gradient-to-br from-emerald-500 to-green-600 p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-emerald-500/25">
                 <Bot className="h-8 w-8 text-white" />
               </div>
-              <div>
-                <h3 className="font-bold text-xl text-white mb-1">AI Powered</h3>
-                <p className="text-gray-300">GPT-4 powered optimization</p>
+              <div className="space-y-2">
+                <h3 className="font-bold text-2xl text-white group-hover:text-emerald-300 transition-colors">AI Powered</h3>
+                <p className="text-gray-300 leading-relaxed">Harness GPT-4's intelligence for professional resume enhancement and optimization.</p>
               </div>
             </div>
           </div>
-          <div className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-xl p-6 rounded-2xl border border-purple-500/20 shadow-xl hover:shadow-purple-500/10 transition-all duration-300 group">
-            <div className="flex items-center space-x-4">
-              <div className="bg-gradient-to-br from-purple-500 to-violet-600 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+          <div className="group bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-2xl p-8 rounded-3xl border border-purple-500/10 shadow-2xl hover:shadow-purple-500/20 transition-all duration-500 hover:scale-105 hover:border-purple-500/30">
+            <div className="flex items-start space-x-5">
+              <div className="bg-gradient-to-br from-purple-500 to-violet-600 p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-purple-500/25">
                 <Sparkles className="h-8 w-8 text-white" />
               </div>
-              <div>
-                <h3 className="font-bold text-xl text-white mb-1">Smart Analysis</h3>
-                <p className="text-gray-300">Advanced keyword matching</p>
+              <div className="space-y-2">
+                <h3 className="font-bold text-2xl text-white group-hover:text-purple-300 transition-colors">Smart Analysis</h3>
+                <p className="text-gray-300 leading-relaxed">Advanced keyword matching and comprehensive resume scoring algorithms.</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Input Section */}
-          <div className="space-y-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
+          {/* Enhanced Input Section */}
+          <div className="space-y-10">
             <ApiKeyInput onApiKeySet={handleApiKeySet} hasApiKey={!!apiKey} />
             
-            <FileUpload onFileUpload={handleFileUpload} />
+            <div className="space-y-6">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent flex-1"></div>
+                <span className="text-cyan-300 font-medium text-sm uppercase tracking-wider">Upload Resume</span>
+                <div className="h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent flex-1"></div>
+              </div>
+              <FileUpload onFileUpload={handleFileUpload} />
+            </div>
             
-            <Card className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-xl border border-cyan-500/20 shadow-2xl">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-3 text-white">
-                  <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-2 rounded-lg">
-                    <FileText className="h-5 w-5 text-white" />
+            <Card className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-2xl border border-cyan-500/10 shadow-2xl hover:shadow-cyan-500/10 transition-all duration-300">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center space-x-4 text-white">
+                  <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-3 rounded-xl shadow-lg shadow-cyan-500/25">
+                    <FileText className="h-6 w-6 text-white" />
                   </div>
-                  <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                    Your Resume ({resume.length} characters)
-                  </span>
+                  <div>
+                    <span className="bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent text-xl font-semibold">
+                      Your Resume
+                    </span>
+                    <p className="text-gray-400 text-sm font-normal mt-1">
+                      {resume.length} characters • Ready for optimization
+                    </p>
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -172,20 +208,25 @@ const Index = () => {
                   placeholder="Paste your current resume text here or upload a file above..."
                   value={resume}
                   onChange={handleResumeChange}
-                  className="min-h-[200px] resize-none bg-gray-900/50 border-gray-600/50 text-gray-100 placeholder:text-gray-400 focus:border-cyan-500/50 focus:ring-cyan-500/20"
+                  className="min-h-[250px] resize-none bg-gray-900/30 border-gray-600/30 text-gray-100 placeholder:text-gray-500 focus:border-cyan-500/40 focus:ring-cyan-500/20 rounded-xl transition-all duration-300"
                 />
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-xl border border-emerald-500/20 shadow-2xl">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-3 text-white">
-                  <div className="bg-gradient-to-br from-emerald-500 to-green-600 p-2 rounded-lg">
-                    <Target className="h-5 w-5 text-white" />
+            <Card className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-2xl border border-emerald-500/10 shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center space-x-4 text-white">
+                  <div className="bg-gradient-to-br from-emerald-500 to-green-600 p-3 rounded-xl shadow-lg shadow-emerald-500/25">
+                    <Target className="h-6 w-6 text-white" />
                   </div>
-                  <span className="bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">
-                    Job Description
-                  </span>
+                  <div>
+                    <span className="bg-gradient-to-r from-emerald-300 to-green-400 bg-clip-text text-transparent text-xl font-semibold">
+                      Job Description
+                    </span>
+                    <p className="text-gray-400 text-sm font-normal mt-1">
+                      Target position requirements
+                    </p>
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -193,7 +234,7 @@ const Index = () => {
                   placeholder="Paste the job description you're applying for..."
                   value={jobDescription}
                   onChange={(e) => setJobDescription(e.target.value)}
-                  className="min-h-[200px] resize-none bg-gray-900/50 border-gray-600/50 text-gray-100 placeholder:text-gray-400 focus:border-emerald-500/50 focus:ring-emerald-500/20"
+                  className="min-h-[250px] resize-none bg-gray-900/30 border-gray-600/30 text-gray-100 placeholder:text-gray-500 focus:border-emerald-500/40 focus:ring-emerald-500/20 rounded-xl transition-all duration-300"
                 />
               </CardContent>
             </Card>
@@ -202,56 +243,67 @@ const Index = () => {
               onClick={analyzeWithAI}
               disabled={!resume || !jobDescription || isAnalyzing || !apiKey}
               size="lg"
-              className="w-full bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:via-blue-500 hover:to-purple-500 text-white font-bold py-4 px-8 rounded-xl shadow-2xl shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 transform hover:scale-105"
+              className="w-full bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:via-blue-500 hover:to-purple-500 text-white font-bold py-6 px-10 rounded-2xl shadow-2xl shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-lg relative overflow-hidden group"
             >
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
               {isAnalyzing ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-4"></div>
                   Analyzing with AI...
                 </>
               ) : (
                 <>
-                  <Zap className="h-5 w-5 mr-3" />
+                  <Zap className="h-6 w-6 mr-4" />
                   Optimize My Resume with AI
                 </>
               )}
             </Button>
           </div>
 
-          {/* Results Section */}
-          <div className="space-y-8">
+          {/* Enhanced Results Section */}
+          <div className="space-y-10">
             {analysis ? (
               <>
-                {/* ATS Score */}
-                <Card className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-xl border border-emerald-500/30 shadow-2xl">
+                {/* Enhanced ATS Score */}
+                <Card className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-2xl border border-emerald-500/20 shadow-2xl hover:shadow-emerald-500/20 transition-all duration-300">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
-                      <span className="flex items-center space-x-3 text-white">
-                        <div className="bg-gradient-to-br from-emerald-500 to-green-600 p-2 rounded-lg">
-                          <CheckCircle className="h-5 w-5 text-white" />
+                      <span className="flex items-center space-x-4 text-white">
+                        <div className="bg-gradient-to-br from-emerald-500 to-green-600 p-3 rounded-xl shadow-lg shadow-emerald-500/25">
+                          <CheckCircle className="h-6 w-6 text-white" />
                         </div>
-                        <span className="bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">
-                          AI-Powered ATS Score
-                        </span>
+                        <div>
+                          <span className="bg-gradient-to-r from-emerald-300 to-green-400 bg-clip-text text-transparent text-xl font-semibold">
+                            ATS Score
+                          </span>
+                          <p className="text-gray-400 text-sm font-normal mt-1">
+                            AI-powered compatibility analysis
+                          </p>
+                        </div>
                       </span>
                       <Badge 
                         variant={analysis.atsScore >= 70 ? "default" : "destructive"} 
-                        className={`text-lg px-4 py-2 font-bold ${
+                        className={`text-2xl px-6 py-3 font-bold rounded-xl shadow-lg ${
                           analysis.atsScore >= 70 
-                            ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' 
-                            : 'bg-gradient-to-r from-red-500 to-pink-600 text-white'
+                            ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-emerald-500/25' 
+                            : 'bg-gradient-to-r from-red-500 to-pink-600 text-white shadow-red-500/25'
                         }`}
                       >
                         {analysis.atsScore}%
                       </Badge>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <Progress value={analysis.atsScore} className="h-4 bg-gray-700/50" />
-                    <p className="text-gray-300 mt-3 text-sm">
-                      {analysis.atsScore >= 80 ? 'Excellent! Your resume is well-optimized for ATS.' :
-                       analysis.atsScore >= 70 ? 'Good score! Some improvements can boost your chances.' :
-                       'Needs improvement. Follow the AI suggestions below.'}
+                  <CardContent className="space-y-4">
+                    <Progress value={analysis.atsScore} className="h-6 bg-gray-800/50 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-emerald-500 to-green-600 rounded-full transition-all duration-1000 ease-out shadow-lg shadow-emerald-500/25"
+                        style={{ width: `${analysis.atsScore}%` }}
+                      ></div>
+                    </Progress>
+                    <p className="text-gray-300 text-base leading-relaxed">
+                      {analysis.atsScore >= 80 ? '🎉 Excellent! Your resume is well-optimized for ATS systems.' :
+                       analysis.atsScore >= 70 ? '👍 Good score! Some improvements can boost your chances further.' :
+                       '⚠️ Needs improvement. Follow the AI suggestions below to optimize.'}
                     </p>
                   </CardContent>
                 </Card>
@@ -367,15 +419,25 @@ const Index = () => {
                 )}
               </>
             ) : (
-              <Card className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-xl border border-gray-600/30 shadow-2xl">
-                <CardContent className="flex flex-col items-center justify-center py-16">
-                  <div className="bg-gradient-to-br from-gray-700 to-gray-800 p-6 rounded-2xl mb-6">
-                    <Brain className="h-16 w-16 text-cyan-400" />
+              <Card className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-2xl border border-gray-600/20 shadow-2xl">
+                <CardContent className="flex flex-col items-center justify-center py-24 text-center space-y-8">
+                  <div className="relative">
+                    <div className="bg-gradient-to-br from-gray-700/50 to-gray-800/50 p-8 rounded-3xl backdrop-blur-sm">
+                      <Brain className="h-20 w-20 text-cyan-400" />
+                    </div>
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full animate-pulse shadow-lg shadow-cyan-500/50"></div>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">Ready for AI Analysis?</h3>
-                  <p className="text-gray-300 text-center max-w-md leading-relaxed">
-                    Set up your OpenAI API key, then upload your resume and job description for AI-powered optimization.
-                  </p>
+                  <div className="space-y-4 max-w-lg">
+                    <h3 className="text-3xl font-bold text-white">Ready for AI Magic?</h3>
+                    <p className="text-gray-300 text-lg leading-relaxed">
+                      Set up your OpenAI API key, then upload your resume and job description for 
+                      <span className="text-cyan-400 font-semibold"> AI-powered optimization</span>.
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm text-gray-400">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+                    <span>Waiting for your input...</span>
+                  </div>
                 </CardContent>
               </Card>
             )}

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "./ui/button";
@@ -7,14 +6,12 @@ import { toast } from "sonner";
 import { Github, Twitter, Bot } from "lucide-react"; // Removed 'Google', added 'Bot'
 
 type View = "sign_in" | "sign_up";
-
 export function AuthForm() {
   const [view, setView] = useState<View>("sign_in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-
   const handleAuth = async () => {
     setLoading(true);
     setErrorMsg("");
@@ -26,32 +23,42 @@ export function AuthForm() {
       }
       const redirectTo = `${window.location.origin}/`;
       if (view === "sign_in") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) setErrorMsg(error.message);
-        else toast.success("Logged in!");
+        const {
+          error
+        } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+        if (error) setErrorMsg(error.message);else toast.success("Logged in!");
       } else {
-        const { error } = await supabase.auth.signUp({
+        const {
+          error
+        } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: redirectTo }
+          options: {
+            emailRedirectTo: redirectTo
+          }
         });
-        if (error) setErrorMsg(error.message);
-        else toast.success("Check your email to confirm your account!");
+        if (error) setErrorMsg(error.message);else toast.success("Check your email to confirm your account!");
       }
     } catch (err: any) {
       setErrorMsg(err.message || "Auth failed");
     }
     setLoading(false);
   };
-
   const handleOAuth = async (provider: "google" | "github" | "twitter") => {
     setLoading(true);
     setErrorMsg("");
     try {
       const redirectTo = `${window.location.origin}/`;
-      const { error } = await supabase.auth.signInWithOAuth({
+      const {
+        error
+      } = await supabase.auth.signInWithOAuth({
         provider,
-        options: { redirectTo }
+        options: {
+          redirectTo
+        }
       });
       if (error) setErrorMsg(error.message);
     } catch (err: any) {
@@ -59,21 +66,16 @@ export function AuthForm() {
     }
     setLoading(false);
   };
-
-  return (
-    <div>
+  return <div>
       <h2 className="text-2xl font-semibold mb-4 text-center">{view === "sign_in" ? "Sign In" : "Sign Up"}</h2>
       {errorMsg && <div className="mb-2 text-center text-red-500">{errorMsg}</div>}
-      <form
-        onSubmit={e => {
-          e.preventDefault();
-          handleAuth();
-        }}
-        className="space-y-4"
-      >
+      <form onSubmit={e => {
+      e.preventDefault();
+      handleAuth();
+    }} className="space-y-4">
         <Input placeholder="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} disabled={loading} />
         <Input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} disabled={loading} />
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button type="submit" disabled={loading} className="w-full font-normal rounded-sm">
           {loading ? "Loading..." : view === "sign_in" ? "Sign In" : "Sign Up"}
         </Button>
       </form>
@@ -94,22 +96,17 @@ export function AuthForm() {
         </Button>
       </div>
       <div className="mt-4 text-center text-sm">
-        {view === "sign_in" ? (
-          <>
+        {view === "sign_in" ? <>
             Don&apos;t have an account?{" "}
             <button type="button" className="font-semibold text-blue-600 hover:underline" onClick={() => setView("sign_up")}>
               Sign up
             </button>
-          </>
-        ) : (
-          <>
+          </> : <>
             Already have an account?{" "}
             <button type="button" className="font-semibold text-blue-600 hover:underline" onClick={() => setView("sign_in")}>
               Sign in
             </button>
-          </>
-        )}
+          </>}
       </div>
-    </div>
-  );
+    </div>;
 }

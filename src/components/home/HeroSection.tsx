@@ -80,7 +80,7 @@ const LogoImage = ({ src, alt }: { src: string; alt: string }) => {
     <img
       src={imgSrc}
       alt=""
-      className="h-7 md:h-9 object-contain rounded transition-all grayscale opacity-80 hover:opacity-100 border border-gray-300"
+      className="h-7 md:h-9 object-contain rounded transition-all grayscale opacity-80 hover:opacity-100"
       style={{ minWidth: 80, maxWidth: 120, background: "transparent" }}
       loading="lazy"
       onError={handleError}

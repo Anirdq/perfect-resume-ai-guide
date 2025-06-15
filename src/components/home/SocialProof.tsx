@@ -56,11 +56,14 @@ export const SocialProof = () => (
     </div>
     <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8 w-full max-w-2xl">
       {socialProofLogos.map(({ src, alt }) => (
-        <div key={alt} className="flex items-center justify-center h-8 w-24">
+        <div
+          key={alt}
+          className="flex items-center justify-center h-10 w-28 md:w-32 bg-transparent"
+        >
           <img
             src={getWikimediaFilePath(src)}
             alt={alt}
-            className="max-h-7 max-w-full object-contain grayscale opacity-80 hover:opacity-100 transition-all"
+            className="h-8 md:h-9 max-w-full object-contain block mx-auto grayscale opacity-80 hover:opacity-100 transition-all"
             style={{ background: "transparent" }}
             loading="lazy"
             draggable={false}

@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
-import { Github, Twitter, Google } from "lucide-react";
+import { Github, Twitter, Bot } from "lucide-react"; // Removed 'Google', added 'Bot'
 
 type View = "sign_in" | "sign_up";
 
@@ -84,7 +84,7 @@ export function AuthForm() {
       </div>
       <div className="flex flex-col gap-2">
         <Button type="button" variant="outline" className="w-full flex items-center gap-2 justify-center" onClick={() => handleOAuth("google")} disabled={loading}>
-          <Google className="w-4 h-4" /> Continue with Google
+          <Bot className="w-4 h-4" /> Continue with Google
         </Button>
         <Button type="button" variant="outline" className="w-full flex items-center gap-2 justify-center" onClick={() => handleOAuth("github")} disabled={loading}>
           <Github className="w-4 h-4" /> Continue with GitHub

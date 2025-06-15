@@ -4,37 +4,25 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 
+// Only include working MNC brand logos
 const companyLogos = [
-  // Tech giants
+  // Tech giants (these SVGs should reliably load)
   { src: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", alt: "Google" },
   { src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg", alt: "Microsoft" },
   { src: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", alt: "Amazon" },
   { src: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", alt: "Apple" },
-  // Consulting and finance
+  // Consulting & Indian MNCs
   { src: "https://upload.wikimedia.org/wikipedia/commons/5/51/Accenture_Logo.svg", alt: "Accenture" },
   { src: "https://upload.wikimedia.org/wikipedia/commons/2/2a/Deloitte.svg", alt: "Deloitte" },
   { src: "https://upload.wikimedia.org/wikipedia/commons/8/8c/Infosys_logo.svg", alt: "Infosys" },
-  // Previous logos for context
-  { src: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Indeed_logo.png", alt: "Indeed" },
-  { src: "https://upload.wikimedia.org/wikipedia/commons/8/85/LinkedIn_Logo.svg", alt: "LinkedIn" },
-  { src: "https://upload.wikimedia.org/wikipedia/commons/7/75/Glassdoor_Logo_2014.png", alt: "Glassdoor" },
-  { src: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Monster.com_logo.svg", alt: "Monster" },
 ];
 
-// Simple fallback component for broken images
 const LogoImage = ({ src, alt }: { src: string; alt: string }) => {
   const [imgError, setImgError] = React.useState(false);
 
   if (imgError) {
-    return (
-      <div
-        className="flex items-center justify-center h-9 w-[100px] bg-gray-100 text-gray-400 text-xs rounded border border-gray-300"
-        style={{ minWidth: 80 }}
-        aria-label={alt + " logo not available"}
-      >
-        Not available
-      </div>
-    );
+    // OMIT rendering anything for broken logo
+    return null;
   }
 
   return (
@@ -91,3 +79,4 @@ export const HeroSection = () => {
     </section>
   );
 };
+

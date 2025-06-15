@@ -16,6 +16,7 @@ import { HeroSplit } from '@/components/HeroSplit';
 import { NeonOverlay } from '@/components/NeonOverlay';
 import { VerticalSection } from '@/components/VerticalSection';
 import { SplineHero } from "@/components/SplineHero";
+import { Navbar } from "@/components/Navbar";
 
 const Index = () => {
   const [resume, setResume] = useState('');
@@ -85,11 +86,30 @@ const Index = () => {
   };
 
   return (
-    <div className="relative min-h-screen font-orbitron bg-gradient-to-br from-[#151324] via-[#2a0d3c] to-[#1bc8f2] text-white">
-      {/* Spline-like Hero */}
-      <SplineHero />
+    <div className="relative min-h-screen font-orbitron bg-gradient-to-br from-[#f7fafc] via-[#f3f5fd] to-[#e1eeff] text-slate-900">
+      {/* Spline-inspired floating glassy nav */}
+      <Navbar />
 
-      <VerticalSection label="Why">
+      {/* Updated Hero */}
+      <section className="relative flex flex-col items-center justify-center min-h-[70vh] pb-8 w-full overflow-hidden bg-transparent">
+        <div className="pointer-events-none absolute w-[680px] h-[330px] -top-32 left-1/2 -translate-x-1/2 bg-gradient-to-br from-cyan-400/20 via-fuchsia-300/35 to-blue-200/10 blur-[60px] rounded-full z-0" />
+        <div className="relative z-10 flex flex-col items-center text-center pt-32 pb-20 px-6">
+          <span className="inline-block bg-gradient-to-r from-cyan-500 via-fuchsia-400 to-blue-400 bg-clip-text text-transparent font-orbitron text-2xl mb-3 tracking-wide drop-shadow-sm">Smarter Resume SaaS</span>
+          <h1 className="text-[2.5rem] md:text-5xl lg:text-6xl font-extrabold font-orbitron mb-5 bg-gradient-to-r from-cyan-600 via-fuchsia-600 to-blue-700 bg-clip-text text-transparent drop-shadow-xl">
+            Design & Optimize Resumes <br className="hidden md:block"/>with Futuristic AI
+          </h1>
+          <p className="text-lg md:text-xl text-cyan-700/90 font-sora mb-10 max-w-2xl drop-shadow">
+            Beautiful, instant, AI-powered resumes. <span className="font-semibold text-fuchsia-700/80">Level up your job hunt with SaaS-class design and analysis.</span>
+          </p>
+          <Button className="px-9 py-4 rounded-full text-lg font-bold shadow-lg shadow-cyan-500/20 hover:scale-[1.04] bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-blue-500 text-white transition">Get Started Free</Button>
+        </div>
+        <div className="absolute left-1/2 top-3/4 w-[94vw] max-w-4xl h-44 md:h-56 bg-white/30 backdrop-blur-[16px] rounded-[2.7rem] border border-cyan-300/15 shadow-xl opacity-95 -translate-x-1/2 pointer-events-none z-0"></div>
+      </section>
+      {/* Bump spacing because of navbar */}
+      <div className="mt-[78px]" />
+
+      {/* Main content sections with "SaaS" look */}
+      <VerticalSection label="Why" className="bg-white/90 border-0 shadow-lg !my-24">
         <div className="flex flex-col md:flex-row gap-10">
           <div className="flex-1">
             <h2 className="text-3xl md:text-4xl font-extrabold text-cyan-300 font-orbitron mb-3">Why use Perfect Resume AI?</h2>
@@ -110,8 +130,7 @@ const Index = () => {
           </div>
         </div>
       </VerticalSection>
-
-      <VerticalSection label="How">
+      <VerticalSection label="How" className="bg-white/95 border-0 shadow-lg !my-24">
         <div className="mt-4">
           <section id="how-it-works" className="mb-20">
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 place-items-stretch">
@@ -307,16 +326,16 @@ const Index = () => {
         </div>
       </VerticalSection>
       {/* FOOTER */}
-      <footer className="bg-black/80 border-t border-cyan-400/10 py-10 mt-14">
+      <footer className="bg-white/90 border-t border-cyan-200/10 py-10 mt-14">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-5">
           <div className="flex items-center">
             <BrandLogo size={28} />
-            <span className="font-bold text-lg bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-white to-fuchsia-400 tracking-tight">ResumeAI</span>
-            <span className="text-zinc-400 ml-3 font-light text-sm">
+            <span className="font-bold text-lg bg-clip-text text-transparent bg-gradient-to-r from-cyan-700 via-fuchsia-400 to-blue-500 tracking-tight">ResumeAI</span>
+            <span className="text-slate-400 ml-3 font-light text-sm">
               &copy; {new Date().getFullYear()} ResumeAI. All rights reserved.
             </span>
           </div>
-          <div className="text-zinc-500 text-xs">
+          <div className="text-slate-500 text-xs">
             Powered by OpenAI &amp; 💎 SaaS-class Design
           </div>
         </div>

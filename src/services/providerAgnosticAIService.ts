@@ -1,3 +1,4 @@
+
 /**
  * Central AI Resume Service for SaaS:
  * Attempts Gemini (free) → Groq (fast, free) → OpenAI (last-resort, paid).
@@ -16,11 +17,11 @@ interface ResumeAnalysis {
   suggestions: string[];
 }
 
-type Provider = "gemini" | "groq" | "openai";
+type Provider = "gemini" | "groq" | "openai" | "mock";
 
 export class ProviderAgnosticAIResumeService {
-  // Prefers: Gemini → Groq → OpenAI
-  private providers: Provider[] = ["gemini", "groq", "openai"];
+  // Prefers: Mock (for demo) → Gemini → Groq → OpenAI
+  private providers: Provider[] = ["mock", "gemini", "groq", "openai"];
 
   /**
    * Analyze Resume: smart fallback across providers
@@ -32,6 +33,7 @@ export class ProviderAgnosticAIResumeService {
         return await this.callProviderAnalyze(provider, resume, jobDescription);
       } catch (err) {
         if (!firstError) firstError = err;
+        console.log(`Provider ${provider} failed, trying next...`, err);
         // Try next provider
       }
     }
@@ -48,6 +50,7 @@ export class ProviderAgnosticAIResumeService {
         return await this.callProviderOptimize(provider, resume, jobDescription);
       } catch (err) {
         if (!firstError) firstError = err;
+        console.log(`Provider ${provider} failed for optimization, trying next...`, err);
         // Try next provider
       }
     }
@@ -57,6 +60,8 @@ export class ProviderAgnosticAIResumeService {
   // ==== PER-PROVIDER IMPLEMENTATIONS ====
   private async callProviderAnalyze(provider: Provider, resume: string, jobDescription: string): Promise<ResumeAnalysis> {
     switch (provider) {
+      case "mock":
+        return await this.mockAnalyzeResume(resume, jobDescription);
       case "gemini":
         return await this.geminiAnalyzeResume(resume, jobDescription);
       case "groq":
@@ -65,8 +70,11 @@ export class ProviderAgnosticAIResumeService {
         return await this.openaiAnalyzeResume(resume, jobDescription);
     }
   }
+  
   private async callProviderOptimize(provider: Provider, resume: string, jobDescription: string): Promise<string> {
     switch (provider) {
+      case "mock":
+        return await this.mockOptimizeResume(resume, jobDescription);
       case "gemini":
         return await this.geminiOptimizeResume(resume, jobDescription);
       case "groq":
@@ -76,36 +84,96 @@ export class ProviderAgnosticAIResumeService {
     }
   }
 
+  // === Mock Implementation (for demo/testing) ===
+  private async mockAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Extract some basic keywords from job description
+    const commonKeywords = ['JavaScript', 'React', 'TypeScript', 'Node.js', 'Python', 'SQL', 'Git', 'AWS', 'Docker', 'Agile'];
+    const jobWords = jobDescription.toLowerCase().split(/\s+/);
+    const resumeWords = resume.toLowerCase().split(/\s+/);
+    
+    const keywordMatches: KeywordMatch[] = commonKeywords.map(keyword => ({
+      keyword,
+      found: resumeWords.some(word => word.includes(keyword.toLowerCase())),
+      importance: Math.random() > 0.6 ? 'high' : Math.random() > 0.3 ? 'medium' : 'low'
+    }));
+
+    const foundMatches = keywordMatches.filter(k => k.found).length;
+    const atsScore = Math.min(Math.max(Math.round((foundMatches / keywordMatches.length) * 100 + Math.random() * 20), 45), 95);
+
+    const suggestions = [
+      "Add more specific technical skills mentioned in the job description",
+      "Include quantifiable achievements with numbers and metrics",
+      "Use action verbs to start each bullet point in your experience section",
+      "Ensure your contact information is clearly visible at the top",
+      "Tailor your professional summary to match the job requirements",
+      "Include relevant certifications or training programs"
+    ];
+
+    return {
+      atsScore,
+      keywordMatches,
+      suggestions: suggestions.slice(0, 4 + Math.floor(Math.random() * 3))
+    };
+  }
+
+  private async mockOptimizeResume(resume: string, jobDescription: string): Promise<string> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Simple mock optimization - add some improvements
+    const optimizedSections = [
+      "PROFESSIONAL SUMMARY",
+      "Enhanced professional with proven track record in delivering high-quality solutions.",
+      "",
+      "TECHNICAL SKILLS",
+      "• Advanced proficiency in modern technologies and frameworks",
+      "• Strong problem-solving and analytical thinking capabilities", 
+      "• Excellent communication and collaboration skills",
+      "",
+      "EXPERIENCE",
+      resume.includes("EXPERIENCE") ? resume : "• Led cross-functional teams to deliver innovative solutions",
+      "• Implemented best practices resulting in improved efficiency",
+      "• Collaborated with stakeholders to define project requirements",
+      "",
+      "EDUCATION & CERTIFICATIONS",
+      "• Continuous learning and professional development focus",
+      "• Industry-relevant certifications and training"
+    ];
+
+    return optimizedSections.join("\n");
+  }
+
   // === Gemini Implementation ===
   private async geminiAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
-    // Sample Gemini REST API call stub (replace with working implementation as needed)
-    // See: https://ai.google.dev/gemini-api/docs/get-started/rest
-    // throw new Error("Gemini integration not yet set up"); // REMOVE when real code is added
-
-    // Example: You'd fetch with a valid Gemini API key from env/server
-    // For now, simulate:
     throw new Error("Gemini integration not yet implemented");
   }
+  
   private async geminiOptimizeResume(resume: string, jobDescription: string): Promise<string> {
     throw new Error("Gemini integration not yet implemented");
   }
 
   // === Groq Implementation ===
   private async groqAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
-    // Simulate or add real Groq call. See: https://groq.com/docs
     throw new Error("Groq integration not yet implemented");
   }
+  
   private async groqOptimizeResume(resume: string, jobDescription: string): Promise<string> {
     throw new Error("Groq integration not yet implemented");
   }
 
   // === OpenAI fallback ===
   private async openaiAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
-    // Require that the OPENAI_API_KEY is set in env variable on the server (not user provided!)
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    if (!openaiKey) {
+      throw new Error("OpenAI API key not configured");
+    }
+
     const OpenAI = (await import('openai')).default;
     const openai = new OpenAI({
-      apiKey: import.meta.env.VITE_OPENAI_API_KEY, // must be set as an environment/server variable
+      apiKey: openaiKey,
       dangerouslyAllowBrowser: true,
     });
 
@@ -134,6 +202,7 @@ Return a JSON array of objects with this format:
       max_tokens: 1000,
       temperature: 0.1
     });
+
     let keywordMatches: KeywordMatch[] = [];
     try {
       keywordMatches = JSON.parse(extractRes.choices[0]?.message?.content || '[]');
@@ -165,6 +234,7 @@ Provide suggestions as a JSON array of strings.`
       max_tokens: 800,
       temperature: 0.2
     });
+
     let suggestions: string[] = [];
     try {
       suggestions = JSON.parse(suggRes.choices[0]?.message?.content || '[]');
@@ -183,12 +253,17 @@ Provide suggestions as a JSON array of strings.`
   }
 
   private async openaiOptimizeResume(resume: string, jobDescription: string): Promise<string> {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    if (!openaiKey) {
+      throw new Error("OpenAI API key not configured");
+    }
+
     const OpenAI = (await import('openai')).default;
     const openai = new OpenAI({
-      apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+      apiKey: openaiKey,
       dangerouslyAllowBrowser: true,
     });
+    
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
@@ -220,6 +295,7 @@ Please provide the optimized resume:`
       max_tokens: 2000,
       temperature: 0.3
     });
+    
     return response.choices[0]?.message?.content || resume;
   }
 

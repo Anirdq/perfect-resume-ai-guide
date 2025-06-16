@@ -59,6 +59,10 @@ const Index = () => {
     if (e.target.value.length > 0 && currentStep < 1) setCurrentStep(1);
   };
 
+  const handleJobDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setJobDescription(e.target.value);
+  };
+
   const handleNext = () => {
     if (currentStep === 0 && !resume) {
       toast.error("Please upload your resume.");
@@ -72,15 +76,32 @@ const Index = () => {
   };
 
   const analyzeWithAI = async () => {
+    if (!resume) {
+      toast.error("Please upload a resume first");
+      return;
+    }
+
+    if (!jobDescription.trim()) {
+      toast.error("Please add a job description to optimize your resume");
+      return;
+    }
+
     setIsAnalyzing(true);
     try {
-      const [analysisResult, optimizedResumeResult] = await Promise.all([aiService.analyzeResume(resume, jobDescription), aiService.optimizeResume(resume, jobDescription)]);
+      console.log('Starting AI analysis with resume length:', resume.length, 'and job description length:', jobDescription.length);
+      
+      const [analysisResult, optimizedResumeResult] = await Promise.all([
+        aiService.analyzeResume(resume, jobDescription), 
+        aiService.optimizeResume(resume, jobDescription)
+      ]);
+      
+      console.log('AI analysis completed successfully', analysisResult);
       setAnalysis(analysisResult);
       setOptimizedResume(optimizedResumeResult);
       toast.success('AI analysis completed successfully!');
     } catch (error) {
       console.error('AI analysis failed:', error);
-      toast.error("AI analysis failed. Please try again later or contact support.");
+      toast.error(`AI analysis failed: ${error.message || 'Please try again later'}`);
     } finally {
       setIsAnalyzing(false);
     }
@@ -92,6 +113,10 @@ const Index = () => {
   };
 
   const handleStartOptimization = () => {
+    if (!jobDescription.trim()) {
+      toast.error("Please add a job description first");
+      return;
+    }
     setShowConfirm(true);
   };
 
@@ -125,6 +150,7 @@ const Index = () => {
               </div>
             </div>
           )}
+          
           {/* Step 2: Preview/Edit */}
           {currentStep === 1 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 animate-fade-in">
@@ -152,36 +178,74 @@ const Index = () => {
                   className="min-h-[220px] font-mono resize-none mb-2"
                 />
                 <div className="flex flex-row justify-between items-center text-sm text-gray-400 pt-1">
-                  <span>
-                    {resume.length} characters
-                  </span>
+                  <span>{resume.length} characters</span>
                   {resume.length ? (
                     <span className="text-green-600">
-                      <span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-1 animate-pulse" /> Unsaved changes
+                      <span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-1 animate-pulse" /> Ready
                     </span>
                   ) : null}
                 </div>
               </div>
-              <div className="flex flex-col items-center justify-start bg-gray-50 rounded-2xl shadow-inner min-h-[240px] p-4">
-                <span className="font-semibold text-gray-700 mb-1">Live Preview</span>
-                <pre aria-label="Resume preview" className="w-full font-mono text-xs bg-white rounded-lg p-4 text-gray-800 overflow-auto min-h-[170px] shadow transition hover:shadow-lg">
-                  {resume ? resume : <span className="text-gray-400">Nothing to preview yet.</span>}
-                </pre>
+              
+              {/* Job Description Input */}
+              <div className="bg-white rounded-2xl shadow-md py-6 px-4 flex flex-col">
+                <label className="font-bold flex items-center gap-2 mb-2">
+                  <span>Job Description</span>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span>
+                          <Info className="w-4 h-4 text-blue-400" aria-label="Help" />
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent side="right">
+                        Paste the job description you're applying for to get targeted optimization.
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </label>
+                <Textarea
+                  aria-label="Job description"
+                  placeholder="Paste the job description here to optimize your resume for this specific role..."
+                  value={jobDescription}
+                  onChange={handleJobDescriptionChange}
+                  className="min-h-[220px] resize-none mb-2"
+                />
+                <div className="flex flex-row justify-between items-center text-sm text-gray-400 pt-1">
+                  <span>{jobDescription.length} characters</span>
+                  {jobDescription.length ? (
+                    <span className="text-green-600">
+                      <span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-1 animate-pulse" /> Ready
+                    </span>
+                  ) : null}
+                </div>
+                
                 <Button
-                  className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white shadow hover-scale"
+                  className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white shadow hover-scale"
                   onClick={handleStartOptimization}
-                  disabled={!resume || !jobDescription}
+                  disabled={!resume || !jobDescription.trim() || isAnalyzing}
                   aria-label="Proceed to Optimization"
                 >
-                  <Sparkles className="mr-2" /> Optimize My Resume
+                  {isAnalyzing ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Optimizing...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2" /> Optimize My Resume
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
           )}
-          {/* Step 3: Optimization, same as before with feedback */}
+          
+          {/* Step 3: Optimization Results */}
           {currentStep === 2 && (
             <div className="animate-fade-in">
-              {analysis ? <>
+              {analysis ? (
+                <>
                   <Card className="shadow-sm border-0">
                     <CardHeader>
                       <CardTitle className="flex items-center justify-between">
@@ -220,7 +284,8 @@ const Index = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
-                        {analysis.keywordMatches.map((keyword, index) => <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        {analysis.keywordMatches.map((keyword, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <span className="font-medium text-gray-900">{keyword.keyword}</span>
                             <div className="flex items-center space-x-3">
                               <Badge variant={keyword.importance === 'high' ? 'destructive' : keyword.importance === 'medium' ? 'default' : 'secondary'} className="text-xs">
@@ -228,7 +293,8 @@ const Index = () => {
                               </Badge>
                               {keyword.found ? <CheckCircle className="h-5 w-5 text-green-500" /> : <div className="h-5 w-5 rounded-full border-2 border-red-400"></div>}
                             </div>
-                          </div>)}
+                          </div>
+                        ))}
                       </div>
                     </CardContent>
                   </Card>
@@ -244,12 +310,14 @@ const Index = () => {
                     </CardHeader>
                     <CardContent>
                       <ul className="space-y-3">
-                        {analysis.suggestions.map((suggestion, index) => <li key={index} className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+                        {analysis.suggestions.map((suggestion, index) => (
+                          <li key={index} className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
                             <div className="bg-blue-600 rounded-full p-1 mt-1">
                               <div className="h-2 w-2 bg-white rounded-full"></div>
                             </div>
                             <span className="text-gray-700">{suggestion}</span>
-                          </li>)}
+                          </li>
+                        ))}
                       </ul>
                     </CardContent>
                   </Card>
@@ -258,7 +326,8 @@ const Index = () => {
 
                   <ExportOptions resumeText={optimizedResume} />
 
-                  {showComparison && <Card className="shadow-sm border-0">
+                  {showComparison && (
+                    <Card className="shadow-sm border-0">
                       <CardHeader>
                         <CardTitle className="flex items-center space-x-3">
                           <div className="bg-purple-600 p-2 rounded-lg">
@@ -293,21 +362,26 @@ const Index = () => {
                           </div>
                         </div>
                       </CardContent>
-                    </Card>}
-                </> : <Card className="shadow-sm border-0">
+                    </Card>
+                  )}
+                </>
+              ) : (
+                <Card className="shadow-sm border-0">
                   <CardContent className="flex flex-col items-center justify-center py-24 text-center">
                     <div className="bg-gray-100 p-8 rounded-full mb-6">
                       <Brain className="h-12 w-12 text-gray-400" />
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-3">Ready to Optimize?</h3>
                     <p className="text-gray-600 max-w-md">
-                      Set up your OpenAI API key, upload your resume, and add the job description to get started with AI-powered optimization.
+                      Upload your resume and add the job description to get started with AI-powered optimization.
                     </p>
                   </CardContent>
-                </Card>}
+                </Card>
+              )}
             </div>
           )}
         </div>
+        
         {/* Confirmation Modal */}
         <ConfirmOptimizeModal
           open={showConfirm}
@@ -338,4 +412,5 @@ const Index = () => {
     </div>
   );
 };
+
 export default Index;

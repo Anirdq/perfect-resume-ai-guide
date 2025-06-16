@@ -22,9 +22,6 @@ export class ProviderAgnosticAIResumeService {
   // Prefers: Gemini (free) → Groq (fast, free) → OpenAI (paid) → Mock (fallback)
   private providers: Provider[] = ["gemini", "groq", "openai", "mock"];
 
-  /**
-   * Analyze Resume: smart fallback across providers
-   */
   async analyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
     let firstError: any = null;
     for (const provider of this.providers) {
@@ -39,9 +36,6 @@ export class ProviderAgnosticAIResumeService {
     throw firstError || new Error('All AI providers failed');
   }
 
-  /**
-   * Optimize Resume: smart fallback
-   */
   async optimizeResume(resume: string, jobDescription: string): Promise<string> {
     let firstError: any = null;
     for (const provider of this.providers) {
@@ -374,38 +368,51 @@ Please provide the optimized resume:`
     return response.choices[0]?.message?.content || resume;
   }
 
-  // === Mock Implementation (for demo/testing) ===
+  // === Mock Implementation (Enhanced for better variety) ===
   private async mockAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Extract some basic keywords from job description
-    const commonKeywords = ['JavaScript', 'React', 'TypeScript', 'Node.js', 'Python', 'SQL', 'Git', 'AWS', 'Docker', 'Agile'];
+    // Extract actual keywords from job description
     const jobWords = jobDescription.toLowerCase().split(/\s+/);
     const resumeWords = resume.toLowerCase().split(/\s+/);
     
-    const keywordMatches: KeywordMatch[] = commonKeywords.map(keyword => ({
-      keyword,
-      found: resumeWords.some(word => word.includes(keyword.toLowerCase())),
+    // Common technical keywords to look for
+    const techKeywords = ['javascript', 'react', 'typescript', 'node', 'python', 'sql', 'git', 'aws', 'docker', 'agile', 'html', 'css', 'api', 'database', 'testing', 'ci/cd', 'mongodb', 'express', 'angular', 'vue'];
+    
+    // Find keywords that appear in job description
+    const foundJobKeywords = techKeywords.filter(keyword => 
+      jobWords.some(word => word.includes(keyword))
+    );
+    
+    // Create keyword matches based on actual content
+    const keywordMatches: KeywordMatch[] = foundJobKeywords.slice(0, 10).map(keyword => ({
+      keyword: keyword.charAt(0).toUpperCase() + keyword.slice(1),
+      found: resumeWords.some(word => word.includes(keyword)),
       importance: Math.random() > 0.6 ? 'high' : Math.random() > 0.3 ? 'medium' : 'low'
     }));
 
     const foundMatches = keywordMatches.filter(k => k.found).length;
     const atsScore = Math.min(Math.max(Math.round((foundMatches / keywordMatches.length) * 100 + Math.random() * 20), 45), 95);
 
-    const suggestions = [
-      "Add more specific technical skills mentioned in the job description",
-      "Include quantifiable achievements with numbers and metrics",
-      "Use action verbs to start each bullet point in your experience section",
-      "Ensure your contact information is clearly visible at the top",
-      "Tailor your professional summary to match the job requirements",
-      "Include relevant certifications or training programs"
-    ];
-
+    // Generate contextual suggestions based on content
+    const suggestions = [];
+    if (!resume.includes('$') && !resume.includes('%')) {
+      suggestions.push("Add quantifiable achievements with numbers, percentages, or dollar amounts");
+    }
+    if (!jobWords.some(word => resumeWords.includes(word))) {
+      suggestions.push("Include more keywords from the job description");
+    }
+    if (resume.length < 200) {
+      suggestions.push("Expand your experience descriptions with more details");
+    }
+    suggestions.push("Use strong action verbs to start each bullet point");
+    suggestions.push("Ensure your contact information is clearly visible at the top");
+    
     return {
       atsScore,
       keywordMatches,
-      suggestions: suggestions.slice(0, 4 + Math.floor(Math.random() * 3))
+      suggestions: suggestions.slice(0, 4 + Math.floor(Math.random() * 2))
     };
   }
 
@@ -413,27 +420,60 @@ Please provide the optimized resume:`
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Simple mock optimization - add some improvements
-    const optimizedSections = [
-      "PROFESSIONAL SUMMARY",
-      "Enhanced professional with proven track record in delivering high-quality solutions.",
-      "",
-      "TECHNICAL SKILLS",
-      "• Advanced proficiency in modern technologies and frameworks",
-      "• Strong problem-solving and analytical thinking capabilities", 
-      "• Excellent communication and collaboration skills",
-      "",
-      "EXPERIENCE",
-      resume.includes("EXPERIENCE") ? resume : "• Led cross-functional teams to deliver innovative solutions",
-      "• Implemented best practices resulting in improved efficiency",
-      "• Collaborated with stakeholders to define project requirements",
-      "",
-      "EDUCATION & CERTIFICATIONS",
-      "• Continuous learning and professional development focus",
-      "• Industry-relevant certifications and training"
-    ];
+    // Extract keywords from job description for enhancement
+    const jobWords = jobDescription.toLowerCase().split(/\s+/);
+    const techKeywords = ['javascript', 'react', 'typescript', 'node', 'python', 'sql', 'git', 'aws', 'docker', 'agile'];
+    const relevantKeywords = techKeywords.filter(keyword => 
+      jobWords.some(word => word.includes(keyword))
+    );
+    
+    // Create a more personalized optimization based on input
+    let optimizedResume = resume;
+    
+    // If resume is very short, create a basic structure
+    if (resume.length < 100) {
+      const keywordList = relevantKeywords.slice(0, 5).map(k => k.charAt(0).toUpperCase() + k.slice(1)).join(', ');
+      
+      optimizedResume = `PROFESSIONAL SUMMARY
+Results-driven professional with expertise in ${keywordList}. Proven track record of delivering high-quality solutions and collaborating effectively with cross-functional teams.
 
-    return optimizedSections.join("\n");
+TECHNICAL SKILLS
+• ${relevantKeywords.map(k => k.charAt(0).toUpperCase() + k.slice(1)).join(', ')}
+• Strong problem-solving and analytical thinking capabilities
+• Excellent communication and collaboration skills
+
+EXPERIENCE
+• Developed and maintained applications using modern technologies
+• Collaborated with stakeholders to define and implement project requirements
+• Implemented best practices resulting in improved efficiency and code quality
+• Led cross-functional teams to deliver innovative solutions on time
+
+EDUCATION & CERTIFICATIONS
+• Continuous learning and professional development focus
+• Industry-relevant certifications and training programs`;
+    } else {
+      // Enhance existing resume
+      const lines = resume.split('\n');
+      const enhancedLines = lines.map(line => {
+        // Enhance bullet points
+        if (line.trim().startsWith('•') || line.trim().startsWith('-')) {
+          if (!line.toLowerCase().includes('led') && !line.toLowerCase().includes('managed') && !line.toLowerCase().includes('developed')) {
+            return line.replace(/^(\s*[•-]\s*)/, '$1Effectively ');
+          }
+        }
+        return line;
+      });
+      
+      // Add relevant keywords section if missing
+      if (!resume.toLowerCase().includes('skills') && relevantKeywords.length > 0) {
+        const skillsSection = `\nTECHNICAL SKILLS\n• ${relevantKeywords.map(k => k.charAt(0).toUpperCase() + k.slice(1)).join(', ')}\n`;
+        enhancedLines.splice(2, 0, skillsSection);
+      }
+      
+      optimizedResume = enhancedLines.join('\n');
+    }
+    
+    return optimizedResume;
   }
 
   // === ATS Scoring (unchanged utility) ===

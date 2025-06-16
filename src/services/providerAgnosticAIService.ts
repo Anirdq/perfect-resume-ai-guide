@@ -1,4 +1,3 @@
-
 /**
  * Central AI Resume Service for SaaS:
  * Attempts Gemini (free) → Groq (fast, free) → OpenAI (last-resort, paid).
@@ -20,8 +19,8 @@ interface ResumeAnalysis {
 type Provider = "gemini" | "groq" | "openai" | "mock";
 
 export class ProviderAgnosticAIResumeService {
-  // Prefers: Mock (for demo) → Gemini → Groq → OpenAI
-  private providers: Provider[] = ["mock", "gemini", "groq", "openai"];
+  // Prefers: Gemini (free) → Groq (fast, free) → OpenAI (paid) → Mock (fallback)
+  private providers: Provider[] = ["gemini", "groq", "openai", "mock"];
 
   /**
    * Analyze Resume: smart fallback across providers
@@ -60,111 +59,187 @@ export class ProviderAgnosticAIResumeService {
   // ==== PER-PROVIDER IMPLEMENTATIONS ====
   private async callProviderAnalyze(provider: Provider, resume: string, jobDescription: string): Promise<ResumeAnalysis> {
     switch (provider) {
-      case "mock":
-        return await this.mockAnalyzeResume(resume, jobDescription);
       case "gemini":
         return await this.geminiAnalyzeResume(resume, jobDescription);
       case "groq":
         return await this.groqAnalyzeResume(resume, jobDescription);
       case "openai":
         return await this.openaiAnalyzeResume(resume, jobDescription);
+      case "mock":
+        return await this.mockAnalyzeResume(resume, jobDescription);
     }
   }
   
   private async callProviderOptimize(provider: Provider, resume: string, jobDescription: string): Promise<string> {
     switch (provider) {
-      case "mock":
-        return await this.mockOptimizeResume(resume, jobDescription);
       case "gemini":
         return await this.geminiOptimizeResume(resume, jobDescription);
       case "groq":
         return await this.groqOptimizeResume(resume, jobDescription);
       case "openai":
         return await this.openaiOptimizeResume(resume, jobDescription);
+      case "mock":
+        return await this.mockOptimizeResume(resume, jobDescription);
     }
   }
 
-  // === Mock Implementation (for demo/testing) ===
-  private async mockAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Extract some basic keywords from job description
-    const commonKeywords = ['JavaScript', 'React', 'TypeScript', 'Node.js', 'Python', 'SQL', 'Git', 'AWS', 'Docker', 'Agile'];
-    const jobWords = jobDescription.toLowerCase().split(/\s+/);
-    const resumeWords = resume.toLowerCase().split(/\s+/);
-    
-    const keywordMatches: KeywordMatch[] = commonKeywords.map(keyword => ({
-      keyword,
-      found: resumeWords.some(word => word.includes(keyword.toLowerCase())),
-      importance: Math.random() > 0.6 ? 'high' : Math.random() > 0.3 ? 'medium' : 'low'
-    }));
-
-    const foundMatches = keywordMatches.filter(k => k.found).length;
-    const atsScore = Math.min(Math.max(Math.round((foundMatches / keywordMatches.length) * 100 + Math.random() * 20), 45), 95);
-
-    const suggestions = [
-      "Add more specific technical skills mentioned in the job description",
-      "Include quantifiable achievements with numbers and metrics",
-      "Use action verbs to start each bullet point in your experience section",
-      "Ensure your contact information is clearly visible at the top",
-      "Tailor your professional summary to match the job requirements",
-      "Include relevant certifications or training programs"
-    ];
-
-    return {
-      atsScore,
-      keywordMatches,
-      suggestions: suggestions.slice(0, 4 + Math.floor(Math.random() * 3))
-    };
-  }
-
-  private async mockOptimizeResume(resume: string, jobDescription: string): Promise<string> {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Simple mock optimization - add some improvements
-    const optimizedSections = [
-      "PROFESSIONAL SUMMARY",
-      "Enhanced professional with proven track record in delivering high-quality solutions.",
-      "",
-      "TECHNICAL SKILLS",
-      "• Advanced proficiency in modern technologies and frameworks",
-      "• Strong problem-solving and analytical thinking capabilities", 
-      "• Excellent communication and collaboration skills",
-      "",
-      "EXPERIENCE",
-      resume.includes("EXPERIENCE") ? resume : "• Led cross-functional teams to deliver innovative solutions",
-      "• Implemented best practices resulting in improved efficiency",
-      "• Collaborated with stakeholders to define project requirements",
-      "",
-      "EDUCATION & CERTIFICATIONS",
-      "• Continuous learning and professional development focus",
-      "• Industry-relevant certifications and training"
-    ];
-
-    return optimizedSections.join("\n");
-  }
-
-  // === Gemini Implementation ===
+  // === Gemini Implementation (Google's Free AI) ===
   private async geminiAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
-    throw new Error("Gemini integration not yet implemented");
+    const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (!geminiKey) {
+      throw new Error("Gemini API key not configured");
+    }
+
+    const { GoogleGenerativeAI } = await import('@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(geminiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    // Extract keywords and analyze
+    const analysisPrompt = `Analyze this resume against the job description and provide a detailed ATS analysis.
+
+RESUME:
+${resume}
+
+JOB DESCRIPTION:
+${jobDescription}
+
+Return a JSON response with this exact structure:
+{
+  "keywordMatches": [{"keyword": "JavaScript", "found": true, "importance": "high"}],
+  "suggestions": ["Add more quantifiable achievements", "Include relevant certifications"]
+}
+
+Focus on the top 10 most important keywords from the job description.`;
+
+    const result = await model.generateContent(analysisPrompt);
+    const response = await result.response;
+    const text = response.text();
+
+    let parsedData;
+    try {
+      // Extract JSON from response
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      parsedData = JSON.parse(jsonMatch ? jsonMatch[0] : '{}');
+    } catch (e) {
+      throw new Error('Failed to parse Gemini response');
+    }
+
+    const keywordMatches: KeywordMatch[] = parsedData.keywordMatches || [];
+    const suggestions: string[] = parsedData.suggestions || [];
+    const atsScore = this.calculateATSScore(keywordMatches, resume, jobDescription);
+
+    return { atsScore, keywordMatches, suggestions };
   }
-  
+
   private async geminiOptimizeResume(resume: string, jobDescription: string): Promise<string> {
-    throw new Error("Gemini integration not yet implemented");
+    const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (!geminiKey) {
+      throw new Error("Gemini API key not configured");
+    }
+
+    const { GoogleGenerativeAI } = await import('@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(geminiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const optimizePrompt = `Optimize this resume for the given job description. Enhance keywords, improve formatting, and make it more ATS-friendly while keeping all information truthful.
+
+ORIGINAL RESUME:
+${resume}
+
+JOB DESCRIPTION:
+${jobDescription}
+
+Return only the optimized resume text, no additional commentary.`;
+
+    const result = await model.generateContent(optimizePrompt);
+    const response = await result.response;
+    return response.text();
   }
 
-  // === Groq Implementation ===
+  // === Groq Implementation (Fast & Free) ===
   private async groqAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
-    throw new Error("Groq integration not yet implemented");
-  }
-  
-  private async groqOptimizeResume(resume: string, jobDescription: string): Promise<string> {
-    throw new Error("Groq integration not yet implemented");
+    const groqKey = import.meta.env.VITE_GROQ_API_KEY;
+    if (!groqKey) {
+      throw new Error("Groq API key not configured");
+    }
+
+    const Groq = (await import('groq-sdk')).default;
+    const groq = new Groq({ apiKey: groqKey, dangerouslyAllowBrowser: true });
+
+    const completion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: "You are an expert ATS resume analyzer. Return only valid JSON responses."
+        },
+        {
+          role: "user",
+          content: `Analyze this resume against the job description. Extract the top 10 keywords and provide optimization suggestions.
+
+RESUME: ${resume}
+
+JOB DESCRIPTION: ${jobDescription}
+
+Return JSON: {"keywordMatches": [{"keyword": "React", "found": true, "importance": "high"}], "suggestions": ["suggestion1", "suggestion2"]}`
+        }
+      ],
+      model: "llama-3.1-70b-versatile",
+      temperature: 0.1,
+      max_tokens: 1500,
+    });
+
+    const content = completion.choices[0]?.message?.content;
+    if (!content) throw new Error('No response from Groq');
+
+    let parsedData;
+    try {
+      parsedData = JSON.parse(content);
+    } catch (e) {
+      throw new Error('Failed to parse Groq response');
+    }
+
+    const keywordMatches: KeywordMatch[] = parsedData.keywordMatches || [];
+    const suggestions: string[] = parsedData.suggestions || [];
+    const atsScore = this.calculateATSScore(keywordMatches, resume, jobDescription);
+
+    return { atsScore, keywordMatches, suggestions };
   }
 
-  // === OpenAI fallback ===
+  private async groqOptimizeResume(resume: string, jobDescription: string): Promise<string> {
+    const groqKey = import.meta.env.VITE_GROQ_API_KEY;
+    if (!groqKey) {
+      throw new Error("Groq API key not configured");
+    }
+
+    const Groq = (await import('groq-sdk')).default;
+    const groq = new Groq({ apiKey: groqKey, dangerouslyAllowBrowser: true });
+
+    const completion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: "You are a professional resume optimizer. Enhance resumes for ATS compatibility while keeping all information truthful."
+        },
+        {
+          role: "user",
+          content: `Optimize this resume for the job description. Improve keywords, formatting, and ATS compatibility:
+
+RESUME: ${resume}
+
+JOB DESCRIPTION: ${jobDescription}
+
+Return only the optimized resume text.`
+        }
+      ],
+      model: "llama-3.1-70b-versatile",
+      temperature: 0.3,
+      max_tokens: 2000,
+    });
+
+    return completion.choices[0]?.message?.content || resume;
+  }
+
+  // === OpenAI Implementation (Existing code) ===
   private async openaiAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
     const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
     if (!openaiKey) {
@@ -297,6 +372,68 @@ Please provide the optimized resume:`
     });
     
     return response.choices[0]?.message?.content || resume;
+  }
+
+  // === Mock Implementation (for demo/testing) ===
+  private async mockAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Extract some basic keywords from job description
+    const commonKeywords = ['JavaScript', 'React', 'TypeScript', 'Node.js', 'Python', 'SQL', 'Git', 'AWS', 'Docker', 'Agile'];
+    const jobWords = jobDescription.toLowerCase().split(/\s+/);
+    const resumeWords = resume.toLowerCase().split(/\s+/);
+    
+    const keywordMatches: KeywordMatch[] = commonKeywords.map(keyword => ({
+      keyword,
+      found: resumeWords.some(word => word.includes(keyword.toLowerCase())),
+      importance: Math.random() > 0.6 ? 'high' : Math.random() > 0.3 ? 'medium' : 'low'
+    }));
+
+    const foundMatches = keywordMatches.filter(k => k.found).length;
+    const atsScore = Math.min(Math.max(Math.round((foundMatches / keywordMatches.length) * 100 + Math.random() * 20), 45), 95);
+
+    const suggestions = [
+      "Add more specific technical skills mentioned in the job description",
+      "Include quantifiable achievements with numbers and metrics",
+      "Use action verbs to start each bullet point in your experience section",
+      "Ensure your contact information is clearly visible at the top",
+      "Tailor your professional summary to match the job requirements",
+      "Include relevant certifications or training programs"
+    ];
+
+    return {
+      atsScore,
+      keywordMatches,
+      suggestions: suggestions.slice(0, 4 + Math.floor(Math.random() * 3))
+    };
+  }
+
+  private async mockOptimizeResume(resume: string, jobDescription: string): Promise<string> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Simple mock optimization - add some improvements
+    const optimizedSections = [
+      "PROFESSIONAL SUMMARY",
+      "Enhanced professional with proven track record in delivering high-quality solutions.",
+      "",
+      "TECHNICAL SKILLS",
+      "• Advanced proficiency in modern technologies and frameworks",
+      "• Strong problem-solving and analytical thinking capabilities", 
+      "• Excellent communication and collaboration skills",
+      "",
+      "EXPERIENCE",
+      resume.includes("EXPERIENCE") ? resume : "• Led cross-functional teams to deliver innovative solutions",
+      "• Implemented best practices resulting in improved efficiency",
+      "• Collaborated with stakeholders to define project requirements",
+      "",
+      "EDUCATION & CERTIFICATIONS",
+      "• Continuous learning and professional development focus",
+      "• Industry-relevant certifications and training"
+    ];
+
+    return optimizedSections.join("\n");
   }
 
   // === ATS Scoring (unchanged utility) ===

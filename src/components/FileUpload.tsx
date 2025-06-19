@@ -8,8 +8,8 @@ import * as pdfjsLib from 'pdfjs-dist';
 import { createWorker } from 'tesseract.js';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-// Set up PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+// Set up PDF.js worker with matching version
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
 
 interface FileUploadProps {
   onFileUpload: (text: string) => void;
@@ -20,7 +20,6 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingStep, setProcessingStep] = useState('');
-  // Add an additional state for ARIA and animation feedback
   const [hasError, setHasError] = useState(false);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
@@ -46,11 +45,23 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
 
   const extractTextFromPDF = async (file: File): Promise<string> => {
     try {
+      console.log('Starting PDF text extraction...');
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      
+      // Use the updated PDF.js API
+      const loadingTask = pdfjsLib.getDocument({
+        data: arrayBuffer,
+        useSystemFonts: true,
+        standardFontDataUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/'
+      });
+      
+      const pdf = await loadingTask.promise;
+      console.log(`PDF loaded successfully. Number of pages: ${pdf.numPages}`);
+      
       let fullText = '';
 
       for (let i = 1; i <= pdf.numPages; i++) {
+        console.log(`Processing page ${i} of ${pdf.numPages}...`);
         const page = await pdf.getPage(i);
         const textContent = await page.getTextContent();
         const pageText = textContent.items
@@ -59,10 +70,11 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
         fullText += pageText + '\n';
       }
 
+      console.log(`PDF text extraction completed. Total characters: ${fullText.length}`);
       return fullText.trim();
     } catch (error) {
       console.error('Error extracting text from PDF:', error);
-      throw new Error('Failed to extract text from PDF');
+      throw new Error(`Failed to extract text from PDF: ${error.message}`);
     }
   };
 
@@ -109,7 +121,7 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
       
     } catch (error) {
       console.error('Error processing file:', error);
-      toast.error('Failed to extract text from file. Please try again.');
+      toast.error(`Failed to extract text from file: ${error.message}`);
       setHasError(true);
     } finally {
       setIsProcessing(false);

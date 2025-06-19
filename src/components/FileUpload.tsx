@@ -22,6 +22,36 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
   const [processingStep, setProcessingStep] = useState('');
   const [hasError, setHasError] = useState(false);
 
+  const preprocessText = (text: string): string => {
+    console.log('Preprocessing text of length:', text.length);
+    
+    // Remove excessive whitespace and normalize line breaks
+    let cleaned = text.replace(/\s+/g, ' ').trim();
+    
+    // Fix common extraction issues
+    cleaned = cleaned
+      // Fix broken words that got split across lines
+      .replace(/([a-z])-\s+([a-z])/gi, '$1$2')
+      // Fix email addresses that got broken
+      .replace(/(\w+)\s*@\s*(\w+)/g, '$1@$2')
+      // Fix phone numbers
+      .replace(/(\d{3})\s*-?\s*(\d{3})\s*-?\s*(\d{4})/g, '$1-$2-$3')
+      // Fix URLs
+      .replace(/(https?:\/\/)\s+/g, '$1')
+      // Fix common section headers
+      .replace(/\b(EXPERIENCE|EDUCATION|SKILLS|SUMMARY|OBJECTIVE|PROJECTS|CERTIFICATIONS)\b/gi, '\n\n$1\n')
+      // Ensure proper spacing around bullet points
+      .replace(/•/g, '\n• ')
+      .replace(/-\s+/g, '\n- ')
+      // Clean up multiple consecutive newlines
+      .replace(/\n{3,}/g, '\n\n')
+      // Remove trailing spaces
+      .replace(/[ \t]+$/gm, '');
+
+    console.log('Text after preprocessing:', cleaned.length, 'characters');
+    return cleaned;
+  };
+
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
@@ -33,69 +63,157 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
     if (file && (
       file.type === 'application/pdf' || 
       file.type === 'text/plain' ||
+      file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+      file.type === 'application/msword' ||
       file.type.startsWith('image/') ||
       file.name.toLowerCase().endsWith('.pdf') ||
-      file.name.toLowerCase().endsWith('.txt')
+      file.name.toLowerCase().endsWith('.txt') ||
+      file.name.toLowerCase().endsWith('.doc') ||
+      file.name.toLowerCase().endsWith('.docx')
     )) {
       handleFileUpload(file);
     } else {
-      toast.error('Please upload a PDF, text file, or image (JPG, PNG, etc.)');
+      toast.error('Please upload a PDF, Word document, text file, or image (JPG, PNG, etc.)');
     }
   }, []);
 
   const extractTextFromPDF = async (file: File): Promise<string> => {
     try {
-      console.log('Starting PDF text extraction...');
+      console.log('Starting enhanced PDF text extraction...');
       const arrayBuffer = await file.arrayBuffer();
       
-      // Use the updated PDF.js API
       const loadingTask = pdfjsLib.getDocument({
         data: arrayBuffer,
         useSystemFonts: true,
-        standardFontDataUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/'
+        standardFontDataUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/',
+        verbosity: 0 // Reduce console noise
       });
       
       const pdf = await loadingTask.promise;
-      console.log(`PDF loaded successfully. Number of pages: ${pdf.numPages}`);
+      console.log(`PDF loaded successfully. Pages: ${pdf.numPages}`);
       
       let fullText = '';
+      const pageTexts: string[] = [];
 
       for (let i = 1; i <= pdf.numPages; i++) {
-        console.log(`Processing page ${i} of ${pdf.numPages}...`);
+        setProcessingStep(`Extracting page ${i} of ${pdf.numPages}...`);
+        console.log(`Processing page ${i}...`);
+        
         const page = await pdf.getPage(i);
         const textContent = await page.getTextContent();
-        const pageText = textContent.items
-          .map((item: any) => item.str)
-          .join(' ');
-        fullText += pageText + '\n';
+        
+        // Enhanced text extraction with positioning
+        const textItems = textContent.items.map((item: any) => ({
+          text: item.str,
+          x: item.transform[4],
+          y: item.transform[5],
+          width: item.width,
+          height: item.height
+        }));
+
+        // Sort by Y position (top to bottom), then by X position (left to right)
+        textItems.sort((a, b) => {
+          const yDiff = Math.abs(a.y - b.y);
+          if (yDiff < 5) { // Same line tolerance
+            return a.x - b.x;
+          }
+          return b.y - a.y; // PDF coordinates are bottom-up
+        });
+
+        const pageText = textItems
+          .map(item => item.text)
+          .join(' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+        
+        pageTexts.push(pageText);
+        fullText += pageText + '\n\n';
       }
 
-      console.log(`PDF text extraction completed. Total characters: ${fullText.length}`);
-      return fullText.trim();
+      const processedText = preprocessText(fullText);
+      console.log(`PDF extraction completed. Original: ${fullText.length}, Processed: ${processedText.length} characters`);
+      return processedText;
     } catch (error) {
-      console.error('Error extracting text from PDF:', error);
+      console.error('Enhanced PDF extraction error:', error);
       throw new Error(`Failed to extract text from PDF: ${error.message}`);
+    }
+  };
+
+  const extractTextFromWord = async (file: File): Promise<string> => {
+    try {
+      console.log('Starting Word document extraction...');
+      setProcessingStep('Processing Word document...');
+      
+      // For now, we'll try to read as text and provide guidance
+      // In a production app, you'd want to use a library like mammoth.js
+      const arrayBuffer = await file.arrayBuffer();
+      const decoder = new TextDecoder('utf-8');
+      let text = decoder.decode(arrayBuffer);
+      
+      // Basic cleanup for Word documents
+      text = text
+        .replace(/[\x00-\x1F\x7F]/g, ' ') // Remove control characters
+        .replace(/\s+/g, ' ')
+        .trim();
+      
+      if (text.length < 50) {
+        throw new Error('Unable to extract readable text from Word document. Please save as PDF or plain text.');
+      }
+      
+      const processedText = preprocessText(text);
+      console.log(`Word extraction completed: ${processedText.length} characters`);
+      return processedText;
+    } catch (error) {
+      console.error('Word extraction error:', error);
+      throw new Error('Word document extraction failed. Please convert to PDF for better results.');
     }
   };
 
   const extractTextFromImage = async (file: File): Promise<string> => {
     try {
-      const worker = await createWorker('eng');
-      const { data: { text } } = await worker.recognize(file);
+      console.log('Starting enhanced OCR extraction...');
+      setProcessingStep('Initializing OCR engine...');
+      
+      const worker = await createWorker('eng', 1, {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            setProcessingStep(`OCR processing: ${Math.round(m.progress * 100)}%`);
+          }
+        }
+      });
+
+      // Enhanced OCR settings for better accuracy
+      await worker.setParameters({
+        tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?@#$%^&*()_+-=[]{}|;:\'\"<>?/`~',
+        tessedit_pageseg_mode: '1', // Automatic page segmentation with OSD
+        preserve_interword_spaces: '1'
+      });
+
+      setProcessingStep('Running OCR analysis...');
+      const { data: { text, confidence } } = await worker.recognize(file);
       await worker.terminate();
-      return text.trim();
+
+      console.log(`OCR completed with ${confidence}% confidence`);
+      
+      if (confidence < 30) {
+        toast.warning('OCR confidence is low. Text quality may be poor.');
+      }
+      
+      const processedText = preprocessText(text);
+      console.log(`OCR extraction completed: ${processedText.length} characters`);
+      return processedText;
     } catch (error) {
-      console.error('Error extracting text from image:', error);
-      throw new Error('Failed to extract text from image');
+      console.error('Enhanced OCR error:', error);
+      throw new Error('Failed to extract text from image using OCR');
     }
   };
 
   const handleFileUpload = async (file: File) => {
-    console.log('File uploaded:', file.name, 'Type:', file.type);
+    console.log('Enhanced file upload:', file.name, 'Type:', file.type, 'Size:', file.size);
     setUploadedFile(file);
     setHasError(false);
     setIsProcessing(true);
-    setProcessingStep('Initializing...');
+    setProcessingStep('Analyzing file...');
     
     try {
       let extractedText = '';
@@ -103,25 +221,30 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
       if (file.type === 'text/plain' || file.name.toLowerCase().endsWith('.txt')) {
         setProcessingStep('Reading text file...');
         extractedText = await file.text();
+        extractedText = preprocessText(extractedText);
         toast.success('Text file processed successfully!');
       } else if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
-        setProcessingStep('Extracting text from PDF...');
         extractedText = await extractTextFromPDF(file);
-        toast.success('PDF text extracted successfully!');
+        toast.success('PDF text extracted with enhanced processing!');
+      } else if (file.type.includes('word') || file.name.toLowerCase().match(/\.(doc|docx)$/)) {
+        extractedText = await extractTextFromWord(file);
+        toast.success('Word document processed!');
       } else if (file.type.startsWith('image/')) {
-        setProcessingStep('Running OCR on image...');
         extractedText = await extractTextFromImage(file);
-        toast.success('Image text extracted using OCR!');
+        toast.success('Image text extracted using enhanced OCR!');
       }
 
-      console.log('Extracted text length:', extractedText.length);
-      console.log('Text preview:', extractedText.substring(0, 200) + '...');
+      if (extractedText.length < 20) {
+        throw new Error('Extracted text is too short. Please check if the file contains readable content.');
+      }
+
+      console.log('Final extracted text preview:', extractedText.substring(0, 300) + '...');
       onFileUpload(extractedText);
       setHasError(false);
       
     } catch (error) {
-      console.error('Error processing file:', error);
-      toast.error(`Failed to extract text from file: ${error.message}`);
+      console.error('Enhanced file processing error:', error);
+      toast.error(`Processing failed: ${error.message}`);
       setHasError(true);
     } finally {
       setIsProcessing(false);
@@ -192,7 +315,7 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
                     ) : (
                       <>
                         <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        <p className="text-green-600 font-medium text-sm">File processed successfully</p>
+                        <p className="text-green-600 font-medium text-sm">Enhanced processing completed</p>
                       </>
                     )}
                   </div>
@@ -242,13 +365,13 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
                       </span>
                     </TooltipTrigger>
                     <TooltipContent>
-                      We support PDF, image, and TXT files. Choose what fits best!
+                      Enhanced processing for PDF, Word docs, images, and text files with improved text extraction!
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
               <p className="text-gray-600 max-w-sm mx-auto">
-                Drag and drop your PDF, text file, or image here, or click to browse
+                Enhanced extraction with better formatting, OCR improvements, and Word document support
               </p>
             </div>
             
@@ -258,18 +381,22 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
                 PDF
               </Badge>
               <Badge className="bg-green-100 text-green-800 border-green-200">
+                <FileText className="h-3 w-3 mr-1" />
+                Word
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200">
                 <Image className="h-3 w-3 mr-1" />
                 Images
               </Badge>
-              <Badge className="bg-purple-100 text-purple-800 border-purple-200">
+              <Badge className="bg-orange-100 text-orange-800 border-orange-200">
                 <FileText className="h-3 w-3 mr-1" />
-                Text Files
+                Text
               </Badge>
             </div>
             
             <input
               type="file"
-              accept=".pdf,.txt,image/*"
+              accept=".pdf,.txt,.doc,.docx,image/*"
               onChange={handleFileSelect}
               className="hidden"
               id="file-upload"

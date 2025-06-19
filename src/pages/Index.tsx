@@ -15,6 +15,8 @@ import { StepIndicator } from "@/components/StepIndicator";
 import { ConfirmOptimizeModal } from "@/components/ConfirmOptimizeModal";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+import { TextProcessor } from '@/utils/textProcessor';
+
 const steps = [
   {
     title: "Upload Resume",
@@ -46,10 +48,21 @@ const Index = () => {
 
   const handleFileUpload = useCallback((text: string) => {
     console.log('Index component received file upload text:', text.substring(0, 100) + '...');
-    console.log('Setting resume state to:', text.length, 'characters');
-    setResume(text);
+    
+    // Process the text for better analysis
+    const processed = TextProcessor.processText(text);
+    const summary = TextProcessor.generateProcessingSummary(processed);
+    
+    console.log('Text processing summary:', summary);
+    console.log('Setting resume state to:', processed.cleanedText.length, 'characters');
+    
+    setResume(processed.cleanedText);
     setCurrentStep(1);
-    toast.success('Resume uploaded and parsed!');
+    
+    // Show processing summary
+    toast.success('Resume uploaded and enhanced!', {
+      description: `Processed ${processed.statistics.wordCount} words with ${processed.statistics.sectionsFound} sections detected.`
+    });
   }, []);
 
   const handleResumeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

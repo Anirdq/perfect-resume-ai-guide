@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Upload, FileText, X, Image, Loader2, CheckCircle2, AlertCircle, Info } from 'lucide-react';
 import { toast } from 'sonner';
 import * as pdfjsLib from 'pdfjs-dist';
-import { createWorker } from 'tesseract.js';
+import { createWorker, PSM } from 'tesseract.js';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Set up PDF.js worker with matching version
@@ -185,7 +186,7 @@ export const FileUpload = ({ onFileUpload }: FileUploadProps) => {
       // Enhanced OCR settings for better accuracy
       await worker.setParameters({
         tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?@#$%^&*()_+-=[]{}|;:\'\"<>?/`~',
-        tessedit_pageseg_mode: '1', // Automatic page segmentation with OSD
+        tessedit_pageseg_mode: PSM.AUTO_OSD,
         preserve_interword_spaces: '1'
       });
 

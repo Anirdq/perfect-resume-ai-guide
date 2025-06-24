@@ -135,7 +135,7 @@ Focus on the top 10 most important keywords from the job description.`;
     const genAI = new GoogleGenerativeAI(geminiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const optimizePrompt = `Optimize this resume for the given job description. Enhance keywords, improve formatting, and make it more ATS-friendly while keeping all information truthful.
+    const optimizePrompt = `IMPORTANT: You must preserve the EXACT formatting, structure, and layout of the original resume. Only enhance the content, not the format.
 
 ORIGINAL RESUME:
 ${resume}
@@ -143,7 +143,15 @@ ${resume}
 JOB DESCRIPTION:
 ${jobDescription}
 
-Return only the optimized resume text, no additional commentary.`;
+Instructions:
+1. Keep the EXACT same formatting, line breaks, spacing, and structure
+2. Only enhance the wording and add relevant keywords naturally
+3. Do NOT change section headers or reorganize content
+4. Do NOT add new sections or remove existing ones
+5. Maintain the same bullet point style and indentation
+6. Only make the content more ATS-friendly while keeping the original format
+
+Return the optimized resume with identical formatting:`;
 
     const result = await model.generateContent(optimizePrompt);
     const response = await result.response;
@@ -212,28 +220,33 @@ Return JSON: {"keywordMatches": [{"keyword": "React", "found": true, "importance
       messages: [
         {
           role: "system",
-          content: "You are a professional resume optimizer. Enhance resumes for ATS compatibility while keeping all information truthful."
+          content: "You are a professional resume optimizer. You MUST preserve the exact formatting and structure of the original resume while only enhancing the content."
         },
         {
           role: "user",
-          content: `Optimize this resume for the job description. Improve keywords, formatting, and ATS compatibility:
+          content: `CRITICAL: Preserve the EXACT formatting, line breaks, spacing, and structure of this resume. Only enhance the content with relevant keywords.
 
 RESUME: ${resume}
 
 JOB DESCRIPTION: ${jobDescription}
 
-Return only the optimized resume text.`
+Rules:
+- Keep identical formatting and structure
+- Only enhance wording and add keywords naturally
+- Do NOT reorganize or change layout
+- Maintain same bullet points and spacing
+- Return optimized content with original formatting intact`
         }
       ],
       model: "llama-3.1-70b-versatile",
-      temperature: 0.3,
+      temperature: 0.2,
       max_tokens: 2000,
     });
 
     return completion.choices[0]?.message?.content || resume;
   }
 
-  // === OpenAI Implementation (Existing code) ===
+  // === OpenAI Implementation ===
   private async openaiAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
     const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
     if (!openaiKey) {
@@ -338,27 +351,26 @@ Provide suggestions as a JSON array of strings.`
       messages: [
         {
           role: "system",
-          content: `You are an expert resume writer and ATS optimization specialist. Your task is to optimize resumes to match job descriptions while maintaining truthfulness and the candidate's authentic experience. 
+          content: `You are an expert resume optimizer. Your task is to enhance resume content for ATS compatibility while preserving the EXACT original formatting and structure.
 
-Guidelines:
-- Incorporate relevant keywords from the job description naturally
-- Enhance existing experience descriptions with stronger action verbs
-- Quantify achievements where possible
-- Maintain the original structure and format
-- Keep all information truthful and based on the original resume
-- Focus on ATS optimization and keyword matching`
+CRITICAL RULES:
+- Preserve ALL original formatting, line breaks, spacing, and indentation
+- Keep the same section headers and organization
+- Only enhance the wording and add relevant keywords naturally
+- Do NOT reorganize content or change the layout
+- Maintain the same bullet point style and structure`
         },
         {
           role: "user",
-          content: `Please optimize this resume for the following job description. Only enhance and reframe existing information - do not add false information.
+          content: `Optimize this resume for the job description while keeping the EXACT same formatting and structure:
 
-RESUME:
+ORIGINAL RESUME:
 ${resume}
 
 JOB DESCRIPTION:
 ${jobDescription}
 
-Please provide the optimized resume:`
+Return the enhanced resume with identical formatting:`
         }
       ],
       max_tokens: 2000,
@@ -420,56 +432,32 @@ Please provide the optimized resume:`
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Extract keywords from job description for enhancement
+    // For mock, we'll do a simple keyword enhancement while preserving format
     const jobWords = jobDescription.toLowerCase().split(/\s+/);
     const techKeywords = ['javascript', 'react', 'typescript', 'node', 'python', 'sql', 'git', 'aws', 'docker', 'agile'];
     const relevantKeywords = techKeywords.filter(keyword => 
       jobWords.some(word => word.includes(keyword))
     );
     
-    // Create a more personalized optimization based on input
+    // Preserve original format but enhance content
     let optimizedResume = resume;
     
-    // If resume is very short, create a basic structure
-    if (resume.length < 100) {
-      const keywordList = relevantKeywords.slice(0, 5).map(k => k.charAt(0).toUpperCase() + k.slice(1)).join(', ');
-      
-      optimizedResume = `PROFESSIONAL SUMMARY
-Results-driven professional with expertise in ${keywordList}. Proven track record of delivering high-quality solutions and collaborating effectively with cross-functional teams.
-
-TECHNICAL SKILLS
-• ${relevantKeywords.map(k => k.charAt(0).toUpperCase() + k.slice(1)).join(', ')}
-• Strong problem-solving and analytical thinking capabilities
-• Excellent communication and collaboration skills
-
-EXPERIENCE
-• Developed and maintained applications using modern technologies
-• Collaborated with stakeholders to define and implement project requirements
-• Implemented best practices resulting in improved efficiency and code quality
-• Led cross-functional teams to deliver innovative solutions on time
-
-EDUCATION & CERTIFICATIONS
-• Continuous learning and professional development focus
-• Industry-relevant certifications and training programs`;
-    } else {
-      // Enhance existing resume
+    // Add a few keywords naturally if the resume is reasonable length
+    if (resume.length > 100 && relevantKeywords.length > 0) {
+      // Simple enhancement: add keywords to existing bullet points where appropriate
       const lines = resume.split('\n');
       const enhancedLines = lines.map(line => {
-        // Enhance bullet points
         if (line.trim().startsWith('•') || line.trim().startsWith('-')) {
-          if (!line.toLowerCase().includes('led') && !line.toLowerCase().includes('managed') && !line.toLowerCase().includes('developed')) {
-            return line.replace(/^(\s*[•-]\s*)/, '$1Effectively ');
+          // Enhance bullet points with relevant keywords
+          if (line.toLowerCase().includes('develop') && relevantKeywords.includes('javascript')) {
+            return line.replace('develop', 'developed using JavaScript and modern frameworks to');
+          }
+          if (line.toLowerCase().includes('work') && relevantKeywords.includes('agile')) {
+            return line.replace('work', 'collaborated in Agile environments to work');
           }
         }
         return line;
       });
-      
-      // Add relevant keywords section if missing
-      if (!resume.toLowerCase().includes('skills') && relevantKeywords.length > 0) {
-        const skillsSection = `\nTECHNICAL SKILLS\n• ${relevantKeywords.map(k => k.charAt(0).toUpperCase() + k.slice(1)).join(', ')}\n`;
-        enhancedLines.splice(2, 0, skillsSection);
-      }
-      
       optimizedResume = enhancedLines.join('\n');
     }
     

@@ -79,7 +79,8 @@ export class ProviderAgnosticAIResumeService {
 
   // === Enhanced Gemini Implementation (Google's Most Capable AI) ===
   private async geminiAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
-    const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    // Use the provided API key directly
+    const geminiKey = import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyDnCGIX4akXj2ZZtloJH8WyRETJmRcr9ME";
     if (!geminiKey) {
       throw new Error("Gemini API key not configured");
     }
@@ -157,7 +158,8 @@ IMPORTANT: Return only the JSON object, no additional text or formatting.`;
   }
 
   private async geminiOptimizeResume(resume: string, jobDescription: string): Promise<string> {
-    const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    // Use the provided API key directly
+    const geminiKey = import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyDnCGIX4akXj2ZZtloJH8WyRETJmRcr9ME";
     if (!geminiKey) {
       throw new Error("Gemini API key not configured");
     }
@@ -165,23 +167,24 @@ IMPORTANT: Return only the JSON object, no additional text or formatting.`;
     const { GoogleGenerativeAI } = await import('@google/generative-ai');
     const genAI = new GoogleGenerativeAI(geminiKey);
     // Using the most capable model for best optimization
-    const model = genAI.getGenerativeModel({ 
+    const model = genAI.getGenerativeAI({ 
       model: "gemini-1.5-pro",
       generationConfig: {
-        temperature: 0.2,
+        temperature: 0.15,
         topK: 40,
         topP: 0.9,
         maxOutputTokens: 4096,
       },
     });
 
-    const optimizePrompt = `You are an expert resume writer and ATS optimization specialist. Your task is to enhance this resume for maximum ATS compatibility and job relevance while preserving the EXACT original structure and formatting.
+    const optimizePrompt = `You are an expert resume optimizer specializing in ATS systems. Your task is to enhance this resume for the specific job while preserving EXACT formatting.
 
 CRITICAL FORMATTING RULES:
-- Maintain IDENTICAL line breaks, spacing, and indentation
-- Keep the same section headers and bullet point style
-- Preserve the original organization and layout
-- DO NOT add or remove sections
+- Keep IDENTICAL line breaks, spacing, and paragraph structure
+- Maintain exact same sections and their order
+- Preserve bullet point style (•, -, *, etc.)
+- Keep the same overall layout and organization
+- DO NOT add new sections or remove existing ones
 - DO NOT change the fundamental structure
 
 ORIGINAL RESUME:
@@ -190,21 +193,21 @@ ${resume}
 TARGET JOB DESCRIPTION:
 ${jobDescription}
 
-OPTIMIZATION OBJECTIVES:
-1. Naturally integrate relevant keywords from the job description
-2. Enhance bullet points with quantifiable achievements
-3. Strengthen action verbs and impact statements
-4. Improve ATS keyword density while maintaining readability
-5. Optimize language for both ATS systems and human reviewers
+OPTIMIZATION STRATEGY:
+1. Naturally integrate relevant keywords from job description
+2. Enhance existing bullet points with stronger action verbs
+3. Add quantifiable metrics where appropriate (percentages, numbers, dollar amounts)
+4. Strengthen technical skills alignment
+5. Improve impact statements without changing core content
 
 ENHANCEMENT GUIDELINES:
-- Add specific metrics, percentages, and numbers where possible
-- Use industry-standard terminology from the job description
-- Strengthen weak phrases with more impactful language
-- Include relevant technical skills naturally within context
-- Improve clarity and conciseness of descriptions
+- Replace weak verbs with powerful action words
+- Add specific numbers and metrics to achievements
+- Include relevant technical terminology from job description
+- Optimize for ATS keyword scanning
+- Maintain truthfulness - only enhance existing information
 
-Return the enhanced resume with IDENTICAL formatting and structure:`;
+Return the optimized resume with IDENTICAL formatting:`;
 
     try {
       const result = await model.generateContent(optimizePrompt);
@@ -441,46 +444,52 @@ Return the enhanced resume with identical formatting:`
     return response.choices[0]?.message?.content || resume;
   }
 
-  // === Mock Implementation (Enhanced for better variety) ===
+  // === Enhanced Mock Implementation ===
   private async mockAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Extract actual keywords from job description
-    const jobWords = jobDescription.toLowerCase().split(/\s+/);
-    const resumeWords = resume.toLowerCase().split(/\s+/);
+    // Extract actual keywords from job description more intelligently
+    const jobWords = jobDescription.toLowerCase().split(/[\s,.\-()]+/).filter(word => word.length > 2);
+    const resumeWords = resume.toLowerCase().split(/[\s,.\-()]+/).filter(word => word.length > 2);
     
     // Common technical keywords to look for
-    const techKeywords = ['javascript', 'react', 'typescript', 'node', 'python', 'sql', 'git', 'aws', 'docker', 'agile', 'html', 'css', 'api', 'database', 'testing', 'ci/cd', 'mongodb', 'express', 'angular', 'vue'];
+    const techKeywords = ['javascript', 'react', 'typescript', 'node', 'python', 'sql', 'git', 'aws', 'docker', 'agile', 'html', 'css', 'api', 'database', 'testing', 'mongodb', 'express', 'angular', 'vue', 'frontend', 'backend', 'fullstack', 'scrum', 'devops', 'cloud', 'microservices'];
     
     // Find keywords that appear in job description
     const foundJobKeywords = techKeywords.filter(keyword => 
-      jobWords.some(word => word.includes(keyword))
+      jobWords.some(word => word.includes(keyword) || keyword.includes(word))
     );
     
     // Create keyword matches based on actual content
-    const keywordMatches: KeywordMatch[] = foundJobKeywords.slice(0, 10).map(keyword => ({
+    const keywordMatches: KeywordMatch[] = foundJobKeywords.slice(0, 12).map(keyword => ({
       keyword: keyword.charAt(0).toUpperCase() + keyword.slice(1),
-      found: resumeWords.some(word => word.includes(keyword)),
+      found: resumeWords.some(word => word.includes(keyword) || keyword.includes(word)),
       importance: Math.random() > 0.6 ? 'high' : Math.random() > 0.3 ? 'medium' : 'low'
     }));
 
     const foundMatches = keywordMatches.filter(k => k.found).length;
-    const atsScore = Math.min(Math.max(Math.round((foundMatches / keywordMatches.length) * 100 + Math.random() * 20), 45), 95);
+    const totalMatches = keywordMatches.length;
+    const baseScore = totalMatches > 0 ? (foundMatches / totalMatches) * 100 : 50;
+    const atsScore = Math.min(Math.max(Math.round(baseScore + Math.random() * 15), 35), 90);
 
-    // Generate contextual suggestions based on content
+    // Generate contextual suggestions based on content analysis
     const suggestions = [];
-    if (!resume.includes('$') && !resume.includes('%')) {
-      suggestions.push("Add quantifiable achievements with numbers, percentages, or dollar amounts");
+    if (!resume.match(/\d+%|\$\d+|\d+\+/)) {
+      suggestions.push("Add quantifiable achievements with specific numbers, percentages, or dollar amounts to demonstrate impact");
     }
-    if (!jobWords.some(word => resumeWords.includes(word))) {
-      suggestions.push("Include more keywords from the job description");
+    if (foundMatches < totalMatches * 0.6) {
+      suggestions.push(`Include more relevant keywords from the job description, especially: ${foundJobKeywords.slice(0, 3).join(', ')}`);
     }
-    if (resume.length < 200) {
-      suggestions.push("Expand your experience descriptions with more details");
+    if (resume.length < 300) {
+      suggestions.push("Expand your experience descriptions with more specific details about your accomplishments and responsibilities");
     }
-    suggestions.push("Use strong action verbs to start each bullet point");
-    suggestions.push("Ensure your contact information is clearly visible at the top");
+    if (!resume.match(/led|managed|developed|implemented|created|designed|optimized/i)) {
+      suggestions.push("Use stronger action verbs like 'led', 'developed', 'implemented', or 'optimized' to start bullet points");
+    }
+    if (!resume.includes('@') || !resume.match(/\d{3}[-.]\d{3}[-.]\d{4}/)) {
+      suggestions.push("Ensure your contact information (email and phone) is clearly visible and formatted properly");
+    }
     
     return {
       atsScore,
@@ -493,39 +502,68 @@ Return the enhanced resume with identical formatting:`
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // For mock, we'll do a simple keyword enhancement while preserving format
-    const jobWords = jobDescription.toLowerCase().split(/\s+/);
-    const techKeywords = ['javascript', 'react', 'typescript', 'node', 'python', 'sql', 'git', 'aws', 'docker', 'agile'];
+    // Perform intelligent content enhancement while preserving exact format
+    const jobWords = jobDescription.toLowerCase().split(/[\s,.\-()]+/).filter(word => word.length > 2);
+    const techKeywords = ['javascript', 'react', 'typescript', 'node', 'python', 'sql', 'git', 'aws', 'docker', 'agile', 'api', 'database', 'testing'];
     const relevantKeywords = techKeywords.filter(keyword => 
-      jobWords.some(word => word.includes(keyword))
+      jobWords.some(word => word.includes(keyword) || keyword.includes(word))
     );
     
-    // Preserve original format but enhance content
-    let optimizedResume = resume;
+    // Split resume into lines to preserve exact formatting
+    const lines = resume.split('\n');
     
-    // Add a few keywords naturally if the resume is reasonable length
-    if (resume.length > 100 && relevantKeywords.length > 0) {
-      // Simple enhancement: add keywords to existing bullet points where appropriate
-      const lines = resume.split('\n');
-      const enhancedLines = lines.map(line => {
-        if (line.trim().startsWith('•') || line.trim().startsWith('-')) {
-          // Enhance bullet points with relevant keywords
-          if (line.toLowerCase().includes('develop') && relevantKeywords.includes('javascript')) {
-            return line.replace('develop', 'developed using JavaScript and modern frameworks to');
-          }
-          if (line.toLowerCase().includes('work') && relevantKeywords.includes('agile')) {
-            return line.replace('work', 'collaborated in Agile environments to work');
-          }
+    // Enhance content while preserving structure
+    const enhancedLines = lines.map(line => {
+      const trimmedLine = line.trim();
+      
+      // Skip empty lines and headers
+      if (!trimmedLine || trimmedLine.length < 10) return line;
+      
+      // Enhance bullet points and experience descriptions
+      if (line.match(/^\s*[-•*]\s/)) {
+        let enhancedLine = line;
+        
+        // Add quantifiable metrics where appropriate
+        if (trimmedLine.includes('develop') && !trimmedLine.match(/\d+/)) {
+          enhancedLine = enhancedLine.replace(/develop/i, 'developed 5+ applications using');
         }
-        return line;
-      });
-      optimizedResume = enhancedLines.join('\n');
-    }
+        if (trimmedLine.includes('work') && !trimmedLine.match(/team|collaborate/i)) {
+          enhancedLine = enhancedLine.replace(/work/i, 'collaborated with cross-functional teams to work');
+        }
+        if (trimmedLine.includes('create') && !trimmedLine.match(/\d+/)) {
+          enhancedLine = enhancedLine.replace(/create/i, 'created and implemented 10+');
+        }
+        
+        // Add relevant keywords naturally
+        if (relevantKeywords.includes('react') && !trimmedLine.toLowerCase().includes('react')) {
+          enhancedLine = enhancedLine.replace(/javascript/i, 'React and JavaScript');
+        }
+        if (relevantKeywords.includes('agile') && trimmedLine.includes('team') && !trimmedLine.toLowerCase().includes('agile')) {
+          enhancedLine = enhancedLine.replace(/team/i, 'Agile development team');
+        }
+        
+        return enhancedLine;
+      }
+      
+      // Enhance regular text lines
+      if (trimmedLine.length > 20 && !trimmedLine.match(/^[A-Z\s]+$/)) {
+        let enhancedLine = line;
+        
+        // Strengthen action words
+        enhancedLine = enhancedLine.replace(/\bhelped\b/gi, 'facilitated');
+        enhancedLine = enhancedLine.replace(/\bused\b/gi, 'utilized');
+        enhancedLine = enhancedLine.replace(/\bmade\b/gi, 'developed');
+        
+        return enhancedLine;
+      }
+      
+      return line;
+    });
     
-    return optimizedResume;
+    return enhancedLines.join('\n');
   }
 
-  // === ATS Scoring (unchanged utility) ===
+  // === ATS Scoring (enhanced utility) ===
   private calculateATSScore(keywords: KeywordMatch[], resume: string, jobDescription: string): number {
     const totalKeywords = keywords.length;
     if (totalKeywords === 0) return 50;
@@ -549,6 +587,9 @@ Return the enhanced resume with identical formatting:`
     const resumeLength = resume.split(' ').length;
     if (resumeLength < 100) score -= 10; // Too short
     if (resumeLength > 1000) score -= 5; // Too long
+
+    // Bonus for quantifiable achievements
+    if (resume.match(/\d+%|\$\d+|\d+\+/)) score += 5;
 
     return Math.min(Math.max(Math.round(score), 0), 100);
   }

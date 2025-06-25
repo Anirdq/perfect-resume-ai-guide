@@ -166,8 +166,8 @@ IMPORTANT: Return only the JSON object, no additional text or formatting.`;
 
     const { GoogleGenerativeAI } = await import('@google/generative-ai');
     const genAI = new GoogleGenerativeAI(geminiKey);
-    // Using the most capable model for best optimization
-    const model = genAI.getGenerativeAI({ 
+    // Fix: Use getGenerativeModel instead of getGenerativeAI
+    const model = genAI.getGenerativeModel({ 
       model: "gemini-1.5-pro",
       generationConfig: {
         temperature: 0.15,

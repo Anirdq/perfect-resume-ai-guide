@@ -77,7 +77,7 @@ export class ProviderAgnosticAIResumeService {
     }
   }
 
-  // === Gemini Implementation (Google's Free AI) ===
+  // === Enhanced Gemini Implementation (Google's Most Capable AI) ===
   private async geminiAnalyzeResume(resume: string, jobDescription: string): Promise<ResumeAnalysis> {
     const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
     if (!geminiKey) {
@@ -86,43 +86,74 @@ export class ProviderAgnosticAIResumeService {
 
     const { GoogleGenerativeAI } = await import('@google/generative-ai');
     const genAI = new GoogleGenerativeAI(geminiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // Using the most capable model for best results
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-pro",
+      generationConfig: {
+        temperature: 0.1,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 2048,
+      },
+    });
 
-    // Extract keywords and analyze
-    const analysisPrompt = `Analyze this resume against the job description and provide a detailed ATS analysis.
+    const analysisPrompt = `You are an expert ATS (Applicant Tracking System) resume analyzer and career consultant. Perform a comprehensive analysis of this resume against the job description.
 
-RESUME:
+RESUME TO ANALYZE:
 ${resume}
 
-JOB DESCRIPTION:
+TARGET JOB DESCRIPTION:
 ${jobDescription}
 
-Return a JSON response with this exact structure:
+ANALYSIS REQUIREMENTS:
+1. Extract the top 15 most critical keywords/skills from the job description
+2. Check if each keyword appears in the resume (exact match or synonyms)
+3. Classify keyword importance based on frequency and context in job description
+4. Provide 5-7 specific, actionable optimization suggestions
+5. Focus on ATS compatibility, keyword density, and relevance
+
+Return ONLY a valid JSON response with this exact structure:
 {
-  "keywordMatches": [{"keyword": "JavaScript", "found": true, "importance": "high"}],
-  "suggestions": ["Add more quantifiable achievements", "Include relevant certifications"]
+  "keywordMatches": [
+    {"keyword": "JavaScript", "found": true, "importance": "high"},
+    {"keyword": "React", "found": false, "importance": "high"}
+  ],
+  "suggestions": [
+    "Add quantifiable achievements with specific metrics (e.g., 'Increased sales by 25%')",
+    "Include missing high-priority keywords: React, Node.js, AWS",
+    "Restructure experience section to lead with strongest accomplishments"
+  ]
 }
 
-Focus on the top 10 most important keywords from the job description.`;
+IMPORTANT: Return only the JSON object, no additional text or formatting.`;
 
-    const result = await model.generateContent(analysisPrompt);
-    const response = await result.response;
-    const text = response.text();
-
-    let parsedData;
     try {
-      // Extract JSON from response
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      parsedData = JSON.parse(jsonMatch ? jsonMatch[0] : '{}');
-    } catch (e) {
-      throw new Error('Failed to parse Gemini response');
+      const result = await model.generateContent(analysisPrompt);
+      const response = await result.response;
+      const text = response.text();
+
+      console.log('Gemini analysis response:', text);
+
+      let parsedData;
+      try {
+        // Clean the response to extract JSON
+        const cleanText = text.replace(/```json\s?|\s?```/g, '').trim();
+        const jsonMatch = cleanText.match(/\{[\s\S]*\}/) || [cleanText];
+        parsedData = JSON.parse(jsonMatch[0]);
+      } catch (e) {
+        console.error('Failed to parse Gemini response:', e);
+        throw new Error('Failed to parse Gemini analysis response');
+      }
+
+      const keywordMatches: KeywordMatch[] = parsedData.keywordMatches || [];
+      const suggestions: string[] = parsedData.suggestions || [];
+      const atsScore = this.calculateATSScore(keywordMatches, resume, jobDescription);
+
+      return { atsScore, keywordMatches, suggestions };
+    } catch (error) {
+      console.error('Gemini analysis error:', error);
+      throw error;
     }
-
-    const keywordMatches: KeywordMatch[] = parsedData.keywordMatches || [];
-    const suggestions: string[] = parsedData.suggestions || [];
-    const atsScore = this.calculateATSScore(keywordMatches, resume, jobDescription);
-
-    return { atsScore, keywordMatches, suggestions };
   }
 
   private async geminiOptimizeResume(resume: string, jobDescription: string): Promise<string> {
@@ -133,29 +164,59 @@ Focus on the top 10 most important keywords from the job description.`;
 
     const { GoogleGenerativeAI } = await import('@google/generative-ai');
     const genAI = new GoogleGenerativeAI(geminiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // Using the most capable model for best optimization
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-pro",
+      generationConfig: {
+        temperature: 0.2,
+        topK: 40,
+        topP: 0.9,
+        maxOutputTokens: 4096,
+      },
+    });
 
-    const optimizePrompt = `IMPORTANT: You must preserve the EXACT formatting, structure, and layout of the original resume. Only enhance the content, not the format.
+    const optimizePrompt = `You are an expert resume writer and ATS optimization specialist. Your task is to enhance this resume for maximum ATS compatibility and job relevance while preserving the EXACT original structure and formatting.
+
+CRITICAL FORMATTING RULES:
+- Maintain IDENTICAL line breaks, spacing, and indentation
+- Keep the same section headers and bullet point style
+- Preserve the original organization and layout
+- DO NOT add or remove sections
+- DO NOT change the fundamental structure
 
 ORIGINAL RESUME:
 ${resume}
 
-JOB DESCRIPTION:
+TARGET JOB DESCRIPTION:
 ${jobDescription}
 
-Instructions:
-1. Keep the EXACT same formatting, line breaks, spacing, and structure
-2. Only enhance the wording and add relevant keywords naturally
-3. Do NOT change section headers or reorganize content
-4. Do NOT add new sections or remove existing ones
-5. Maintain the same bullet point style and indentation
-6. Only make the content more ATS-friendly while keeping the original format
+OPTIMIZATION OBJECTIVES:
+1. Naturally integrate relevant keywords from the job description
+2. Enhance bullet points with quantifiable achievements
+3. Strengthen action verbs and impact statements
+4. Improve ATS keyword density while maintaining readability
+5. Optimize language for both ATS systems and human reviewers
 
-Return the optimized resume with identical formatting:`;
+ENHANCEMENT GUIDELINES:
+- Add specific metrics, percentages, and numbers where possible
+- Use industry-standard terminology from the job description
+- Strengthen weak phrases with more impactful language
+- Include relevant technical skills naturally within context
+- Improve clarity and conciseness of descriptions
 
-    const result = await model.generateContent(optimizePrompt);
-    const response = await result.response;
-    return response.text();
+Return the enhanced resume with IDENTICAL formatting and structure:`;
+
+    try {
+      const result = await model.generateContent(optimizePrompt);
+      const response = await result.response;
+      const optimizedText = response.text();
+
+      console.log('Gemini optimization completed successfully');
+      return optimizedText;
+    } catch (error) {
+      console.error('Gemini optimization error:', error);
+      throw error;
+    }
   }
 
   // === Groq Implementation (Fast & Free) ===

@@ -14,6 +14,8 @@ import { ProviderAgnosticAIResumeService } from "@/services/providerAgnosticAISe
 import { StepIndicator } from "@/components/StepIndicator";
 import { ConfirmOptimizeModal } from "@/components/ConfirmOptimizeModal";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { UsageBanner } from "@/components/UsageBanner";
+import { useUsageTracking } from "@/hooks/useUsageTracking";
 
 import { TextProcessor } from '@/utils/textProcessor';
 
@@ -45,6 +47,8 @@ const Index = () => {
   const [aiService] = useState(() => new ProviderAgnosticAIResumeService());
   const [currentStep, setCurrentStep] = useState(0);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  const { canOptimize, incrementUsage } = useUsageTracking();
 
   const handleFileUpload = useCallback((text: string) => {
     console.log('Index component received file upload text:', text.substring(0, 100) + '...');
@@ -99,6 +103,11 @@ const Index = () => {
       return;
     }
 
+    if (!canOptimize) {
+      toast.error("You've reached your free optimization limit. Please upgrade to continue.");
+      return;
+    }
+
     setIsAnalyzing(true);
     try {
       console.log('Starting AI analysis with resume length:', resume.length, 'and job description length:', jobDescription.length);
@@ -111,7 +120,14 @@ const Index = () => {
       console.log('AI analysis completed successfully', analysisResult);
       setAnalysis(analysisResult);
       setOptimizedResume(optimizedResumeResult);
-      toast.success('AI analysis completed successfully!');
+      
+      // Increment usage after successful optimization
+      const usageUpdated = await incrementUsage();
+      if (usageUpdated) {
+        toast.success('AI analysis completed successfully!');
+      } else {
+        toast.error('Analysis completed but failed to update usage tracking');
+      }
     } catch (error) {
       console.error('AI analysis failed:', error);
       toast.error(`AI analysis failed: ${error.message || 'Please try again later'}`);
@@ -130,6 +146,12 @@ const Index = () => {
       toast.error("Please add a job description first");
       return;
     }
+
+    if (!canOptimize) {
+      toast.error("You've reached your free optimization limit. Please upgrade to continue.");
+      return;
+    }
+
     setShowConfirm(true);
   };
 
@@ -146,6 +168,9 @@ const Index = () => {
         <div className="mt-10">
           <StepIndicator steps={steps} currentStep={currentStep} onStepClick={setCurrentStep} />
         </div>
+        
+        <UsageBanner />
+        
         <div className="flex flex-col gap-8">
           {/* Step 1: Upload */}
           {currentStep === 0 && (
@@ -236,7 +261,7 @@ const Index = () => {
                 <Button
                   className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white shadow hover-scale"
                   onClick={handleStartOptimization}
-                  disabled={!resume || !jobDescription.trim() || isAnalyzing}
+                  disabled={!resume || !jobDescription.trim() || isAnalyzing || !canOptimize}
                   aria-label="Proceed to Optimization"
                 >
                   {isAnalyzing ? (
@@ -246,7 +271,8 @@ const Index = () => {
                     </>
                   ) : (
                     <>
-                      <Sparkles className="mr-2" /> Optimize My Resume
+                      <Sparkles className="mr-2" /> 
+                      {canOptimize ? 'Optimize My Resume' : 'Upgrade to Optimize'}
                     </>
                   )}
                 </Button>

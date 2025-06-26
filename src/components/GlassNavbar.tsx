@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Brain, LogOut, User } from "lucide-react";
+import { Menu, X, Zap, LogOut, User } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from '@/hooks/useAuth';
 import {
@@ -38,18 +38,18 @@ const GlassNavbar = () => {
   const isActive = (href: string) => location.pathname === href;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-white/20 shadow-lg">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div 
-            className="flex items-center space-x-2 cursor-pointer" 
+            className="flex items-center space-x-3 cursor-pointer" 
             onClick={() => handleNavigation("/")}
           >
-            <div className="bg-blue-600 p-2 rounded-lg">
-              <Brain className="h-6 w-6 text-white" />
+            <div className="bg-gradient-to-br from-slate-900 to-slate-700 p-2.5 rounded-lg">
+              <Zap className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">ResumeAI</span>
+            <span className="text-xl font-semibold text-slate-900 tracking-tight">Nexus</span>
           </div>
 
           {/* Desktop Navigation */}
@@ -58,8 +58,8 @@ const GlassNavbar = () => {
               <button
                 key={item.name}
                 onClick={() => handleNavigation(item.href)}
-                className={`text-sm font-medium transition-colors hover:text-blue-600 ${
-                  isActive(item.href) ? 'text-blue-600' : 'text-gray-700'
+                className={`text-sm font-medium transition-colors hover:text-slate-900 ${
+                  isActive(item.href) ? 'text-slate-900' : 'text-slate-600'
                 }`}
               >
                 {item.name}
@@ -72,7 +72,7 @@ const GlassNavbar = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+                  <Button variant="ghost" size="sm" className="flex items-center space-x-2 text-slate-600">
                     <User className="h-4 w-4" />
                     <span className="max-w-32 truncate">{user.email}</span>
                   </Button>
@@ -87,7 +87,7 @@ const GlassNavbar = () => {
             ) : (
               <Button 
                 onClick={() => handleNavigation("/auth")}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-slate-900 hover:bg-slate-800 text-white font-medium px-6"
               >
                 Sign In
               </Button>
@@ -109,24 +109,24 @@ const GlassNavbar = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-white/90 backdrop-blur-md rounded-lg mt-2 shadow-lg">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-white/95 backdrop-blur-md rounded-lg mt-2 shadow-sm border border-gray-100">
               {navItems.map((item) => (
                 <button
                   key={item.name}
                   onClick={() => handleNavigation(item.href)}
                   className={`block w-full text-left px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                     isActive(item.href) 
-                      ? 'text-blue-600 bg-blue-50' 
-                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                      ? 'text-slate-900 bg-slate-50' 
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
                   {item.name}
                 </button>
               ))}
-              <div className="pt-2 border-t border-gray-200">
+              <div className="pt-2 border-t border-gray-100">
                 {user ? (
                   <div className="space-y-1">
-                    <div className="px-3 py-2 text-sm text-gray-500">
+                    <div className="px-3 py-2 text-sm text-slate-500">
                       {user.email}
                     </div>
                     <button
@@ -139,7 +139,7 @@ const GlassNavbar = () => {
                 ) : (
                   <button
                     onClick={() => handleNavigation("/auth")}
-                    className="block w-full text-left px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md"
+                    className="block w-full text-left px-3 py-2 text-sm font-medium text-slate-900 hover:bg-slate-50 rounded-md"
                   >
                     Sign In
                   </button>

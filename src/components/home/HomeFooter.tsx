@@ -1,41 +1,56 @@
 
-import { Star, Users, Zap, FileText } from "lucide-react";
+import { Zap, Users, Star, FileText } from "lucide-react";
 
 export const HomeFooter = () => (
-  <footer className="bg-gray-950 text-white py-12 px-4">
-    <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-10 justify-between">
+  <footer className="bg-slate-900 text-white py-16 px-4">
+    <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 justify-between">
       <div className="mb-8 lg:mb-0">
-        <div className="flex items-center gap-2 mb-3">
-          <Zap className="text-yellow-400 h-6 w-6" />
-          <span className="font-bold text-xl">ResumeAI</span>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="bg-gradient-to-br from-slate-700 to-slate-600 p-2 rounded-lg">
+            <Zap className="text-white h-6 w-6" />
+          </div>
+          <span className="font-semibold text-2xl tracking-tight">Nexus</span>
         </div>
-        <div className="text-gray-400 text-sm mb-3">AI-powered resume optimization with proven results.</div>
-        <div className="flex gap-3">
+        <div className="text-slate-400 text-base mb-4 max-w-sm">
+          Intelligent resume optimization platform trusted by professionals worldwide.
+        </div>
+        <div className="flex gap-4">
           <a href="https://twitter.com/" aria-label="Twitter" target="_blank" rel="noopener noreferrer"
-            className="hover:text-blue-400 transition-colors"><Star /></a>
+            className="hover:text-slate-300 transition-colors p-2 rounded-lg hover:bg-slate-800">
+            <Star className="h-5 w-5" />
+          </a>
           <a href="https://linkedin.com/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"
-            className="hover:text-blue-500 transition-colors"><Users /></a>
+            className="hover:text-slate-300 transition-colors p-2 rounded-lg hover:bg-slate-800">
+            <Users className="h-5 w-5" />
+          </a>
         </div>
       </div>
+      
       <div>
-        <h4 className="font-bold mb-2">FAQs</h4>
-        <ul className="text-gray-400 space-y-1 text-sm">
-          <li>Is ResumeAI really free to try?</li>
-          <li>How does the AI scoring work?</li>
-          <li>Is my data secure?</li>
-          <li>How fast is the optimization?</li>
+        <h4 className="font-semibold mb-4 text-lg">Support</h4>
+        <ul className="text-slate-400 space-y-3 text-base">
+          <li className="hover:text-white cursor-pointer transition-colors">How it works</li>
+          <li className="hover:text-white cursor-pointer transition-colors">Privacy & Security</li>
+          <li className="hover:text-white cursor-pointer transition-colors">Success Stories</li>
+          <li className="hover:text-white cursor-pointer transition-colors">Integration Guide</li>
         </ul>
       </div>
+      
       <div>
-        <h4 className="font-bold mb-2">Contact</h4>
-        <ul className="text-gray-400 space-y-1 text-sm">
-          <li>Email: <a href="mailto:support@resumeai.app" className="underline hover:text-blue-400">support@resumeai.app</a></li>
-          <li>Live chat: Mon–Fri, 9am–6pm</li>
+        <h4 className="font-semibold mb-4 text-lg">Contact</h4>
+        <ul className="text-slate-400 space-y-3 text-base">
+          <li>
+            Email: <a href="mailto:hello@nexus.app" className="underline hover:text-white transition-colors">
+              hello@nexus.app
+            </a>
+          </li>
+          <li>Support: Available 24/7</li>
         </ul>
       </div>
     </div>
-    <div className="text-center text-gray-500 mt-10 text-xs">
-      &copy; {new Date().getFullYear()} ResumeAI. All rights reserved.
+    
+    <div className="text-center text-slate-500 mt-12 pt-8 border-t border-slate-800 text-sm">
+      &copy; {new Date().getFullYear()} Nexus. Crafted for professionals.
     </div>
   </footer>
-)
+);

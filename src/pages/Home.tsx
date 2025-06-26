@@ -9,9 +9,9 @@ import { PricingPreview } from "@/components/home/PricingPreview";
 import { HomeFooter } from "@/components/home/HomeFooter";
 
 const Home = () => (
-  <div className="min-h-screen bg-gradient-to-t from-blue-50 via-white to-blue-100 flex flex-col">
+  <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 flex flex-col">
     <GlassNavbar />
-    <main className="flex-1 w-full flex flex-col gap-16">
+    <main className="flex-1 w-full flex flex-col gap-20">
       <HeroSection />
       <SocialProof />
       <DemoAnimation />

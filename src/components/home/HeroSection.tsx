@@ -1,24 +1,24 @@
-import { Zap, Check, ArrowDown } from "lucide-react";
+import { Zap, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 
-// Underrated MNCs with verified transparent SVG logos
+// Premium company logos with verified transparent SVG logos
 const companyLogos = [{
-  src: "https://upload.wikimedia.org/wikipedia/commons/6/68/Capgemini_201x_logo.svg",
-  alt: "Capgemini"
+  src: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
+  alt: "Google"
 }, {
-  src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Siemens_logo.svg",
-  alt: "Siemens"
+  src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+  alt: "Microsoft"
 }, {
-  src: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Bosch-logo.svg",
-  alt: "Bosch"
+  src: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg",
+  alt: "IBM"
 }, {
-  src: "https://upload.wikimedia.org/wikipedia/commons/b/bf/Wipro_Primary_Logo_Color_RGB.svg",
-  alt: "Wipro"
+  src: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
+  alt: "Amazon"
 }, {
-  src: "https://upload.wikimedia.org/wikipedia/commons/7/77/Philips_logo.svg",
-  alt: "Philips"
+  src: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Intel-logo.svg",
+  alt: "Intel"
 }];
 
 // Utility: use Wikimedia's "Special:FilePath" for SVGs from Wikimedia/Wikipedia, else original URL
@@ -51,60 +51,80 @@ const LogoImage = ({
 }) => {
   const [imgSrc, setImgSrc] = React.useState(getProxiedUrl(src));
   const [attemptedFallback, setAttemptedFallback] = React.useState(false);
+
   React.useEffect(() => {
-    // Log current image loading path for diagnostics
     console.log(`[LogoImage] loading:`, imgSrc, "(original:", src, ")");
   }, [imgSrc, src]);
+
   const handleError = () => {
     if (!attemptedFallback) {
-      // Try switching to original src as a backup if proxy/special path fails
       setImgSrc(src);
       setAttemptedFallback(true);
     } else {
-      // If both fail, log and hide
       console.log("[LogoImage] Failed to load logo:", alt, src);
-      setImgSrc(""); // causes React to hide the image
+      setImgSrc("");
     }
   };
+
   if (!imgSrc) return null;
-  return <img src={imgSrc} alt="" className="h-7 md:h-9 object-contain rounded transition-all grayscale opacity-80 hover:opacity-100" style={{
-    minWidth: 80,
-    maxWidth: 120,
-    background: "transparent"
-  }} loading="lazy" onError={handleError} draggable={false} aria-hidden />;
+
+  return <img 
+    src={imgSrc} 
+    alt="" 
+    className="h-8 md:h-10 object-contain rounded transition-all grayscale opacity-60 hover:opacity-80" 
+    style={{
+      minWidth: 100,
+      maxWidth: 140,
+      background: "transparent"
+    }} 
+    loading="lazy" 
+    onError={handleError} 
+    draggable={false} 
+    aria-hidden 
+  />;
 };
+
 export const HeroSection = () => {
   const navigate = useNavigate();
-  return <section className="relative flex flex-col items-center w-full px-4 pt-20 md:pt-32 pb-16 overflow-hidden bg-white/70 animate-fade-in">
-      <div className="inline-block animate-scale-in shadow-xl rounded-3xl p-2 mb-6 bg-white/90">
-        <Zap className="text-blue-600 h-8 w-8" aria-label="AI Lightning bolt" />
+  
+  return (
+    <section className="relative flex flex-col items-center w-full px-4 pt-24 md:pt-32 pb-20 overflow-hidden bg-white">
+      <div className="inline-block animate-scale-in shadow-lg rounded-2xl p-3 mb-8 bg-gradient-to-br from-slate-900 to-slate-700">
+        <Zap className="text-white h-8 w-8" aria-label="AI Lightning bolt" />
       </div>
-      <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-br from-blue-700 to-blue-400 bg-clip-text text-transparent mb-4 text-center max-w-3xl">
-        Land More Interviews with AI-Optimized Resumes
+      
+      <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-br from-slate-900 via-slate-800 to-slate-600 bg-clip-text text-transparent mb-6 text-center max-w-4xl leading-tight">
+        Intelligent Resume Optimization
       </h1>
-      <p className="text-lg md:text-xl text-gray-700 font-medium mb-8 max-w-2xl mx-auto text-center">
-        ResumeAI instantly analyzes and optimizes your resume — boosting your chances to get noticed by top employers.
+      
+      <p className="text-xl md:text-2xl text-slate-600 font-light mb-10 max-w-2xl mx-auto text-center leading-relaxed">
+        Transform your career with AI-powered resume analysis that gets you noticed by top employers.
       </p>
-      <Button size="lg" className="text-lg md:text-xl font-semibold px-8 md:px-10 py-4 md:py-6 bg-blue-700 hover:bg-blue-800 shadow-2xl transition-all duration-300 mb-5" onClick={() => navigate("/resume")} aria-label="Upload Resume">
-        Upload Resume
+      
+      <Button 
+        size="lg" 
+        className="text-lg md:text-xl font-medium px-10 md:px-12 py-6 md:py-7 bg-slate-900 hover:bg-slate-800 shadow-xl transition-all duration-300 mb-8 rounded-lg" 
+        onClick={() => navigate("/resume")} 
+        aria-label="Start Optimization"
+      >
+        Start Optimization
       </Button>
-      <div className="w-full max-w-3xl mx-auto flex flex-col items-center mt-8 mb-3">
-        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 font-semibold mb-2">
-          Trusted by job seekers from companies like
+      
+      <div className="w-full max-w-4xl mx-auto flex flex-col items-center mt-12 mb-6">
+        <span className="text-sm uppercase tracking-widest text-slate-400 font-medium mb-4">
+          Trusted by professionals at
         </span>
-        <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 w-full">
-          {companyLogos.map(({
-          src,
-          alt
-        }) => <LogoImage key={alt} src={src} alt={alt} />)}
+        <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12 w-full">
+          {companyLogos.map(({src, alt}) => 
+            <LogoImage key={alt} src={src} alt={alt} />
+          )}
         </div>
       </div>
-      <div className="flex flex-row justify-center gap-3 items-center text-gray-500 mt-6 text-base animate-fade-in">
-        <Check className="h-5 w-5 text-green-600 animate-bounce" aria-label="Checkmark" />
-        <span>Fast. Secure. Free to start.</span>
+      
+      <div className="flex flex-row justify-center gap-3 items-center text-slate-500 mt-8 text-lg">
+        <Check className="h-5 w-5 text-emerald-600" aria-label="Checkmark" />
+        <span>Secure. Professional. Results-driven.</span>
       </div>
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 hidden sm:block">
-        
-      </div>
-    </section>;
+    </section>
+  );
 };

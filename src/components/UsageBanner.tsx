@@ -13,30 +13,30 @@ export const UsageBanner = () => {
   return (
     <div className="mb-6">
       {canOptimize ? (
-        <Alert className="border-blue-200 bg-blue-50">
-          <Zap className="h-4 w-4 text-blue-600" />
+        <Alert className="border-slate-200 bg-slate-50">
+          <Zap className="h-4 w-4 text-slate-700" />
           <AlertDescription className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-blue-800">
-                Free Plan: You have <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+              <span className="text-slate-800">
+                Free Plan: You have <Badge variant="secondary" className="bg-slate-100 text-slate-800 font-medium">
                   {1 - free_optimizations_used} optimization{1 - free_optimizations_used !== 1 ? 's' : ''} remaining
                 </Badge>
               </span>
             </div>
-            <Button variant="outline" size="sm" className="border-blue-200 text-blue-700 hover:bg-blue-100">
+            <Button variant="outline" size="sm" className="border-slate-200 text-slate-700 hover:bg-slate-100 font-medium">
               <Crown className="h-4 w-4 mr-1" />
-              Upgrade for Unlimited
+              Upgrade Plan
             </Button>
           </AlertDescription>
         </Alert>
       ) : (
-        <Alert className="border-orange-200 bg-orange-50">
-          <AlertTriangle className="h-4 w-4 text-orange-600" />
+        <Alert className="border-amber-200 bg-amber-50">
+          <AlertTriangle className="h-4 w-4 text-amber-600" />
           <AlertDescription className="flex items-center justify-between">
-            <span className="text-orange-800">
+            <span className="text-amber-800">
               You've used your free optimization. Upgrade to continue optimizing resumes.
             </span>
-            <Button size="sm" className="bg-orange-600 hover:bg-orange-700">
+            <Button size="sm" className="bg-slate-900 hover:bg-slate-800 text-white font-medium">
               <Crown className="h-4 w-4 mr-1" />
               Upgrade Now
             </Button>

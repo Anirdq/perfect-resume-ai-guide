@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { Brain, Loader2, ArrowLeft } from 'lucide-react';
+import { Zap, Loader2, ArrowLeft } from 'lucide-react';
 import { useEffect } from 'react';
 
 const Auth = () => {
@@ -77,14 +77,14 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Navigation back to home */}
         <div className="mb-6">
           <Button
             variant="ghost"
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            className="flex items-center gap-2 text-slate-600 hover:text-slate-900"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Home
@@ -93,32 +93,32 @@ const Auth = () => {
 
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="bg-blue-600 p-3 rounded-xl">
-              <Brain className="h-8 w-8 text-white" />
+            <div className="bg-gradient-to-br from-slate-900 to-slate-700 p-3 rounded-xl">
+              <Zap className="h-8 w-8 text-white" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Welcome to ResumeAI</h1>
-          <p className="text-gray-600">Sign in to optimize your resume with AI</p>
+          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Welcome to Nexus</h1>
+          <p className="text-slate-600 mt-1">Transform your resume with intelligent optimization</p>
         </div>
 
         <Tabs defaultValue="signin" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="signin">Sign In</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 bg-slate-100">
+            <TabsTrigger value="signin" className="data-[state=active]:bg-white">Sign In</TabsTrigger>
+            <TabsTrigger value="signup" className="data-[state=active]:bg-white">Sign Up</TabsTrigger>
           </TabsList>
 
           <TabsContent value="signin">
-            <Card>
-              <CardHeader>
-                <CardTitle>Sign In</CardTitle>
-                <CardDescription>
+            <Card className="border-slate-200">
+              <CardHeader className="space-y-1">
+                <CardTitle className="text-slate-900">Sign In</CardTitle>
+                <CardDescription className="text-slate-600">
                   Enter your credentials to access your account
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
+                    <Label htmlFor="signin-email" className="text-slate-700">Email</Label>
                     <Input
                       id="signin-email"
                       type="email"
@@ -126,10 +126,11 @@ const Auth = () => {
                       value={signInData.email}
                       onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
                       required
+                      className="border-slate-200 focus:border-slate-400"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
+                    <Label htmlFor="signin-password" className="text-slate-700">Password</Label>
                     <Input
                       id="signin-password"
                       type="password"
@@ -137,11 +138,12 @@ const Auth = () => {
                       value={signInData.password}
                       onChange={(e) => setSignInData(prev => ({ ...prev, password: e.target.value }))}
                       required
+                      className="border-slate-200 focus:border-slate-400"
                     />
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full"
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium"
                     disabled={loading}
                   >
                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -153,17 +155,17 @@ const Auth = () => {
           </TabsContent>
 
           <TabsContent value="signup">
-            <Card>
-              <CardHeader>
-                <CardTitle>Create Account</CardTitle>
-                <CardDescription>
-                  Sign up to get started with AI resume optimization
+            <Card className="border-slate-200">
+              <CardHeader className="space-y-1">
+                <CardTitle className="text-slate-900">Create Account</CardTitle>
+                <CardDescription className="text-slate-600">
+                  Join thousands of professionals optimizing their resumes
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
+                    <Label htmlFor="signup-name" className="text-slate-700">Full Name</Label>
                     <Input
                       id="signup-name"
                       type="text"
@@ -171,10 +173,11 @@ const Auth = () => {
                       value={signUpData.fullName}
                       onChange={(e) => setSignUpData(prev => ({ ...prev, fullName: e.target.value }))}
                       required
+                      className="border-slate-200 focus:border-slate-400"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label htmlFor="signup-email" className="text-slate-700">Email</Label>
                     <Input
                       id="signup-email"
                       type="email"
@@ -182,10 +185,11 @@ const Auth = () => {
                       value={signUpData.email}
                       onChange={(e) => setSignUpData(prev => ({ ...prev, email: e.target.value }))}
                       required
+                      className="border-slate-200 focus:border-slate-400"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                    <Label htmlFor="signup-password" className="text-slate-700">Password</Label>
                     <Input
                       id="signup-password"
                       type="password"
@@ -193,10 +197,11 @@ const Auth = () => {
                       value={signUpData.password}
                       onChange={(e) => setSignUpData(prev => ({ ...prev, password: e.target.value }))}
                       required
+                      className="border-slate-200 focus:border-slate-400"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-confirm">Confirm Password</Label>
+                    <Label htmlFor="signup-confirm" className="text-slate-700">Confirm Password</Label>
                     <Input
                       id="signup-confirm"
                       type="password"
@@ -204,11 +209,12 @@ const Auth = () => {
                       value={signUpData.confirmPassword}
                       onChange={(e) => setSignUpData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                       required
+                      className="border-slate-200 focus:border-slate-400"
                     />
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full"
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium"
                     disabled={loading}
                   >
                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

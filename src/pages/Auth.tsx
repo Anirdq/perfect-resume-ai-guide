@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { Brain, Loader2 } from 'lucide-react';
+import { Brain, Loader2, ArrowLeft } from 'lucide-react';
 import { useEffect } from 'react';
 
 const Auth = () => {
@@ -79,6 +79,18 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        {/* Navigation back to home */}
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Button>
+        </div>
+
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className="bg-blue-600 p-3 rounded-xl">
